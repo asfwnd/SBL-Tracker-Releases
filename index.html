@@ -3,23 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SBL Tracker — Log it, Leave it.</title>
+<title>SBL Tracker — Log faster. Train harder.</title>
 <style>
   :root {
-    --bg: #0a0f0f;
-    --panel: #10181a;
-    --panel-2: #141f21;
-    --border: #1e2c2d;
+    --bg: #07100f;
+    --panel: #0e1718;
+    --panel-2: #121c1e;
+    --border: #1c2b2c;
     --teal: #14f0cc;
+    --teal-soft: #7af7de;
     --teal-dim: #159685;
     --teal-glow: rgba(20,240,204,0.5);
-    --text: #e4efed;
-    --text-dim: #6e8886;
+    --text: #eaf3f1;
+    --text-dim: #6f8987;
     --amber: #e0a860;
     --danger: #e5484d;
     --gold: #ffcf5c;
     --gold-glow: rgba(255,207,92,0.5);
     --blue: #7ab8f5;
+    --spring: cubic-bezier(.34,1.56,.64,1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,6 +33,7 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
   .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; }
@@ -40,55 +43,179 @@
 
   .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
 
+  /* GRAIN */
+  .grain {
+    position: fixed; inset: 0; z-index: 60; pointer-events: none;
+    opacity: 0.03; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* CURSOR GLOW */
+  #cursorGlow {
+    position: fixed; top: 0; left: 0; width: 520px; height: 520px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(20,240,204,0.09), transparent 70%);
+    pointer-events: none; z-index: 1; transform: translate3d(-50%,-50%,0);
+    will-change: transform; opacity: 0; transition: opacity .5s ease;
+  }
+
+  /* SCROLL PROGRESS BAR */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; height: 2.5px; width: 0%;
+    background: linear-gradient(90deg, var(--teal-dim), var(--teal), var(--teal-soft));
+    box-shadow: 0 0 14px 1px var(--teal-glow);
+    z-index: 100;
+    transition: width .08s linear;
+  }
+
   /* NAV */
   nav {
     position: sticky;
     top: 0;
-    z-index: 10;
-    background: rgba(10,15,15,0.85);
-    backdrop-filter: blur(10px);
+    z-index: 20;
+    background: rgba(7,16,15,0.78);
+    backdrop-filter: blur(14px) saturate(140%);
     border-bottom: 1px solid var(--border);
   }
   nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .logo { font-weight: 800; font-size: 17px; letter-spacing: 0.02em; color: var(--teal); text-shadow: 0 0 20px var(--teal-glow); }
+  .logo { font-weight: 800; font-size: 17px; letter-spacing: 0.02em; color: var(--teal); text-shadow: 0 0 20px var(--teal-glow); position: relative; }
+  .logo::after {
+    content: '';
+    position: absolute; left: 0; bottom: -4px;
+    width: 100%; height: 1px;
+    background: var(--teal);
+    transform: scaleX(0); transform-origin: left;
+    animation: underline-in 1.4s .6s var(--spring) forwards;
+  }
+  @keyframes underline-in { to { transform: scaleX(1); } }
   .nav-cta {
     font-size: 13.5px; font-weight: 700;
     border: 1.75px solid var(--border);
     color: var(--teal);
     padding: 9px 18px;
     border-radius: 12px;
-    transition: transform .3s cubic-bezier(.2,.9,.3,1.3), border-color .3s ease;
+    transition: transform .25s var(--spring), border-color .3s ease, box-shadow .3s ease;
+    display: inline-block;
   }
-  .nav-cta:hover { border-color: var(--teal-dim); }
+  .nav-cta:hover { border-color: var(--teal-dim); box-shadow: 0 0 22px -8px var(--teal-glow); transform: translateY(-1px); }
   .nav-cta:active { transform: scale(0.94); }
+
+  /* XMB-STYLE SECTION RAIL */
+  .xmb {
+    position: sticky; top: 64px; z-index: 19;
+    background: rgba(7,16,15,0.78);
+    backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--border);
+  }
+  .xmb-row {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 68px;
+  }
+  .xmb-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px;
+    padding: 8px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: transform .3s var(--spring);
+  }
+  .xmb-icon {
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-dim);
+    transition: color .25s ease, transform .35s var(--spring), filter .25s ease;
+  }
+  .xmb-icon svg { width: 20px; height: 20px; }
+  .xmb-label {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--text-dim);
+    opacity: 0; transform: translateY(-4px);
+    transition: opacity .25s ease, transform .25s ease;
+    height: 12px;
+  }
+  .xmb-item:hover .xmb-icon,
+  .xmb-item.active .xmb-icon { color: var(--teal); transform: scale(1.18); filter: drop-shadow(0 0 10px var(--teal-glow)); }
+  .xmb-item:hover .xmb-label,
+  .xmb-item.active .xmb-label { opacity: 1; transform: translateY(0); color: var(--teal); }
+  .xmb-item.active { transform: translateY(-2px); }
+  .xmb-dot {
+    position: absolute; bottom: -1px; left: 50%; width: 0; height: 2px;
+    background: var(--teal); box-shadow: 0 0 8px 1px var(--teal-glow);
+    transform: translateX(-50%);
+    transition: width .3s var(--spring);
+  }
+  .xmb-item.active .xmb-dot { width: 60%; }
+
+  /* anchor targets should land below the two sticky bars (64px + 68px) */
+  #overview, #principles, #smart, #download {
+    scroll-margin-top: 133px;
+  }
+
+  /* AMBIENT / AURORA BACKGROUND */
+  .ambient {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+  }
+  .ambient span {
+    position: absolute; border-radius: 50%;
+    filter: blur(30px);
+    animation: drift 24s ease-in-out infinite;
+  }
+  .ambient span:nth-child(1) { width: 560px; height: 560px; top: -200px; left: -160px; background: radial-gradient(circle, rgba(20,240,204,0.14), transparent 70%); animation-duration: 28s; }
+  .ambient span:nth-child(2) { width: 460px; height: 460px; top: 34%; right: -180px; background: radial-gradient(circle, rgba(122,247,222,0.11), transparent 70%); animation-duration: 32s; animation-delay: -6s; }
+  .ambient span:nth-child(3) { width: 420px; height: 420px; bottom: -160px; left: 18%; background: radial-gradient(circle, rgba(20,240,204,0.10), transparent 70%); animation-duration: 26s; animation-delay: -12s; }
+  .ambient span:nth-child(4) { width: 340px; height: 340px; top: 4%; left: 46%; background: radial-gradient(circle, rgba(122,184,245,0.07), transparent 70%); animation-duration: 34s; animation-delay: -18s; }
+  @keyframes drift {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(46px,-36px) scale(1.1); }
+  }
 
   /* HERO */
   .hero {
-    padding: 96px 0 64px;
+    padding: 88px 0 80px;
     border-bottom: 1px solid var(--border);
     text-align: center;
-    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(20,240,204,0.10), transparent 70%);
+    background: radial-gradient(ellipse 62% 55% at 50% 0%, rgba(20,240,204,0.12), transparent 72%);
+    position: relative;
   }
   .eyebrow {
-    font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--text-dim); margin-bottom: 18px;
+    font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 20px;
     display: flex; align-items: center; justify-content: center; gap: 8px;
+    opacity: 0; animation: fade-up .7s .05s var(--spring) forwards;
   }
-  .eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px 2px var(--teal-glow); }
+  .eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px 2px var(--teal-glow); animation: pulse-dot 1.8s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.4); } }
 
   h1 {
     font-weight: 800;
-    font-size: clamp(38px, 6.4vw, 62px);
-    line-height: 1.06;
-    letter-spacing: -0.01em;
-    max-width: 700px;
+    font-size: clamp(40px, 6.8vw, 66px);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    max-width: 720px;
     margin: 0 auto;
+    opacity: 0; animation: fade-up .8s .15s var(--spring) forwards;
   }
-  h1 .accent { color: var(--teal); text-shadow: 0 0 40px var(--teal-glow), 0 0 80px var(--teal-glow); }
+  h1 .accent {
+    display: inline-block;
+    background: linear-gradient(100deg, var(--teal) 20%, var(--teal-soft) 50%, var(--teal) 80%);
+    background-size: 220% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 34px var(--teal-glow));
+    animation: shimmer 5s linear infinite;
+  }
+  @keyframes shimmer { to { background-position: -220% center; } }
 
-  .sub { margin-top: 22px; font-size: 17px; color: var(--text-dim); max-width: 480px; margin-left: auto; margin-right: auto; }
+  .sub {
+    margin-top: 24px; font-size: 17.5px; color: var(--text-dim); max-width: 500px; margin-left: auto; margin-right: auto;
+    opacity: 0; animation: fade-up .8s .3s var(--spring) forwards;
+  }
 
-  .cta-row { margin-top: 34px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .cta-row {
+    margin-top: 36px; display: flex; flex-direction: column; gap: 12px; align-items: center;
+    opacity: 0; animation: fade-up .8s .45s var(--spring) forwards;
+  }
   .btn-primary {
     font-weight: 800; font-size: 15px;
     background: var(--teal); color: #06201c;
@@ -96,12 +223,23 @@
     border-radius: 14px;
     display: inline-flex; align-items: center; gap: 9px;
     box-shadow: 0 0 32px -6px var(--teal-glow), 0 0 60px -20px var(--teal-glow);
-    transition: transform .3s cubic-bezier(.2,.9,.3,1.3);
+    transition: transform .2s var(--spring), box-shadow .3s ease;
     width: 280px;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
   }
-  .btn-primary:hover { transform: translateY(-1px); }
-  .btn-primary:active { transform: scale(0.96); }
+  .btn-primary::before {
+    content: '';
+    position: absolute; top: 0; left: -60%;
+    width: 40%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+    transform: skewX(-20deg);
+    animation: sheen 3.2s ease-in-out infinite;
+  }
+  @keyframes sheen { 0% { left: -60%; } 45%,100% { left: 130%; } }
+  .btn-primary:hover { box-shadow: 0 0 46px -6px var(--teal-glow), 0 0 84px -18px var(--teal-glow); }
+  .btn-primary:active { transform: scale(0.96) !important; }
   .btn-primary svg { width: 16px; height: 16px; }
 
   .btn-secondary {
@@ -113,106 +251,100 @@
     display: inline-flex; align-items: center; gap: 9px;
     justify-content: center;
     width: 280px;
-    transition: transform .3s cubic-bezier(.2,.9,.3,1.3), border-color .3s ease;
+    transition: transform .2s var(--spring), border-color .3s ease, box-shadow .3s ease;
   }
-  .btn-secondary:hover { border-color: var(--teal-dim); }
-  .btn-secondary:active { transform: scale(0.96); }
+  .btn-secondary:hover { border-color: var(--teal-dim); box-shadow: 0 0 22px -10px var(--teal-glow); }
+  .btn-secondary:active { transform: scale(0.96) !important; }
   .btn-secondary svg { width: 16px; height: 16px; }
 
   .meta-note { font-size: 12.5px; color: var(--text-dim); }
   .meta-note .mono { color: var(--text-dim); }
 
-  /* SESSION CARD — signature element */
-  .session-card {
-    margin: 60px auto 0;
-    max-width: 380px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 20px;
-    text-align: left;
-    box-shadow: 0 0 60px -20px var(--teal-glow), 0 20px 50px -20px rgba(0,0,0,0.6);
-  }
-  .session-head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-bottom: 16px;
-  }
-  .session-head .ex-name { font-weight: 700; color: var(--teal); font-size: 15px; }
-  .session-head .timer { font-family: "SF Mono", ui-monospace, monospace; color: var(--teal); font-size: 13px; text-shadow: 0 0 14px var(--teal-glow); }
-
-  .set-row {
-    display: grid;
-    grid-template-columns: 24px 1fr 1fr 1fr;
-    gap: 10px;
-    align-items: center;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13.5px;
-  }
-  .set-row:last-of-type { border-bottom: none; }
-  .set-row .num {
-    width: 22px; height: 22px; border-radius: 50%;
-    border: 1.75px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 800; color: var(--text-dim);
-  }
-  .set-row.done .num { border-color: transparent; background: var(--teal); color: #06201c; box-shadow: 0 0 8px -3px var(--teal-glow); }
-  .set-row .val { font-family: "SF Mono", ui-monospace, monospace; color: var(--text); text-align: center; }
-  .set-row.done .val { color: var(--teal); }
-
-  .pr-line {
-    margin-top: 14px;
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,207,92,0.16);
-    color: var(--gold);
-    font-size: 12.5px; font-weight: 800;
-    padding: 6px 12px; border-radius: 10px;
-    box-shadow: 0 0 12px -5px var(--gold-glow);
-  }
+  /* REVEAL ON SCROLL (generic) */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--spring), transform .7s var(--spring); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal-stagger.in > * { opacity: 1; transform: translateY(0); }
+  .reveal-stagger > * { opacity: 0; transform: translateY(20px); transition: opacity .6s var(--spring), transform .6s var(--spring); }
+  .reveal-stagger.in > *:nth-child(1) { transition-delay: .02s; }
+  .reveal-stagger.in > *:nth-child(2) { transition-delay: .09s; }
+  .reveal-stagger.in > *:nth-child(3) { transition-delay: .16s; }
+  .reveal-stagger.in > *:nth-child(4) { transition-delay: .23s; }
+  .reveal-stagger.in > *:nth-child(5) { transition-delay: .30s; }
+  .reveal-stagger.in > *:nth-child(6) { transition-delay: .37s; }
 
   /* PRINCIPLES */
-  .principles { padding: 72px 0; border-bottom: 1px solid var(--border); text-align: center; }
+  .principles { padding: 80px 0; border-bottom: 1px solid var(--border); text-align: center; }
   .section-label {
     font-size: 12.5px; color: var(--text-dim); text-transform: uppercase;
-    letter-spacing: 0.12em; margin-bottom: 10px;
+    letter-spacing: 0.14em; margin-bottom: 10px;
   }
   .section-title {
     font-weight: 800; font-size: clamp(26px, 4vw, 36px);
-    line-height: 1.15; margin: 0 auto 40px; max-width: 560px;
+    line-height: 1.15; margin: 0 auto 44px; max-width: 620px;
+    letter-spacing: -0.01em;
   }
 
-  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; text-align: left; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: left; }
   .card {
-    background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 26px 22px;
-    box-shadow: 0 0 40px -24px var(--teal-glow);
+    background: linear-gradient(var(--panel), var(--panel)) padding-box,
+                linear-gradient(150deg, rgba(20,240,204,0.30), rgba(20,240,204,0) 50%, rgba(20,240,204,0.12) 100%) border-box;
+    border: 1px solid transparent;
+    border-radius: 16px; padding: 28px 24px;
+    box-shadow: 0 0 40px -26px var(--teal-glow);
+    transition: transform .35s var(--spring), box-shadow .35s ease;
   }
+  .card:hover { transform: translateY(-6px); box-shadow: 0 0 56px -18px var(--teal-glow); }
   .card .stat-box-icon {
     width: 38px; height: 38px; border-radius: 12px;
     background: rgba(20,240,204,0.14);
     display: flex; align-items: center; justify-content: center;
     margin-bottom: 16px;
     box-shadow: 0 0 18px -6px var(--teal-glow);
+    transition: transform .4s var(--spring);
   }
+  .card:hover .stat-box-icon { transform: scale(1.12) rotate(-6deg); }
   .card .stat-box-icon svg { width: 18px; height: 18px; color: var(--teal); }
   .card h3 { font-size: 16.5px; font-weight: 700; margin-bottom: 8px; }
   .card p { color: var(--text-dim); font-size: 14px; }
 
-  /* CUT LIST */
-  .cutlist { padding: 72px 0; border-bottom: 1px solid var(--border); text-align: center; }
-  .cut-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 32px auto 0; text-align: left; max-width: 700px; }
-  .cut-col { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
-  .cut-col h4 { font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
-  .cut-col.no h4 { color: var(--text-dim); }
-  .cut-col.yes h4 { color: var(--teal); }
-  .cut-col ul { list-style: none; }
-  .cut-col li { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14.5px; display: flex; gap: 10px; align-items: baseline; }
-  .cut-col li:last-child { border-bottom: none; }
-  .mark { font-family: "SF Mono", ui-monospace, monospace; font-size: 12.5px; flex-shrink: 0; }
-  .cut-col.no .mark { color: var(--danger); }
-  .cut-col.yes .mark { color: var(--teal); }
+  /* SMART FEATURES */
+  .smart { padding: 80px 0; border-bottom: 1px solid var(--border); text-align: center; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; }
+  .feat-card {
+    background: linear-gradient(var(--panel), var(--panel)) padding-box,
+                linear-gradient(150deg, rgba(20,240,204,0.30), rgba(20,240,204,0) 50%, rgba(20,240,204,0.12) 100%) border-box;
+    border: 1px solid transparent;
+    border-radius: 16px; padding: 24px;
+    display: flex; gap: 16px; align-items: flex-start;
+    transition: transform .35s var(--spring), box-shadow .35s ease;
+    position: relative; overflow: hidden;
+  }
+  .feat-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,0%), rgba(20,240,204,0.14), transparent 60%);
+    opacity: 0; transition: opacity .3s ease; pointer-events: none;
+  }
+  .feat-card:hover::after { opacity: 1; }
+  .feat-card:hover { transform: translateY(-5px); box-shadow: 0 0 46px -20px var(--teal-glow); }
+  .feat-num {
+    flex-shrink: 0;
+    width: 34px; height: 34px; border-radius: 10px;
+    border: 1.75px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "SF Mono", ui-monospace, monospace;
+    font-size: 12.5px; font-weight: 800; color: var(--teal);
+  }
+  .feat-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .feat-body p { color: var(--text-dim); font-size: 13.5px; }
+  .feat-tag {
+    display: inline-block; margin-top: 10px;
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--teal-dim); border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px;
+  }
 
   /* DOWNLOAD */
-  .download { padding: 88px 0; text-align: center; }
+  .download { padding: 96px 0; text-align: center; position: relative; }
   .download .section-title { margin: 0 auto 16px; }
   .download p { color: var(--text-dim); max-width: 420px; margin: 0 auto 36px; font-size: 15px; }
 
@@ -225,16 +357,27 @@
 
   @media (max-width: 720px) {
     .grid3 { grid-template-columns: 1fr; }
-    .cut-columns { grid-template-columns: 1fr; }
-    .hero { padding: 56px 0 40px; }
+    .grid2 { grid-template-columns: 1fr; }
+    .hero { padding: 56px 0 56px; }
+    #cursorGlow { display: none; }
+    .xmb-row { gap: 2px; overflow-x: auto; justify-content: flex-start; padding: 0 16px; }
+    .xmb-item { padding: 8px 12px; }
+    .xmb-label { font-size: 9.5px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
+    .reveal, .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
   }
 </style>
 </head>
 <body>
+
+<div class="grain"></div>
+<div id="cursorGlow"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="ambient"><span></span><span></span><span></span><span></span></div>
 
 <nav>
   <div class="wrap">
@@ -243,18 +386,43 @@
   </div>
 </nav>
 
-<header class="hero">
+<div class="xmb">
+  <div class="xmb-row">
+    <a class="xmb-item" data-target="overview" href="#overview">
+      <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11.5L12 4l9 7.5M5 10v10h5v-6h4v6h5V10"/></svg></span>
+      <span class="xmb-label">Overview</span>
+      <span class="xmb-dot"></span>
+    </a>
+    <a class="xmb-item" data-target="principles" href="#principles">
+      <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></span>
+      <span class="xmb-label">Why</span>
+      <span class="xmb-dot"></span>
+    </a>
+    <a class="xmb-item" data-target="smart" href="#smart">
+      <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
+      <span class="xmb-label">Features</span>
+      <span class="xmb-dot"></span>
+    </a>
+    <a class="xmb-item" data-target="download" href="#download">
+      <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg></span>
+      <span class="xmb-label">Get it</span>
+      <span class="xmb-dot"></span>
+    </a>
+  </div>
+</div>
+
+<header class="hero" id="overview">
   <div class="wrap">
-    <div class="eyebrow">Workout logging, stripped down</div>
-    <h1>Log it, <span class="accent">Leave it.</span></h1>
-    <p class="sub">A minimalist tracker for lifters who already know what they're doing. No feed. No streaks. No chatbot. Just weight, reps, and the numbers that matter.</p>
+    <div class="eyebrow">Designed for serious lifters</div>
+    <h1>Log faster.<br><span class="accent">Train harder.</span></h1>
+    <p class="sub">A minimalist tracker for lifters who already know what they're doing. No feed, no streaks, no chatbot — just the numbers that move the needle.</p>
 
     <div class="cta-row">
       <a class="btn-primary" href="#download">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
         Download for Android
       </a>
-      <a class="btn-secondary" href="https://asfwnd.github.io/SBL-Tracker-Releases/app/" target="_blank" rel="noopener">
+      <a class="btn-secondary" href="https://sbltracker.pages.dev/app/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
         Use in Browser / PWA for iOS
       </a>
@@ -262,11 +430,11 @@
   </div>
 </header>
 
-<section class="principles">
+<section class="principles" id="principles">
   <div class="wrap">
-    <div class="section-label">Why it exists</div>
-    <h2 class="section-title">Built for people who train, not people who post.</h2>
-    <div class="grid3">
+    <div class="section-label reveal">Every second counts</div>
+    <h2 class="section-title reveal">Built for people who train, not people who post.</h2>
+    <div class="grid3 reveal-stagger">
       <div class="card">
         <div class="stat-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
         <h3>Fast entry</h3>
@@ -286,30 +454,58 @@
   </div>
 </section>
 
-<section class="cutlist">
+<section class="smart" id="smart">
   <div class="wrap">
-    <div class="section-label">The filter</div>
-    <h2 class="section-title">Every feature earns its place or it doesn't ship.</h2>
-    <div class="cut-columns">
-      <div class="cut-col no">
-        <h4>Cut</h4>
-        <ul>
-          <li><span class="mark">—</span>Social feed & likes</li>
-          <li><span class="mark">—</span>Streak guilt notifications</li>
-          <li><span class="mark">—</span>AI chatbot coach</li>
-          <li><span class="mark">—</span>Onboarding wizard</li>
-          <li><span class="mark">—</span>Gamification badges</li>
-        </ul>
+    <div class="section-label reveal">Minimal by design</div>
+    <h2 class="section-title reveal">Smart defaults, not smart-alec features.</h2>
+    <div class="grid2 reveal-stagger">
+      <div class="feat-card" data-tilt>
+        <div class="feat-num">01</div>
+        <div class="feat-body">
+          <h3>Rest timer starts itself</h3>
+          <p>Enter a set's reps and the rest timer fires automatically. No tapping a separate start button between sets.</p>
+          <span class="feat-tag">Auto</span>
+        </div>
       </div>
-      <div class="cut-col yes">
-        <h4>Kept</h4>
-        <ul>
-          <li><span class="mark">+</span>Sub-second set logging</li>
-          <li><span class="mark">+</span>Automatic PR & 1RM tracking</li>
-          <li><span class="mark">+</span>Cloud sync across devices</li>
-          <li><span class="mark">+</span>Local-first, opens instantly</li>
-          <li><span class="mark">+</span>Manual JSON backup/export</li>
-        </ul>
+      <div class="feat-card" data-tilt>
+        <div class="feat-num">02</div>
+        <div class="feat-body">
+          <h3>Offline by default</h3>
+          <p>No signal needed mid-workout. Every set logs to the phone instantly and syncs to the cloud on its own the next time you're online.</p>
+          <span class="feat-tag">Offline-first</span>
+        </div>
+      </div>
+      <div class="feat-card" data-tilt>
+        <div class="feat-num">03</div>
+        <div class="feat-body">
+          <h3>Carries your last session</h3>
+          <p>Weight and reps prefill from your previous session — per exercise, and per set. Toggle it off any time it's in the way.</p>
+          <span class="feat-tag">Toggleable</span>
+        </div>
+      </div>
+      <div class="feat-card" data-tilt>
+        <div class="feat-num">04</div>
+        <div class="feat-body">
+          <h3>1RM, estimated as you go</h3>
+          <p>Every logged set feeds an e1RM estimate for that lift, updated live so PRs surface the moment they happen.</p>
+          <span class="feat-tag">Live calc</span>
+        </div>
+      </div>
+      <div class="feat-card" data-tilt>
+        <div class="feat-num">05</div>
+        <div class="feat-body">
+          <h3>Media, tied to the set</h3>
+          <p>Attach a photo or clip to the exact set it belongs to — form checks and progress shots stay linked to the numbers.</p>
+          <span class="feat-tag">Per-set</span>
+        </div>
+      </div>
+      <div class="feat-card" data-tilt>
+        <div class="feat-num">06</div>
+        <div class="feat-body">
+          <h3>Review from anywhere</h3>
+          <p>Pull up any past workout on any device with just your username — no install, no local backup file required.</p>
+          <span class="feat-tag">Cloud</span>
+        </div>
       </div>
     </div>
   </div>
@@ -317,10 +513,10 @@
 
 <section class="download" id="download">
   <div class="wrap">
-    <div class="section-label">Get it</div>
-    <h2 class="section-title">One file. No store, no fluff.</h2>
-    <p>Direct APK download. Android will warn about an unknown source the first install — that's expected for an app outside the Play Store.</p>
-    <a class="btn-primary" href="#" id="downloadLink" style="display:inline-flex;">
+    <div class="section-label reveal">Every second counts</div>
+    <h2 class="section-title reveal">One file. No store, no fluff.</h2>
+    <p class="reveal">Direct APK download. Android will warn about an unknown source the first install — that's expected for an app outside the Play Store.</p>
+    <a class="btn-primary reveal" href="#" id="downloadLink" style="display:inline-flex;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
       Download SBL Tracker (.apk)
     </a>
@@ -329,15 +525,106 @@
 
 <footer>
   <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; width:100%;">
-    <span>SBL Tracker</span>
+    <span>SBL Tracker — Designed for serious lifters.</span>
     <span>Android 8.0+ required</span>
   </div>
 </footer>
 
 <script>
-  // Always points at whatever the newest GitHub Release's sbl-tracker.apk is —
-  // no need to touch this again as long as future releases keep that filename.
-  document.getElementById('downloadLink').href = 'https://asfwnd.github.io/SBL-Tracker-Releases/downloads/sbl-tracker.apk';
+  document.getElementById('downloadLink').href = 'https://sbltracker.pages.dev/downloads/sbl-tracker.apk';
+
+  // Scroll progress bar
+  const bar = document.getElementById('scrollProgress');
+  function updateProgress() {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = scrolled + '%';
+  }
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(el));
+
+  // Feature card cursor-follow glow
+  document.querySelectorAll('[data-tilt]').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
+
+  // Ambient cursor glow, lerped for smoothness
+  const glow = document.getElementById('cursorGlow');
+  let gx = window.innerWidth / 2, gy = window.innerHeight / 2, tx = gx, ty = gy;
+  let glowActive = false;
+  window.addEventListener('mousemove', (e) => {
+    tx = e.clientX; ty = e.clientY;
+    if (!glowActive) { glow.style.opacity = '1'; glowActive = true; }
+  });
+  function animateGlow() {
+    gx += (tx - gx) * 0.12;
+    gy += (ty - gy) * 0.12;
+    glow.style.transform = `translate3d(${gx}px, ${gy}px, 0) translate(-50%, -50%)`;
+    requestAnimationFrame(animateGlow);
+  }
+  animateGlow();
+
+  // Magnetic buttons
+  document.querySelectorAll('.btn-primary, .btn-secondary').forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      el.style.transform = `translate(${x * 0.12}px, ${y * 0.22}px)`;
+    });
+    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+  });
+
+  // XMB-style section rail: click to jump, scroll to track
+  const xmbItems = Array.from(document.querySelectorAll('.xmb-item'));
+  const sectionIds = ['overview', 'principles', 'smart', 'download'];
+  const sections = sectionIds
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  function setActive(id) {
+    xmbItems.forEach(it => it.classList.toggle('active', it.dataset.target === id));
+  }
+
+  // Explicit click handling so the rail always works, independent of the observer
+  xmbItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById(item.dataset.target);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActive(item.dataset.target);
+      }
+    });
+  });
+
+  // Highlight the active item as the user scrolls
+  if ('IntersectionObserver' in window && sections.length) {
+    const sectionIO = new IntersectionObserver((entries) => {
+      const visible = entries.filter(e => e.isIntersecting);
+      if (visible.length) {
+        setActive(visible[0].target.id);
+      }
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    sections.forEach(s => sectionIO.observe(s));
+  }
+
+  setActive('overview');
 </script>
 
 </body>
