@@ -88,7 +88,7 @@
 
   .sub { margin-top: 22px; font-size: 17px; color: var(--text-dim); max-width: 480px; margin-left: auto; margin-right: auto; }
 
-  .cta-row { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center; }
+  .cta-row { margin-top: 34px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
   .btn-primary {
     font-weight: 800; font-size: 15px;
     background: var(--teal); color: #06201c;
@@ -97,10 +97,27 @@
     display: inline-flex; align-items: center; gap: 9px;
     box-shadow: 0 0 32px -6px var(--teal-glow), 0 0 60px -20px var(--teal-glow);
     transition: transform .3s cubic-bezier(.2,.9,.3,1.3);
+    width: 280px;
+    justify-content: center;
   }
   .btn-primary:hover { transform: translateY(-1px); }
   .btn-primary:active { transform: scale(0.96); }
   .btn-primary svg { width: 16px; height: 16px; }
+
+  .btn-secondary {
+    font-weight: 700; font-size: 14px;
+    background: transparent; color: var(--teal);
+    border: 1.75px solid var(--border);
+    padding: 13px 24px;
+    border-radius: 14px;
+    display: inline-flex; align-items: center; gap: 9px;
+    justify-content: center;
+    width: 280px;
+    transition: transform .3s cubic-bezier(.2,.9,.3,1.3), border-color .3s ease;
+  }
+  .btn-secondary:hover { border-color: var(--teal-dim); }
+  .btn-secondary:active { transform: scale(0.96); }
+  .btn-secondary svg { width: 16px; height: 16px; }
 
   .meta-note { font-size: 12.5px; color: var(--text-dim); }
   .meta-note .mono { color: var(--text-dim); }
@@ -237,6 +254,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
         Download for Android
       </a>
+      <a class="btn-secondary" href="https://asfwnd.github.io/SBL-Tracker-Releases/app/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+        Use in Browser / PWA for iOS
+      </a>
       <span class="meta-note">v1.0.0 · <span class="mono">.apk</span> · no account required to start</span>
     </div>
 
@@ -328,7 +349,7 @@
 <script>
   // Always points at whatever the newest GitHub Release's sbl-tracker.apk is —
   // no need to touch this again as long as future releases keep that filename.
-  document.getElementById('downloadLink').href = 'https://github.com/asfwnd/SBL-Tracker-Releases/releases/latest/download/sbl-tracker.apk';
+  document.getElementById('downloadLink').href = 'https://asfwnd.github.io/SBL-Tracker-Releases/downloads/sbl-tracker.apk';
 </script>
 
 </body>
