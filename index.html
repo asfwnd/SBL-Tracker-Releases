@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SBL Tracker — Log it. Leave.</title>
+<style>
+  :root {
+    --bg: #0a0f0f;
+    --panel: #10181a;
+    --panel-2: #141f21;
+    --border: #1e2c2d;
+    --teal: #14f0cc;
+    --teal-dim: #159685;
+    --teal-glow: rgba(20,240,204,0.5);
+    --text: #e4efed;
+    --text-dim: #6e8886;
+    --amber: #e0a860;
+    --danger: #e5484d;
+    --gold: #ffcf5c;
+    --gold-glow: rgba(255,207,92,0.5);
+    --blue: #7ab8f5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--teal); color: #06201c; }
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(10,15,15,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-weight: 800; font-size: 17px; letter-spacing: 0.02em; color: var(--teal); text-shadow: 0 0 20px var(--teal-glow); }
+  .nav-cta {
+    font-size: 13.5px; font-weight: 700;
+    border: 1.75px solid var(--border);
+    color: var(--teal);
+    padding: 9px 18px;
+    border-radius: 12px;
+    transition: transform .3s cubic-bezier(.2,.9,.3,1.3), border-color .3s ease;
+  }
+  .nav-cta:hover { border-color: var(--teal-dim); }
+  .nav-cta:active { transform: scale(0.94); }
+
+  /* HERO */
+  .hero {
+    padding: 96px 0 64px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(20,240,204,0.10), transparent 70%);
+  }
+  .eyebrow {
+    font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 18px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px 2px var(--teal-glow); }
+
+  h1 {
+    font-weight: 800;
+    font-size: clamp(38px, 6.4vw, 62px);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  h1 .accent { color: var(--teal); text-shadow: 0 0 40px var(--teal-glow), 0 0 80px var(--teal-glow); }
+
+  .sub { margin-top: 22px; font-size: 17px; color: var(--text-dim); max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  .cta-row { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center; }
+  .btn-primary {
+    font-weight: 800; font-size: 15px;
+    background: var(--teal); color: #06201c;
+    padding: 15px 24px;
+    border-radius: 14px;
+    display: inline-flex; align-items: center; gap: 9px;
+    box-shadow: 0 0 32px -6px var(--teal-glow), 0 0 60px -20px var(--teal-glow);
+    transition: transform .3s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-primary:active { transform: scale(0.96); }
+  .btn-primary svg { width: 16px; height: 16px; }
+
+  .meta-note { font-size: 12.5px; color: var(--text-dim); }
+  .meta-note .mono { color: var(--text-dim); }
+
+  /* SESSION CARD — signature element */
+  .session-card {
+    margin: 60px auto 0;
+    max-width: 380px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: left;
+    box-shadow: 0 0 60px -20px var(--teal-glow), 0 20px 50px -20px rgba(0,0,0,0.6);
+  }
+  .session-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .session-head .ex-name { font-weight: 700; color: var(--teal); font-size: 15px; }
+  .session-head .timer { font-family: "SF Mono", ui-monospace, monospace; color: var(--teal); font-size: 13px; text-shadow: 0 0 14px var(--teal-glow); }
+
+  .set-row {
+    display: grid;
+    grid-template-columns: 24px 1fr 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .set-row:last-of-type { border-bottom: none; }
+  .set-row .num {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1.75px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: var(--text-dim);
+  }
+  .set-row.done .num { border-color: transparent; background: var(--teal); color: #06201c; box-shadow: 0 0 8px -3px var(--teal-glow); }
+  .set-row .val { font-family: "SF Mono", ui-monospace, monospace; color: var(--text); text-align: center; }
+  .set-row.done .val { color: var(--teal); }
+
+  .pr-line {
+    margin-top: 14px;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,207,92,0.16);
+    color: var(--gold);
+    font-size: 12.5px; font-weight: 800;
+    padding: 6px 12px; border-radius: 10px;
+    box-shadow: 0 0 12px -5px var(--gold-glow);
+  }
+
+  /* PRINCIPLES */
+  .principles { padding: 72px 0; border-bottom: 1px solid var(--border); text-align: center; }
+  .section-label {
+    font-size: 12.5px; color: var(--text-dim); text-transform: uppercase;
+    letter-spacing: 0.12em; margin-bottom: 10px;
+  }
+  .section-title {
+    font-weight: 800; font-size: clamp(26px, 4vw, 36px);
+    line-height: 1.15; margin: 0 auto 40px; max-width: 560px;
+  }
+
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; text-align: left; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 26px 22px;
+    box-shadow: 0 0 40px -24px var(--teal-glow);
+  }
+  .card .stat-box-icon {
+    width: 38px; height: 38px; border-radius: 12px;
+    background: rgba(20,240,204,0.14);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 0 18px -6px var(--teal-glow);
+  }
+  .card .stat-box-icon svg { width: 18px; height: 18px; color: var(--teal); }
+  .card h3 { font-size: 16.5px; font-weight: 700; margin-bottom: 8px; }
+  .card p { color: var(--text-dim); font-size: 14px; }
+
+  /* CUT LIST */
+  .cutlist { padding: 72px 0; border-bottom: 1px solid var(--border); text-align: center; }
+  .cut-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 32px auto 0; text-align: left; max-width: 700px; }
+  .cut-col { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
+  .cut-col h4 { font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
+  .cut-col.no h4 { color: var(--text-dim); }
+  .cut-col.yes h4 { color: var(--teal); }
+  .cut-col ul { list-style: none; }
+  .cut-col li { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14.5px; display: flex; gap: 10px; align-items: baseline; }
+  .cut-col li:last-child { border-bottom: none; }
+  .mark { font-family: "SF Mono", ui-monospace, monospace; font-size: 12.5px; flex-shrink: 0; }
+  .cut-col.no .mark { color: var(--danger); }
+  .cut-col.yes .mark { color: var(--teal); }
+
+  /* DOWNLOAD */
+  .download { padding: 88px 0; text-align: center; }
+  .download .section-title { margin: 0 auto 16px; }
+  .download p { color: var(--text-dim); max-width: 420px; margin: 0 auto 36px; font-size: 15px; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0;
+    font-size: 12.5px; color: var(--text-dim);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+
+  @media (max-width: 720px) {
+    .grid3 { grid-template-columns: 1fr; }
+    .cut-columns { grid-template-columns: 1fr; }
+    .hero { padding: 56px 0 40px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">SBL Tracker</div>
+    <a class="nav-cta" href="#download">Download</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Workout logging, stripped down</div>
+    <h1>Log it. <span class="accent">Leave.</span></h1>
+    <p class="sub">A minimalist tracker for lifters who already know what they're doing. No feed. No streaks. No chatbot. Just weight, reps, and the numbers that matter.</p>
+
+    <div class="cta-row">
+      <a class="btn-primary" href="#download">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+        Download for Android
+      </a>
+      <span class="meta-note">v1.0.0 · <span class="mono">.apk</span> · no account required to start</span>
+    </div>
+
+    <div class="session-card">
+      <div class="session-head">
+        <span class="ex-name">Back Squat</span>
+        <span class="timer">04:12</span>
+      </div>
+      <div class="set-row done"><div class="num">1</div><div class="val">140kg</div><div class="val">5</div><div class="val">RIR 2</div></div>
+      <div class="set-row done"><div class="num">2</div><div class="val">140kg</div><div class="val">5</div><div class="val">RIR 1</div></div>
+      <div class="set-row done"><div class="num">3</div><div class="val">142.5kg</div><div class="val">4</div><div class="val">RIR 0</div></div>
+      <div class="pr-line">★ New PR — e1RM 158.4kg</div>
+    </div>
+  </div>
+</header>
+
+<section class="principles">
+  <div class="wrap">
+    <div class="section-label">Why it exists</div>
+    <h2 class="section-title">Built for people who train, not people who post.</h2>
+    <div class="grid3">
+      <div class="card">
+        <div class="stat-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+        <h3>Fast entry</h3>
+        <p>Weight, reps, RIR. Log a set faster than you can open Instagram.</p>
+      </div>
+      <div class="card">
+        <div class="stat-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M18 8l-5 5-4-4-4 4"/></svg></div>
+        <h3>Real numbers</h3>
+        <p>1RM and PR tracking that runs in the background — no manual math, no guessing.</p>
+      </div>
+      <div class="card">
+        <div class="stat-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Zero noise</h3>
+        <p>No social feed, no badges, no "great job!" popups. The app gets out of your way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cutlist">
+  <div class="wrap">
+    <div class="section-label">The filter</div>
+    <h2 class="section-title">Every feature earns its place or it doesn't ship.</h2>
+    <div class="cut-columns">
+      <div class="cut-col no">
+        <h4>Cut</h4>
+        <ul>
+          <li><span class="mark">—</span>Social feed & likes</li>
+          <li><span class="mark">—</span>Streak guilt notifications</li>
+          <li><span class="mark">—</span>AI chatbot coach</li>
+          <li><span class="mark">—</span>Onboarding wizard</li>
+          <li><span class="mark">—</span>Gamification badges</li>
+        </ul>
+      </div>
+      <div class="cut-col yes">
+        <h4>Kept</h4>
+        <ul>
+          <li><span class="mark">+</span>Sub-second set logging</li>
+          <li><span class="mark">+</span>Automatic PR & 1RM tracking</li>
+          <li><span class="mark">+</span>Cloud sync across devices</li>
+          <li><span class="mark">+</span>Local-first, opens instantly</li>
+          <li><span class="mark">+</span>Manual JSON backup/export</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="download" id="download">
+  <div class="wrap">
+    <div class="section-label">Get it</div>
+    <h2 class="section-title">One file. No store, no fluff.</h2>
+    <p>Direct APK download. Android will warn about an unknown source the first install — that's expected for an app outside the Play Store.</p>
+    <a class="btn-primary" href="#" id="downloadLink" style="display:inline-flex;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+      Download SBL Tracker (.apk)
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; width:100%;">
+    <span>SBL Tracker</span>
+    <span>Android 8.0+ required</span>
+  </div>
+</footer>
+
+<script>
+  // Always points at whatever the newest GitHub Release's sbl-tracker.apk is —
+  // no need to touch this again as long as future releases keep that filename.
+  document.getElementById('downloadLink').href = 'https://github.com/asfwnd/SBL-Tracker-Releases/releases/latest/download/sbl-tracker.apk';
+</script>
+
+</body>
+</html>
