@@ -88,42 +88,43 @@
   @media (hover: hover) and (pointer: fine) {
     nav { background: rgba(7,16,15,0.78); backdrop-filter: blur(14px) saturate(140%); }
   }
-  /* Fluid scaling: every size below interpolates between its value at a 375px-wide
-     viewport (MIN — a typical small phone) and a 1000px-wide viewport (MAX, matching
-     .wrap's own max-width — desktop size, unchanged from the original design). MIN
-     is +32% over the original phone sizing; MAX is back to what it was before (the
-     desktop look didn't need changing). Content sum at 375px is ~306px against
-     ~327px available after nav padding — fits with room to spare. */
+  /* Fluid scaling: every size below interpolates linearly between its value at a
+     300px-wide viewport (MIN) and a 1000px-wide viewport (MAX, matching .wrap's
+     own max-width, so nothing keeps growing past a normal desktop nav). Every nav
+     element scales off the same 300–1000 range, so the whole bar shrinks/grows as
+     one proportional unit and never wraps: sum of all part-widths at 300px is
+     ~233px, comfortably inside the ~252px available on a 300px phone after padding.
+     Formula: clamp(MIN, calc(MIN + (MAX - MIN) * (100vw - 300px) / 700px), MAX) */
   nav .wrap {
     display: flex; align-items: center;
-    gap: clamp(5.3px, calc(5.3px + 14.7 * (100vw - 375px) / 625), 20px);
-    padding-block: clamp(7.9px, calc(7.9px + 4.1 * (100vw - 375px) / 625), 12px);
+    gap: clamp(4px, calc(4px + 16 * (100vw - 300px) / 700), 20px);
+    padding-block: clamp(6px, calc(6px + 6 * (100vw - 300px) / 700), 12px);
   }
   .logo {
     flex-shrink: 0;
     font-weight: 800;
-    font-size: clamp(15.8px, calc(15.8px + 9.2 * (100vw - 375px) / 625), 25px);
+    font-size: clamp(12px, calc(12px + 13 * (100vw - 300px) / 700), 25px);
     letter-spacing: 0.01em; color: var(--teal); text-shadow: 0 0 20px var(--teal-glow); white-space: nowrap;
   }
   .nav-cta {
     flex-shrink: 0;
     margin-left: auto;
     transform: translateX(6px) scale(0.94);
-    font-size: clamp(11.9px, calc(11.9px + 2.35 * (100vw - 375px) / 625), 14.25px);
+    font-size: clamp(9px, calc(9px + 5.25 * (100vw - 300px) / 700), 14.25px);
     font-weight: 800; line-height: 1;
     white-space: nowrap;
     background: var(--teal); color: #06201c;
-    padding: clamp(4px, calc(4px + 4 * (100vw - 375px) / 625), 8px) clamp(5.3px, calc(5.3px + 8.7 * (100vw - 375px) / 625), 14px);
+    padding: clamp(3px, calc(3px + 5 * (100vw - 300px) / 700), 8px) clamp(4px, calc(4px + 10 * (100vw - 300px) / 700), 14px);
     border-radius: 10px;
     display: inline-flex; align-items: center; justify-content: center;
-    gap: clamp(4px, calc(4px + 2 * (100vw - 375px) / 625), 6px);
+    gap: clamp(3px, calc(3px + 3 * (100vw - 300px) / 700), 6px);
     box-shadow: 0 0 18px -6px var(--teal-glow);
     opacity: 0; pointer-events: none;
     transition: opacity .45s cubic-bezier(.22,.9,.32,1), transform .45s cubic-bezier(.22,.9,.32,1), box-shadow .3s ease;
   }
   .nav-cta svg {
-    width: clamp(11.9px, calc(11.9px + 2.1 * (100vw - 375px) / 625), 14px);
-    height: clamp(11.9px, calc(11.9px + 2.1 * (100vw - 375px) / 625), 14px);
+    width: clamp(9px, calc(9px + 5 * (100vw - 300px) / 700), 14px);
+    height: clamp(9px, calc(9px + 5 * (100vw - 300px) / 700), 14px);
     flex-shrink: 0;
   }
   .nav-cta.visible {
@@ -134,25 +135,23 @@
   .nav-cta:active { transform: scale(0.94); }
 
   /* XMB-STYLE SECTION RAIL — sits between the logo and the download pill, same bar.
-     The label is absolutely positioned below the icon (out of normal flow), so item
-     width = icon + padding ONLY — every item is exactly the same width regardless
-     of "Overview" vs "Why" vs "Get it" text length, and the icon is always dead
-     center instead of drifting off-center to make room for whichever label is widest. */
+     Always a single row: icon size, item padding, and inter-item gap all shrink
+     together with viewport width, so four items + labels never need to wrap. */
   .xmb-row {
     flex: 1;
     min-width: 0;
     display: flex; align-items: center; justify-content: center;
-    gap: clamp(4px, calc(4px + 36 * (100vw - 375px) / 625), 40px);
+    gap: clamp(3px, calc(3px + 37 * (100vw - 300px) / 700), 40px);
     height: auto;
-    padding-bottom: clamp(13px, calc(13px + 3 * (100vw - 375px) / 625), 16px);
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
   .xmb-row::-webkit-scrollbar { display: none; }
   .xmb-item {
-    display: flex; align-items: center; justify-content: center;
-    padding: 2px clamp(2.6px, calc(2.6px + 4.4 * (100vw - 375px) / 625), 7px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px;
+    padding: 2px clamp(2px, calc(2px + 5 * (100vw - 300px) / 700), 7px);
     border-radius: 12px;
     cursor: pointer;
     position: relative;
@@ -160,27 +159,26 @@
     transition: transform .3s var(--spring);
   }
   .xmb-icon {
-    width: clamp(19.8px, calc(19.8px + 6.2 * (100vw - 375px) / 625), 26px);
-    height: clamp(19.8px, calc(19.8px + 6.2 * (100vw - 375px) / 625), 26px);
+    width: clamp(15px, calc(15px + 11 * (100vw - 300px) / 700), 26px);
+    height: clamp(15px, calc(15px + 11 * (100vw - 300px) / 700), 26px);
     display: flex; align-items: center; justify-content: center;
     color: var(--text-dim);
     transition: color .25s ease, transform .35s var(--spring), filter .25s ease;
   }
-  .xmb-icon svg { width: 70%; height: 70%; display: block; }
+  .xmb-icon svg { width: 70%; height: 70%; }
   .xmb-label {
-    position: absolute; top: 100%; left: 50%;
-    margin-top: 2px;
-    font-size: clamp(9.2px, calc(9.2px + 0.8 * (100vw - 375px) / 625), 10px);
+    font-size: clamp(7px, calc(7px + 3 * (100vw - 300px) / 700), 10px);
     font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
     color: var(--text-dim);
     white-space: nowrap;
-    opacity: 0; transform: translateX(-50%) translateY(-4px);
+    opacity: 0; transform: translateY(-4px);
     transition: opacity .25s ease, transform .25s ease;
+    height: 10px;
   }
   .xmb-item:hover .xmb-icon,
   .xmb-item.active .xmb-icon { color: var(--teal); transform: scale(1.18); filter: drop-shadow(0 0 10px var(--teal-glow)); }
   .xmb-item:hover .xmb-label,
-  .xmb-item.active .xmb-label { opacity: 1; transform: translateX(-50%) translateY(0); color: var(--teal); }
+  .xmb-item.active .xmb-label { opacity: 1; transform: translateY(0); color: var(--teal); }
   .xmb-item.active { transform: translateY(-2px); }
 
   /* anchor targets should land below the sticky bar — actual height set via JS
