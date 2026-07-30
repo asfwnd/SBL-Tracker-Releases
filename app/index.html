@@ -555,7 +555,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.0.8';
+const APP_VERSION = '1.0.9';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -686,7 +686,9 @@ async function pullCloudAppState() {
       .eq('user_id', account.id)
       .in('key', CLOUD_SYNC_KEYS);
     if (error) throw error;
+    const pending = await loadJSON('pendingAppState', {});
     for (const row of (data || [])) {
+      if (row.key in pending) continue; // local has an unpushed change for this key — don't stomp it with a possibly-stale cloud read
       await saveJSON(row.key, row.value);
     }
   } catch (e) { logClientError('pullCloudAppState', e); }
@@ -3944,10 +3946,19 @@ function checkRestCatchUp() {
     tickRestTimer();
   }
 }
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkRestCatchUp(); checkDayRolloverOnResume(); } });
+let lastResumeSyncAt = 0;
+function syncOnResumeIfDue() {
+  if (!account) return;
+  const now = Date.now();
+  if (now - lastResumeSyncAt < 20000) return; // throttle — don't refire on every quick tab switch
+  lastResumeSyncAt = now;
+  pullCloudWorkouts();
+  pullCloudAppState();
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkRestCatchUp(); checkDayRolloverOnResume(); syncOnResumeIfDue(); } });
 try {
   if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-    window.Capacitor.Plugins.App.addListener('resume', () => { checkRestCatchUp(); checkDayRolloverOnResume(); });
+    window.Capacitor.Plugins.App.addListener('resume', () => { checkRestCatchUp(); checkDayRolloverOnResume(); syncOnResumeIfDue(); });
   }
 } catch (e) {}
 /* Covers the case where the app was only backgrounded overnight, not fully
@@ -4012,7 +4023,7 @@ async function syncWorkoutToCloud(log) {
         });
       });
     });
-    const { error } = await supabase.rpc('sync_workout', {
+    const { data: newUpdatedAt, error } = await supabase.rpc('sync_workout', {
       p_workout: {
         id: log.id,
         day_name: log.day,
@@ -4026,12 +4037,29 @@ async function syncWorkoutToCloud(log) {
       p_sets: sets
     });
     if (error) throw error;
+    // Record the server's timestamp for this write, so this device knows its
+    // local copy is caught up to exactly this version — anything pulled
+    // later with a newer updated_at means some *other* device changed it.
+    if (newUpdatedAt) await saveJSON('cloudMark:' + log.id, newUpdatedAt);
 
     // Success — make sure it's not sitting in the retry queue anymore.
     const pending = await loadJSON('pendingSync', []);
     const stillPending = pending.filter(id => id !== log.id);
     if (stillPending.length !== pending.length) await saveJSON('pendingSync', stillPending);
   } catch (e) {
+    if (e && (e.code === 'P0002' || (e.message || '').includes('workout_tombstoned'))) {
+      // Deleted from another device while this one still had it cached/pending.
+      // Retrying would just fail identically forever — accept the deletion.
+      deleteKey('log:' + log.id);
+      deleteKey('cloudMark:' + log.id);
+      const pending = await loadJSON('pendingSync', []);
+      const stillPending = pending.filter(id => id !== log.id);
+      if (stillPending.length !== pending.length) await saveJSON('pendingSync', stillPending);
+      historyEntries = historyEntries.filter(e2 => e2.id !== log.id);
+      showToast('That workout was deleted on another device');
+      render();
+      return;
+    }
     logClientError('syncWorkoutToCloud:' + log.id, e);
     const pending = await loadJSON('pendingSync', []);
     if (!pending.includes(log.id)) { pending.push(log.id); await saveJSON('pendingSync', pending); }
@@ -4059,10 +4087,9 @@ async function syncPendingDeletes() {
   const stillPending = [];
   for (const id of pending) {
     try {
-      const { error: setsErr } = await supabase.from('workout_sets').delete().eq('workout_id', id);
-      if (setsErr) throw setsErr;
-      const { error: wErr } = await supabase.from('workouts').delete().eq('id', id);
-      if (wErr) throw wErr;
+      const { error } = await supabase.rpc('delete_workout', { p_workout_id: id });
+      if (error) throw error;
+      deleteKey('cloudMark:' + id);
     } catch (e) {
       logClientError('retryCloudDelete:' + id, e);
       stillPending.push(id);
@@ -4093,27 +4120,58 @@ async function pullCloudWorkouts() {
       .eq('user_id', account.id);
     if (error) throw error;
     const pendingDeletes = await loadJSON('pendingDelete', []);
+    const pendingSyncList = await loadJSON('pendingSync', []);
     let pulledAny = false;
     for (const w of (workouts || [])) {
       if (pendingDeletes.includes(w.id)) continue; // mid-delete — don't resurrect it
+      if (pendingSyncList.includes(w.id)) continue; // local has an unpushed edit — don't clobber it, it'll push and set its own mark
       const localKey = 'log:' + w.id;
       const existing = await loadJSON(localKey, null);
-      if (existing) continue;
+      const cloudUpdatedAtMs = new Date(w.updated_at).getTime();
+      const markKey = 'cloudMark:' + w.id;
+      const mark = await loadJSON(markKey, null);
+      if (existing && mark !== null && new Date(mark).getTime() >= cloudUpdatedAtMs) continue; // already caught up to this version
+
       const exMap = {};
       (w.workout_sets || []).sort((a, b) => a.set_index - b.set_index).forEach(s => {
         if (!exMap[s.exercise_name]) exMap[s.exercise_name] = { name: s.exercise_name, unilateral: s.unilateral, sets: [] };
+        // Media never syncs to the cloud (stays device-local), so if this
+        // exercise+set existed locally before, carry its media forward
+        // instead of wiping it just because the numbers changed elsewhere.
+        const localEx = existing && (existing.exercises || []).find(e => sameExName(e.name, s.exercise_name));
+        const localSet = localEx && localEx.sets[s.set_index];
         exMap[s.exercise_name].sets.push({
           weight: s.weight, reps: s.reps, repsL: s.reps_l, repsR: s.reps_r,
-          rir: s.rir, rpe: s.rpe, rest: s.rest_seconds, media: []
+          rir: s.rir, rpe: s.rpe, rest: s.rest_seconds, media: (localSet && localSet.media) || []
         });
       });
       const log = {
         id: w.id, date: (w.start_time || '').slice(0, 10), day: w.day_name,
         startTime: new Date(w.start_time).getTime(), endTime: new Date(w.end_time).getTime(),
         durationMin: w.duration_min, exercises: Object.values(exMap),
-        totalVolume: w.total_volume, bodyweight: w.bodyweight, notes: w.notes || '', media: []
+        totalVolume: w.total_volume, bodyweight: w.bodyweight, notes: w.notes || '',
+        media: (existing && existing.media) || []
       };
       await saveJSON(localKey, log);
+      await saveJSON(markKey, w.updated_at);
+      pulledAny = true;
+    }
+
+    // Deletion propagation: check the tombstone table directly rather than
+    // inferring from absence — a workout missing from the main select could
+    // also mean a transient query hiccup, but a tombstone is unambiguous.
+    const { data: tombstones, error: tErr } = await supabase
+      .from('deleted_workouts')
+      .select('id')
+      .eq('user_id', account.id);
+    if (tErr) throw tErr;
+    for (const t of (tombstones || [])) {
+      if (pendingSyncList.includes(t.id)) continue; // unpushed local edit — let it push first, it'll get tombstone-rejected and clean itself up then
+      const existed = localStorage.getItem('log:' + t.id) !== null;
+      if (!existed) continue;
+      deleteKey('log:' + t.id);
+      deleteKey('cloudMark:' + t.id);
+      historyEntries = historyEntries.filter(e => e.id !== t.id);
       pulledAny = true;
     }
     if (pulledAny) { await loadHistory(); render(); }
@@ -4765,10 +4823,9 @@ function renderEditLog(root) {
     // same pattern as the upload path, instead of just logging it.
     if (account) {
       try {
-        const { error: setsErr } = await supabase.from('workout_sets').delete().eq('workout_id', w.id);
-        if (setsErr) throw setsErr;
-        const { error: wErr } = await supabase.from('workouts').delete().eq('id', w.id);
-        if (wErr) throw wErr;
+        const { error } = await supabase.rpc('delete_workout', { p_workout_id: w.id });
+        if (error) throw error;
+        deleteKey('cloudMark:' + w.id);
         const pendingDel = await loadJSON('pendingDelete', []);
         const stillPendingDel = pendingDel.filter(id => id !== w.id);
         if (stillPendingDel.length !== pendingDel.length) await saveJSON('pendingDelete', stillPendingDel);
