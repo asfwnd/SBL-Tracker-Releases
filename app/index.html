@@ -61,6 +61,7 @@
   .yn-row { display: flex; gap: 12px; margin-top: 4px; margin-bottom: 8px; }
   #resumeBtn { margin-bottom: 22px; }
   .yn-btn { flex: 1; padding: 20px 12px; border-radius: 14px; border: 1.75px solid var(--border); background: var(--panel); color: var(--text); font-size: 16px; font-weight: 700; cursor: pointer; transition: transform .48s var(--ease-bounce), box-shadow .42s var(--ease-glide), border-color .38s var(--ease-glide); }
+  .yn-btn svg { width: 22px; height: 22px; display: block; margin: 0 auto 8px; }
   .yn-btn.yes { border-color: var(--border); color: var(--teal); box-shadow: none; }
   .yn-btn.yes:active { box-shadow: none; transform: scale(0.91); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }
   .progress-card { touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 13px 15px; margin-bottom: 9px; cursor: pointer; transition: transform .38s var(--ease-bounce), border-color .3s var(--ease-glide); }
@@ -553,7 +554,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.0.5';
+const APP_VERSION = '1.0.4';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -631,7 +632,22 @@ function deleteKey(key) {
    done — it always fell through to select-program. These keys now
    also mirror to the app_state table (user_id, key, value) so any device
    can pull them down before boot() decides which screen to show. */
-const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay'];
+// Persists failures to a Supabase table instead of only console.error, which
+// nobody ever sees for a real user's device. Fire-and-forget, never throws,
+// never blocks the UI. Read them from the Supabase dashboard (client_errors
+// table) — RLS is write-only from the client on purpose.
+function logClientError(context, err) {
+  try {
+    console.error(context, err);
+    if (!account || !account.id) return;
+    const message = err && err.message ? String(err.message) : String(err);
+    supabase.from('client_errors').insert({
+      user_id: account.id, context, message: message.slice(0, 2000), app_version: APP_VERSION
+    }).then(() => {}).catch(() => {}); // best-effort — never let logging itself throw
+  } catch (e) {}
+}
+
+const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings'];
 
 async function pushCloudAppState(key, val) {
   if (!account || !account.id) return;
@@ -643,7 +659,7 @@ async function pushCloudAppState(key, val) {
     const pending = await loadJSON('pendingAppState', {});
     if (key in pending) { delete pending[key]; await saveJSON('pendingAppState', pending); }
   } catch (e) {
-    console.error('Cloud state push failed, queued for retry:', key, e);
+    logClientError('pushCloudAppState:' + key, e);
     const pending = await loadJSON('pendingAppState', {});
     pending[key] = val; // last-write-wins if it fails more than once before reconnecting
     await saveJSON('pendingAppState', pending);
@@ -672,7 +688,7 @@ async function pullCloudAppState() {
     for (const row of (data || [])) {
       await saveJSON(row.key, row.value);
     }
-  } catch (e) { console.error('Cloud state pull failed:', e); }
+  } catch (e) { logClientError('pullCloudAppState', e); }
 }
 function listKeys(prefix) {
   const keys = [];
@@ -1765,6 +1781,27 @@ async function boot() {
   if (!session) { screen = 'register'; render(); return; }
   account = { username: session.user.user_metadata.username, id: session.user.id };
   loggedIn = true;
+  // Nothing in this app was ever scoped by account — log:*, settings,
+  // programType/programDays/exercisesByDay, draft, bestLifts, all lived as
+  // flat global keys. On a device/browser that's had a different account
+  // signed in before, that meant the new login inherited the previous
+  // person's workouts, settings, and program outright (this is what showed
+  // up as another user's logs appearing, and as "wipes my sets/settings" —
+  // it's the same bucket being overwritten both ways). Wipe the local
+  // bucket the moment the signed-in account differs from last time, then
+  // let the cloud pulls below repopulate it clean for *this* account.
+  const lastAccountId = await loadJSON('lastAccountId', null);
+  if (lastAccountId === null) {
+    // First launch since this device-isolation feature shipped — we have no
+    // record of who was last signed in here, so treat it as "this account,
+    // always" rather than wiping every existing user's data on their next
+    // ordinary update.
+    await saveJSON('lastAccountId', account.id);
+  } else if (lastAccountId !== account.id) {
+    const staleKeys = listKeys('').filter(k => k !== 'lastAccountId' && k !== 'rwMode');
+    staleKeys.forEach(k => deleteKey(k));
+    await saveJSON('lastAccountId', account.id);
+  }
   // Both run in the background — the app opens instantly on local data like
   // always, and anything new from the cloud (or anything that failed to
   // sync earlier, e.g. logged offline at the gym) merges in silently.
@@ -3938,32 +3975,29 @@ function numOrNull(v) {
 // Push one finished workout up to Supabase. Never blocks the UI — if it's
 // offline or fails, the workout stays queued in 'pendingSync' and gets
 // retried the next time syncPendingWorkouts() runs (e.g. next app boot).
+// Guards against two overlapping syncs for the same workout (boot retry +
+// online listener + a direct save can all fire close together). Without
+// this, a racing delete-then-insert pair can wipe out workout_sets rows
+// that the other call just inserted, leaving the parent workouts row (and
+// its total_volume) intact but the sets gone — exactly the "0 Sets" bug.
+// Guards against two overlapping syncs for the same workout within one tab
+// (boot retry + online listener + a direct save can all fire close
+// together) — but the real fix is sync_workout() itself: it runs as one
+// atomic database transaction, so even two tabs or two devices on the same
+// account can never interleave a partial write. Stress-tested directly
+// against the DB: a hijack attempt on someone else's workout id raises and
+// rolls back cleanly, and a normal sync always leaves a fully consistent
+// workout+sets pair, never a partial one.
+const syncingWorkoutIds = new Set();
 async function syncWorkoutToCloud(log) {
   if (!account) return; // local-only mode — nothing to sync to yet
+  if (syncingWorkoutIds.has(log.id)) return; // already syncing, let that one finish
+  syncingWorkoutIds.add(log.id);
   try {
-    const { error: wErr } = await supabase.from('workouts').upsert({
-      id: log.id,
-      user_id: account.id,
-      day_name: log.day,
-      start_time: new Date(log.startTime).toISOString(),
-      end_time: new Date(log.endTime).toISOString(),
-      duration_min: log.durationMin,
-      total_volume: log.totalVolume,
-      bodyweight: numOrNull(log.bodyweight),
-      notes: log.notes || ''
-    });
-    if (wErr) throw wErr;
-
-    // Clear any previous sets for this workout before re-inserting, so a
-    // retried sync (e.g. after an edit) doesn't create duplicates.
-    await supabase.from('workout_sets').delete().eq('workout_id', log.id);
-
-    const rows = [];
+    const sets = [];
     (log.exercises || []).forEach(ex => {
       ex.sets.forEach((s, i) => {
-        rows.push({
-          workout_id: log.id,
-          user_id: account.id,
+        sets.push({
           exercise_name: ex.name,
           unilateral: !!ex.unilateral,
           set_index: i,
@@ -3977,19 +4011,31 @@ async function syncWorkoutToCloud(log) {
         });
       });
     });
-    if (rows.length) {
-      const { error: sErr } = await supabase.from('workout_sets').insert(rows);
-      if (sErr) throw sErr;
-    }
+    const { error } = await supabase.rpc('sync_workout', {
+      p_workout: {
+        id: log.id,
+        day_name: log.day,
+        start_time: new Date(log.startTime).toISOString(),
+        end_time: new Date(log.endTime).toISOString(),
+        duration_min: log.durationMin,
+        total_volume: log.totalVolume,
+        bodyweight: numOrNull(log.bodyweight),
+        notes: log.notes || ''
+      },
+      p_sets: sets
+    });
+    if (error) throw error;
 
     // Success — make sure it's not sitting in the retry queue anymore.
     const pending = await loadJSON('pendingSync', []);
     const stillPending = pending.filter(id => id !== log.id);
     if (stillPending.length !== pending.length) await saveJSON('pendingSync', stillPending);
   } catch (e) {
-    console.error('Cloud sync failed for workout ' + log.id + ', will retry later:', e);
+    logClientError('syncWorkoutToCloud:' + log.id, e);
     const pending = await loadJSON('pendingSync', []);
     if (!pending.includes(log.id)) { pending.push(log.id); await saveJSON('pendingSync', pending); }
+  } finally {
+    syncingWorkoutIds.delete(log.id);
   }
 }
 
@@ -4017,7 +4063,7 @@ async function syncPendingDeletes() {
       const { error: wErr } = await supabase.from('workouts').delete().eq('id', id);
       if (wErr) throw wErr;
     } catch (e) {
-      console.error('Retry of cloud delete failed for workout ' + id + ':', e);
+      logClientError('retryCloudDelete:' + id, e);
       stillPending.push(id);
     }
   }
@@ -4071,7 +4117,7 @@ async function pullCloudWorkouts() {
     }
     if (pulledAny) { await loadHistory(); render(); }
   } catch (e) {
-    console.error('Cloud pull failed:', e);
+    logClientError('pullCloudWorkouts', e);
   }
 }
 
@@ -4726,7 +4772,7 @@ function renderEditLog(root) {
         const stillPendingDel = pendingDel.filter(id => id !== w.id);
         if (stillPendingDel.length !== pendingDel.length) await saveJSON('pendingDelete', stillPendingDel);
       } catch (e) {
-        console.error('Cloud delete failed for workout ' + w.id + ', will retry later:', e);
+        logClientError('deleteWholeWorkout:' + w.id, e);
         const pendingDel = await loadJSON('pendingDelete', []);
         if (!pendingDel.includes(w.id)) { pendingDel.push(w.id); await saveJSON('pendingDelete', pendingDel); }
       }

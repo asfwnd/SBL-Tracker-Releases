@@ -43,27 +43,38 @@
 
   .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
 
-  /* GRAIN */
+  /* GRAIN — desktop only, fine-pointer devices; skipped on touch to avoid scroll jank */
   .grain {
-    position: fixed; inset: 0; z-index: 60; pointer-events: none;
-    opacity: 0.03; mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .grain {
+      display: block;
+      position: fixed; inset: 0; z-index: 60; pointer-events: none;
+      opacity: 0.025; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
   }
 
-  /* CURSOR GLOW */
-  #cursorGlow {
-    position: fixed; top: 0; left: 0; width: 520px; height: 520px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(20,240,204,0.09), transparent 70%);
-    pointer-events: none; z-index: 1; transform: translate3d(-50%,-50%,0);
-    will-change: transform; opacity: 0; transition: opacity .5s ease;
+  /* CURSOR GLOW — desktop only */
+  #cursorGlow { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    #cursorGlow {
+      display: block;
+      position: fixed; top: 0; left: 0; width: 520px; height: 520px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(20,240,204,0.09), transparent 70%);
+      pointer-events: none; z-index: 1; transform: translate3d(-50%,-50%,0);
+      will-change: transform; opacity: 0; transition: opacity .5s ease;
+    }
   }
 
   /* SCROLL PROGRESS BAR */
+  /* SCROLL PROGRESS BAR */
   .scroll-progress {
-    position: fixed; top: 0; left: 0; height: 2.5px; width: 0%;
+    position: fixed; top: 64px; left: 0; height: 2.5px; width: 0%;
     background: linear-gradient(90deg, var(--teal-dim), var(--teal), var(--teal-soft));
     box-shadow: 0 0 14px 1px var(--teal-glow);
-    z-index: 100;
+    z-index: 15;
     transition: width .08s linear;
   }
 
@@ -72,48 +83,46 @@
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgba(7,16,15,0.78);
-    backdrop-filter: blur(14px) saturate(140%);
-    border-bottom: 1px solid var(--border);
+    background: rgba(7,16,15,0.92);
   }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .logo { font-weight: 800; font-size: 17px; letter-spacing: 0.02em; color: var(--teal); text-shadow: 0 0 20px var(--teal-glow); position: relative; }
-  .logo::after {
-    content: '';
-    position: absolute; left: 0; bottom: -4px;
-    width: 100%; height: 1px;
-    background: var(--teal);
-    transform: scaleX(0); transform-origin: left;
-    animation: underline-in 1.4s .6s var(--spring) forwards;
+  @media (hover: hover) and (pointer: fine) {
+    nav { background: rgba(7,16,15,0.78); backdrop-filter: blur(14px) saturate(140%); }
   }
-  @keyframes underline-in { to { transform: scaleX(1); } }
+  nav .wrap { display: flex; align-items: center; gap: 20px; height: 64px; }
+  .logo { flex-shrink: 0; font-weight: 800; font-size: 25px; letter-spacing: 0.01em; color: var(--teal); text-shadow: 0 0 20px var(--teal-glow); }
   .nav-cta {
-    font-size: 13.5px; font-weight: 700;
-    border: 1.75px solid var(--border);
-    color: var(--teal);
-    padding: 9px 18px;
-    border-radius: 12px;
-    transition: transform .25s var(--spring), border-color .3s ease, box-shadow .3s ease;
-    display: inline-block;
+    flex-shrink: 0;
+    transform: translateX(6px) scale(0.94);
+    font-size: 14.25px; font-weight: 800; line-height: 1;
+    background: var(--teal); color: #06201c;
+    padding: 8px 14px;
+    border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    box-shadow: 0 0 18px -6px var(--teal-glow);
+    opacity: 0; pointer-events: none;
+    transition: opacity .45s cubic-bezier(.22,.9,.32,1), transform .45s cubic-bezier(.22,.9,.32,1), box-shadow .3s ease;
   }
-  .nav-cta:hover { border-color: var(--teal-dim); box-shadow: 0 0 22px -8px var(--teal-glow); transform: translateY(-1px); }
+  .nav-cta.visible {
+    opacity: 1; pointer-events: auto;
+    transform: translateX(0) scale(1);
+  }
+  .nav-cta:hover { box-shadow: 0 0 26px -4px var(--teal-glow); }
   .nav-cta:active { transform: scale(0.94); }
-
-  /* XMB-STYLE SECTION RAIL */
-  .xmb {
-    position: sticky; top: 64px; z-index: 19;
-    background: rgba(7,16,15,0.78);
-    backdrop-filter: blur(14px) saturate(140%);
-    border-bottom: 1px solid var(--border);
+  @media (max-width: 560px) {
+    .nav-cta { padding: 7px 11px; font-size: 13.1px; }
   }
+
+  /* XMB-STYLE SECTION RAIL — sits between the logo and the download pill, same bar */
   .xmb-row {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    height: 68px;
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 40px;
+    height: 42px;
+    min-width: 0;
   }
   .xmb-item {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 4px;
-    padding: 8px 18px;
+    gap: 2px;
+    padding: 2px 7px;
     border-radius: 12px;
     cursor: pointer;
     position: relative;
@@ -127,28 +136,21 @@
   }
   .xmb-icon svg { width: 20px; height: 20px; }
   .xmb-label {
-    font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
     color: var(--text-dim);
     opacity: 0; transform: translateY(-4px);
     transition: opacity .25s ease, transform .25s ease;
-    height: 12px;
+    height: 10px;
   }
   .xmb-item:hover .xmb-icon,
   .xmb-item.active .xmb-icon { color: var(--teal); transform: scale(1.18); filter: drop-shadow(0 0 10px var(--teal-glow)); }
   .xmb-item:hover .xmb-label,
   .xmb-item.active .xmb-label { opacity: 1; transform: translateY(0); color: var(--teal); }
   .xmb-item.active { transform: translateY(-2px); }
-  .xmb-dot {
-    position: absolute; bottom: -1px; left: 50%; width: 0; height: 2px;
-    background: var(--teal); box-shadow: 0 0 8px 1px var(--teal-glow);
-    transform: translateX(-50%);
-    transition: width .3s var(--spring);
-  }
-  .xmb-item.active .xmb-dot { width: 60%; }
 
-  /* anchor targets should land below the two sticky bars (64px + 68px) */
+  /* anchor targets should land below the single sticky bar */
   #overview, #principles, #smart, #download {
-    scroll-margin-top: 133px;
+    scroll-margin-top: 64px;
   }
 
   /* AMBIENT / AURORA BACKGROUND */
@@ -158,7 +160,9 @@
   .ambient span {
     position: absolute; border-radius: 50%;
     filter: blur(30px);
-    animation: drift 24s ease-in-out infinite;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .ambient span { animation: drift 24s ease-in-out infinite; }
   }
   .ambient span:nth-child(1) { width: 560px; height: 560px; top: -200px; left: -160px; background: radial-gradient(circle, rgba(20,240,204,0.14), transparent 70%); animation-duration: 28s; }
   .ambient span:nth-child(2) { width: 460px; height: 460px; top: 34%; right: -180px; background: radial-gradient(circle, rgba(122,247,222,0.11), transparent 70%); animation-duration: 32s; animation-delay: -6s; }
@@ -172,7 +176,6 @@
   /* HERO */
   .hero {
     padding: 88px 0 80px;
-    border-bottom: 1px solid var(--border);
     text-align: center;
     background: radial-gradient(ellipse 62% 55% at 50% 0%, rgba(20,240,204,0.12), transparent 72%);
     position: relative;
@@ -243,19 +246,20 @@
   .btn-primary svg { width: 16px; height: 16px; }
 
   .btn-secondary {
-    font-weight: 700; font-size: 14px;
+    font-weight: 800; font-size: 12px;
     background: transparent; color: var(--teal);
     border: 1.75px solid var(--border);
-    padding: 13px 24px;
+    padding: 15px 16px;
     border-radius: 14px;
-    display: inline-flex; align-items: center; gap: 9px;
+    display: inline-flex; align-items: center; gap: 6px;
     justify-content: center;
+    white-space: nowrap;
     width: 280px;
     transition: transform .2s var(--spring), border-color .3s ease, box-shadow .3s ease;
   }
+  .btn-secondary svg { width: 14px; height: 14px; flex-shrink: 0; }
   .btn-secondary:hover { border-color: var(--teal-dim); box-shadow: 0 0 22px -10px var(--teal-glow); }
   .btn-secondary:active { transform: scale(0.96) !important; }
-  .btn-secondary svg { width: 16px; height: 16px; }
 
   .meta-note { font-size: 12.5px; color: var(--text-dim); }
   .meta-note .mono { color: var(--text-dim); }
@@ -273,7 +277,7 @@
   .reveal-stagger.in > *:nth-child(6) { transition-delay: .37s; }
 
   /* PRINCIPLES */
-  .principles { padding: 80px 0; border-bottom: 1px solid var(--border); text-align: center; }
+  .principles { padding: 80px 0; text-align: center; }
   .section-label {
     font-size: 12.5px; color: var(--text-dim); text-transform: uppercase;
     letter-spacing: 0.14em; margin-bottom: 10px;
@@ -308,7 +312,7 @@
   .card p { color: var(--text-dim); font-size: 14px; }
 
   /* SMART FEATURES */
-  .smart { padding: 80px 0; border-bottom: 1px solid var(--border); text-align: center; }
+  .smart { padding: 80px 0; text-align: center; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; }
   .feat-card {
     background: linear-gradient(var(--panel), var(--panel)) padding-box,
@@ -337,11 +341,6 @@
   }
   .feat-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
   .feat-body p { color: var(--text-dim); font-size: 13.5px; }
-  .feat-tag {
-    display: inline-block; margin-top: 10px;
-    font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--teal-dim); border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px;
-  }
 
   /* DOWNLOAD */
   .download { padding: 96px 0; text-align: center; position: relative; }
@@ -349,7 +348,6 @@
   .download p { color: var(--text-dim); max-width: 420px; margin: 0 auto 36px; font-size: 15px; }
 
   footer {
-    border-top: 1px solid var(--border);
     padding: 28px 0;
     font-size: 12.5px; color: var(--text-dim);
     display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
@@ -360,9 +358,15 @@
     .grid2 { grid-template-columns: 1fr; }
     .hero { padding: 56px 0 56px; }
     #cursorGlow { display: none; }
-    .xmb-row { gap: 2px; overflow-x: auto; justify-content: flex-start; padding: 0 16px; }
-    .xmb-item { padding: 8px 12px; }
-    .xmb-label { font-size: 9.5px; }
+    .xmb-row { gap: 2px; overflow-x: auto; justify-content: flex-start; padding: 0 8px; }
+    .xmb-item { padding: 2px 7px; }
+    .xmb-label { font-size: 9.7px; }
+    nav .wrap { gap: 10px; }
+    .logo { font-size: 20.5px; }
+  }
+
+  @media (max-width: 360px) {
+    .btn-secondary { font-size: 10.5px; gap: 5px; padding: 15px 12px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -382,34 +386,30 @@
 <nav>
   <div class="wrap">
     <div class="logo">SBL Tracker</div>
-    <a class="nav-cta" href="#download">Download</a>
+    <div class="xmb-row">
+      <a class="xmb-item" data-target="overview" href="#overview">
+        <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11.5L12 4l9 7.5M5 10v10h5v-6h4v6h5V10"/></svg></span>
+        <span class="xmb-label">Overview</span>
+      </a>
+      <a class="xmb-item" data-target="principles" href="#principles">
+        <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <span class="xmb-label">Why</span>
+      </a>
+      <a class="xmb-item" data-target="smart" href="#smart">
+        <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
+        <span class="xmb-label">Features</span>
+      </a>
+      <a class="xmb-item" data-target="download" href="#download">
+        <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg></span>
+        <span class="xmb-label">Get it</span>
+      </a>
+    </div>
+    <a class="nav-cta" id="navCta" href="#download">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="14" height="14"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+      Download
+    </a>
   </div>
 </nav>
-
-<div class="xmb">
-  <div class="xmb-row">
-    <a class="xmb-item" data-target="overview" href="#overview">
-      <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11.5L12 4l9 7.5M5 10v10h5v-6h4v6h5V10"/></svg></span>
-      <span class="xmb-label">Overview</span>
-      <span class="xmb-dot"></span>
-    </a>
-    <a class="xmb-item" data-target="principles" href="#principles">
-      <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></span>
-      <span class="xmb-label">Why</span>
-      <span class="xmb-dot"></span>
-    </a>
-    <a class="xmb-item" data-target="smart" href="#smart">
-      <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
-      <span class="xmb-label">Features</span>
-      <span class="xmb-dot"></span>
-    </a>
-    <a class="xmb-item" data-target="download" href="#download">
-      <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg></span>
-      <span class="xmb-label">Get it</span>
-      <span class="xmb-dot"></span>
-    </a>
-  </div>
-</div>
 
 <header class="hero" id="overview">
   <div class="wrap">
@@ -422,7 +422,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
         Download for Android
       </a>
-      <a class="btn-secondary" href="https://sbltracker.pages.dev/app/" target="_blank" rel="noopener">
+      <a class="btn-secondary" href="https://asfwnd.github.io/SBL-Tracker-Releases/app/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
         Use in Browser / PWA for iOS
       </a>
@@ -433,7 +433,7 @@
 <section class="principles" id="principles">
   <div class="wrap">
     <div class="section-label reveal">Every second counts</div>
-    <h2 class="section-title reveal">Built for people who train, not people who post.</h2>
+    <h2 class="section-title reveal">Built for people who train seriously.</h2>
     <div class="grid3 reveal-stagger">
       <div class="card">
         <div class="stat-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
@@ -464,7 +464,6 @@
         <div class="feat-body">
           <h3>Rest timer starts itself</h3>
           <p>Enter a set's reps and the rest timer fires automatically. No tapping a separate start button between sets.</p>
-          <span class="feat-tag">Auto</span>
         </div>
       </div>
       <div class="feat-card" data-tilt>
@@ -472,7 +471,6 @@
         <div class="feat-body">
           <h3>Offline by default</h3>
           <p>No signal needed mid-workout. Every set logs to the phone instantly and syncs to the cloud on its own the next time you're online.</p>
-          <span class="feat-tag">Offline-first</span>
         </div>
       </div>
       <div class="feat-card" data-tilt>
@@ -480,7 +478,6 @@
         <div class="feat-body">
           <h3>Carries your last session</h3>
           <p>Weight and reps prefill from your previous session — per exercise, and per set. Toggle it off any time it's in the way.</p>
-          <span class="feat-tag">Toggleable</span>
         </div>
       </div>
       <div class="feat-card" data-tilt>
@@ -488,7 +485,6 @@
         <div class="feat-body">
           <h3>1RM, estimated as you go</h3>
           <p>Every logged set feeds an e1RM estimate for that lift, updated live so PRs surface the moment they happen.</p>
-          <span class="feat-tag">Live calc</span>
         </div>
       </div>
       <div class="feat-card" data-tilt>
@@ -496,7 +492,6 @@
         <div class="feat-body">
           <h3>Media, tied to the set</h3>
           <p>Attach a photo or clip to the exact set it belongs to — form checks and progress shots stay linked to the numbers.</p>
-          <span class="feat-tag">Per-set</span>
         </div>
       </div>
       <div class="feat-card" data-tilt>
@@ -504,7 +499,13 @@
         <div class="feat-body">
           <h3>Review from anywhere</h3>
           <p>Pull up any past workout on any device with just your username — no install, no local backup file required.</p>
-          <span class="feat-tag">Cloud</span>
+        </div>
+      </div>
+      <div class="feat-card" data-tilt style="grid-column: 1 / -1;">
+        <div class="feat-num">07</div>
+        <div class="feat-body">
+          <h3>Updates itself</h3>
+          <p>The app checks for new versions and installs them automatically — no chasing download links for every release.</p>
         </div>
       </div>
     </div>
@@ -513,12 +514,12 @@
 
 <section class="download" id="download">
   <div class="wrap">
-    <div class="section-label reveal">Every second counts</div>
+    <div class="section-label reveal">Start tracking now</div>
     <h2 class="section-title reveal">One file. No store, no fluff.</h2>
     <p class="reveal">Direct APK download. Android will warn about an unknown source the first install — that's expected for an app outside the Play Store.</p>
     <a class="btn-primary reveal" href="#" id="downloadLink" style="display:inline-flex;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
-      Download SBL Tracker (.apk)
+      Download SBL Tracker
     </a>
   </div>
 </section>
@@ -531,7 +532,9 @@
 </footer>
 
 <script>
-  document.getElementById('downloadLink').href = 'https://sbltracker.pages.dev/downloads/sbl-tracker.apk';
+  document.getElementById('downloadLink').href = 'https://asfwnd.github.io/SBL-Tracker-Releases/downloads/sbl-tracker.apk';
+
+  const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   // Scroll progress bar
   const bar = document.getElementById('scrollProgress');
@@ -554,41 +557,43 @@
   }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
   document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(el));
 
-  // Feature card cursor-follow glow
-  document.querySelectorAll('[data-tilt]').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
-      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  // Pointer-follow effects — desktop/fine-pointer only, skipped entirely on touch
+  if (isFinePointer) {
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+      });
     });
-  });
 
-  // Ambient cursor glow, lerped for smoothness
-  const glow = document.getElementById('cursorGlow');
-  let gx = window.innerWidth / 2, gy = window.innerHeight / 2, tx = gx, ty = gy;
-  let glowActive = false;
-  window.addEventListener('mousemove', (e) => {
-    tx = e.clientX; ty = e.clientY;
-    if (!glowActive) { glow.style.opacity = '1'; glowActive = true; }
-  });
-  function animateGlow() {
-    gx += (tx - gx) * 0.12;
-    gy += (ty - gy) * 0.12;
-    glow.style.transform = `translate3d(${gx}px, ${gy}px, 0) translate(-50%, -50%)`;
-    requestAnimationFrame(animateGlow);
+    const glow = document.getElementById('cursorGlow');
+    if (glow) {
+      let gx = window.innerWidth / 2, gy = window.innerHeight / 2, tx = gx, ty = gy;
+      let glowActive = false;
+      window.addEventListener('mousemove', (e) => {
+        tx = e.clientX; ty = e.clientY;
+        if (!glowActive) { glow.style.opacity = '1'; glowActive = true; }
+      });
+      function animateGlow() {
+        gx += (tx - gx) * 0.12;
+        gy += (ty - gy) * 0.12;
+        glow.style.transform = `translate3d(${gx}px, ${gy}px, 0) translate(-50%, -50%)`;
+        requestAnimationFrame(animateGlow);
+      }
+      animateGlow();
+    }
+
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = e.clientX - r.left - r.width / 2;
+        const y = e.clientY - r.top - r.height / 2;
+        el.style.transform = `translate(${x * 0.12}px, ${y * 0.22}px)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
   }
-  animateGlow();
-
-  // Magnetic buttons
-  document.querySelectorAll('.btn-primary, .btn-secondary').forEach(el => {
-    el.addEventListener('mousemove', (e) => {
-      const r = el.getBoundingClientRect();
-      const x = e.clientX - r.left - r.width / 2;
-      const y = e.clientY - r.top - r.height / 2;
-      el.style.transform = `translate(${x * 0.12}px, ${y * 0.22}px)`;
-    });
-    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
-  });
 
   // XMB-style section rail: click to jump, scroll to track
   const xmbItems = Array.from(document.querySelectorAll('.xmb-item'));
@@ -596,35 +601,58 @@
   const sections = sectionIds
     .map(id => document.getElementById(id))
     .filter(Boolean);
+  const STICKY_OFFSET = 64 + 16;
+  const navCta = document.getElementById('navCta');
 
   function setActive(id) {
     xmbItems.forEach(it => it.classList.toggle('active', it.dataset.target === id));
+    if (navCta) {
+      navCta.classList.toggle('visible', id === 'principles' || id === 'smart');
+    }
   }
 
-  // Explicit click handling so the rail always works, independent of the observer
   xmbItems.forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
       const target = document.getElementById(item.dataset.target);
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const y = target.getBoundingClientRect().top + window.scrollY - STICKY_OFFSET;
+        window.scrollTo({ top: y, behavior: 'smooth' });
         setActive(item.dataset.target);
       }
     });
   });
 
-  // Highlight the active item as the user scrolls
-  if ('IntersectionObserver' in window && sections.length) {
-    const sectionIO = new IntersectionObserver((entries) => {
-      const visible = entries.filter(e => e.isIntersecting);
-      if (visible.length) {
-        setActive(visible[0].target.id);
+  // Highlight the active item based on actual scroll position — deterministic,
+  // so it can never point at the wrong section for short/adjacent sections.
+  function updateActiveOnScroll() {
+    if (!sections.length) return;
+    let current = sections[0].id;
+    for (const sec of sections) {
+      if (sec.offsetTop - STICKY_OFFSET <= window.scrollY) {
+        current = sec.id;
       }
-    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
-    sections.forEach(s => sectionIO.observe(s));
+    }
+    // Short final sections can end before the page finishes scrolling —
+    // once we've hit the bottom of the page, force the last tab active.
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    if (atBottom) {
+      current = sections[sections.length - 1].id;
+    }
+    setActive(current);
   }
-
-  setActive('overview');
+  let scrollTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        updateActiveOnScroll();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }, { passive: true });
+  window.addEventListener('resize', updateActiveOnScroll);
+  updateActiveOnScroll();
 </script>
 
 </body>
