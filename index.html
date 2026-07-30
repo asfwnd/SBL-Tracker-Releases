@@ -71,7 +71,7 @@
   /* SCROLL PROGRESS BAR */
   /* SCROLL PROGRESS BAR */
   .scroll-progress {
-    position: fixed; top: 64px; left: 0; height: 2.5px; width: 0%;
+    position: fixed; top: var(--nav-h, 64px); left: 0; height: 2.5px; width: 0%;
     background: linear-gradient(90deg, var(--teal-dim), var(--teal), var(--teal-soft));
     box-shadow: 0 0 14px 1px var(--teal-glow);
     z-index: 15;
@@ -88,7 +88,11 @@
   @media (hover: hover) and (pointer: fine) {
     nav { background: rgba(7,16,15,0.78); backdrop-filter: blur(14px) saturate(140%); }
   }
-  nav .wrap { display: flex; align-items: center; gap: clamp(6px, 2.5vw, 20px); height: 64px; }
+  nav .wrap {
+    display: flex; align-items: center;
+    gap: clamp(6px, 2.5vw, 20px);
+    height: 64px;
+  }
   .logo { flex-shrink: 0; font-weight: 800; font-size: clamp(16px, 4.8vw, 25px); letter-spacing: 0.01em; color: var(--teal); text-shadow: 0 0 20px var(--teal-glow); white-space: nowrap; }
   .nav-cta {
     flex-shrink: 0;
@@ -113,14 +117,24 @@
   /* XMB-STYLE SECTION RAIL — sits between the logo and the download pill, same bar */
   .xmb-row {
     flex: 1;
+    min-width: 0;
     display: flex; align-items: center; justify-content: center; gap: clamp(4px, 5vw, 40px);
     height: 42px;
-    min-width: 0;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
   .xmb-row::-webkit-scrollbar { display: none; }
+
+  /* Below this width there isn't room for logo + rail + pill on one line.
+     Rail drops to its own full-width row so nothing gets squeezed or clipped;
+     logo and pill stay put on row 1, exactly where they normally are. */
+  @media (max-width: 640px) {
+    nav .wrap { flex-wrap: wrap; row-gap: 4px; height: auto; padding-block: 10px; }
+    .logo { order: 1; }
+    .nav-cta { order: 2; }
+    .xmb-row { order: 3; flex-basis: 100%; width: 100%; }
+  }
   .xmb-item {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 2px;
@@ -152,9 +166,10 @@
   .xmb-item.active .xmb-label { opacity: 1; transform: translateY(0); color: var(--teal); }
   .xmb-item.active { transform: translateY(-2px); }
 
-  /* anchor targets should land below the single sticky bar */
+  /* anchor targets should land below the sticky bar — actual height set via JS
+     into --nav-h, since the bar can be one or two rows depending on width */
   #overview, #principles, #smart, #download {
-    scroll-margin-top: 64px;
+    scroll-margin-top: var(--nav-h, 64px);
   }
 
   /* AMBIENT / AURORA BACKGROUND */
@@ -600,8 +615,26 @@
   const sections = sectionIds
     .map(id => document.getElementById(id))
     .filter(Boolean);
-  const STICKY_OFFSET = 64 + 16;
   const navCta = document.getElementById('navCta');
+
+  // Nav can be one row or two rows depending on viewport width (the section
+  // rail wraps below the logo/pill when it doesn't fit). Measure the real
+  // height instead of assuming a fixed 64px, so scroll offsets stay correct
+  // on any screen size.
+  const navEl = document.querySelector('nav');
+  let STICKY_OFFSET = 80;
+  function syncNavHeight() {
+    if (!navEl) return;
+    const h = navEl.offsetHeight;
+    document.documentElement.style.setProperty('--nav-h', h + 'px');
+    STICKY_OFFSET = h + 16;
+  }
+  syncNavHeight();
+  window.addEventListener('resize', syncNavHeight);
+  window.addEventListener('orientationchange', syncNavHeight);
+  if (window.ResizeObserver && navEl) {
+    new ResizeObserver(syncNavHeight).observe(navEl);
+  }
 
   function setActive(id) {
     xmbItems.forEach(it => it.classList.toggle('active', it.dataset.target === id));
