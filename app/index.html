@@ -555,7 +555,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.1.1';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -4186,8 +4186,9 @@ async function pullCloudWorkouts() {
         // instead of wiping it just because the numbers changed elsewhere.
         const localEx = existing && (existing.exercises || []).find(e => sameExName(e.name, s.exercise_name));
         const localSet = localEx && localEx.sets[s.set_index];
+        const repsFields = s.unilateral ? { repsL: s.reps_l, repsR: s.reps_r } : { reps: s.reps };
         exMap[s.exercise_name].sets.push({
-          weight: s.weight, reps: s.reps, repsL: s.reps_l, repsR: s.reps_r,
+          weight: s.weight, ...repsFields,
           rir: s.rir, rpe: s.rpe, rest: s.rest_seconds, media: (localSet && localSet.media) || []
         });
       });
