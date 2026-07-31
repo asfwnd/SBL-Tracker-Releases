@@ -555,7 +555,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.0.9';
+const APP_VERSION = '1.1.0';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -1813,6 +1813,7 @@ async function boot() {
   syncPendingDeletes();
   syncPendingAppState();
   ensureOnlineSyncListener();
+  ensureRealtimeSync();
   checkForAppUpdate();
   await pullCloudAppState(); // must finish before the onboarding check below —
                               // this is what lets a new device see the program
@@ -1843,6 +1844,8 @@ async function boot() {
   }
   draft = await loadJSON('draft', null);
   await autoFinishStaleDraft();
+  await loadHistory();
+  await recomputeBestLiftsFromHistory();
   screen = 'home'; render();
 }
 /* If a session was left open (never hit Finish Tracking) and the calendar
@@ -2509,24 +2512,32 @@ function exerciseStrengthTrend(name, currentEntryId) {
   if (prEst <= 0) return null;
   return ((curTop.est - prEst) / prEst) * 100;
 }
-/* Average estimated 1RM for an exercise across all other logged sessions
-   (this session excluded) — the baseline "overall performance" compares
-   against, as opposed to exerciseStrengthTrend's all-time-PR baseline. */
+/* Average estimated 1RM for an exercise across every set of every other
+   logged session (this session excluded) — the baseline "overall
+   performance" compares against, as opposed to exerciseStrengthTrend's
+   all-time-PR baseline. Averages over every individual set, not just each
+   session's single top set, so a 5-set session counts 5x and a 1-set
+   session counts 1x — true average output, not one cherry-picked number
+   per session. */
 function exerciseAverageEst(name, excludeEntryId) {
   let sum = 0, count = 0;
   historyEntries.forEach(session => {
     if (session.id === excludeEntryId) return;
     const ex = (session.exercises || []).find(e => sameExName(e.name, name));
     if (!ex) return;
-    const top = topSetByEst(ex.sets.filter(hasSetData));
-    if (top && top.est) { sum += top.est; count++; }
+    ex.sets.filter(hasSetData).forEach(s => {
+      const w = parseFloat(s.weight) || 0;
+      const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+      if (est) { sum += est; count++; }
+    });
   });
   return count > 0 ? sum / count : null;
 }
 /* Overall session performance: for each exercise, this session's top set
-   (by est. 1RM) is compared against that exercise's historical average top
-   set, giving a per-exercise % difference; those per-exercise percentages
-   are then averaged into one overall session number. */
+   (by est. 1RM) is compared against that exercise's historical average
+   across every set of every other session, giving a per-exercise %
+   difference; those per-exercise percentages are then averaged into one
+   overall session number. */
 function overallPerformancePct(entry) {
   const pcts = [];
   (entry.exercises || []).forEach(ex => {
@@ -3955,6 +3966,41 @@ function syncOnResumeIfDue() {
   pullCloudWorkouts();
   pullCloudAppState();
 }
+
+/* ---------- realtime cross-device sync ----------
+   The boot/resume polling above only catches up when THIS device wakes up
+   (relaunch, tab focus, throttled to once per 20s). That's not good enough
+   for "edit on phone, see it on browser within a few seconds while both
+   are sitting open" — nothing was ever pushing to an idle, already-open
+   device. Subscribes to Postgres changes on this account's own rows
+   (server-side filtered by user_id, so this can never receive another
+   account's events) and re-pulls the moment something changes anywhere
+   else. Debounced briefly since import/delete-all can fire many row
+   events in a burst — no reason to re-pull once per row. */
+let realtimeChannel = null;
+let realtimeDebounceTimer = null;
+function scheduleRealtimePull(kind) {
+  clearTimeout(realtimeDebounceTimer);
+  realtimeDebounceTimer = setTimeout(() => {
+    if (kind === 'appState') pullCloudAppState();
+    else pullCloudWorkouts();
+  }, 400);
+}
+function ensureRealtimeSync() {
+  if (!account) return;
+  if (realtimeChannel) { supabase.removeChannel(realtimeChannel); realtimeChannel = null; }
+  const uid = account.id;
+  realtimeChannel = supabase
+    .channel('cloud-sync:' + uid)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'workouts', filter: `user_id=eq.${uid}` }, () => scheduleRealtimePull('workouts'))
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'workout_sets', filter: `user_id=eq.${uid}` }, () => scheduleRealtimePull('workouts'))
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'deleted_workouts', filter: `user_id=eq.${uid}` }, () => scheduleRealtimePull('workouts'))
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'app_state', filter: `user_id=eq.${uid}` }, () => scheduleRealtimePull('appState'))
+    .subscribe();
+}
+function teardownRealtimeSync() {
+  if (realtimeChannel) { supabase.removeChannel(realtimeChannel); realtimeChannel = null; }
+}
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkRestCatchUp(); checkDayRolloverOnResume(); syncOnResumeIfDue(); } });
 try {
   if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
@@ -4174,7 +4220,7 @@ async function pullCloudWorkouts() {
       historyEntries = historyEntries.filter(e => e.id !== t.id);
       pulledAny = true;
     }
-    if (pulledAny) { await loadHistory(); render(); }
+    if (pulledAny) { await loadHistory(); await recomputeBestLiftsFromHistory(); render(); }
   } catch (e) {
     logClientError('pullCloudWorkouts', e);
   }
@@ -4262,6 +4308,29 @@ async function loadHistory() {
   } catch (e) {
     historyEntries = historyEntries || [];
   }
+}
+/* bestLifts (per-exercise all-time PR est. 1RM) used to be built ONLY
+   incrementally, one call per finished live session — so an imported
+   backup, or a fresh pull from another device, never touched it. Result:
+   right after importing months of real history, the very next session you
+   finish would show every exercise as a false "New PR" / "New exercise"
+   because bestLifts was still empty, even though the full history was
+   sitting right there in historyEntries. This derives bestLifts from
+   scratch off the actual historical data (every set, every session) —
+   independent of import order, sync order, or which device logged what. */
+async function recomputeBestLiftsFromHistory() {
+  const best = {};
+  historyEntries.forEach(entry => {
+    (entry.exercises || []).forEach(ex => {
+      const key = nameKey(ex.name);
+      (ex.sets || []).filter(hasSetData).forEach(s => {
+        const w = parseFloat(s.weight) || 0;
+        const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+        if (!best[key] || est > best[key]) best[key] = est;
+      });
+    });
+  });
+  await saveJSON('bestLifts', best);
 }
 function renderMediaItem(item) {
   const idx = mediaRegistry.push(item) - 1;
@@ -5086,6 +5155,7 @@ function renderSettings(root) {
   root.querySelector('#privacyRow').onclick = () => showLegalDoc('Privacy Policy', PRIVACY_HTML);
   root.querySelector('#backupBtn').onclick = () => goTo('settings-backup');
   root.querySelector('#logoutBtn').onclick = async () => {
+    teardownRealtimeSync();
     await supabase.auth.signOut();
     account = null;
     loggedIn = false;
@@ -5226,10 +5296,20 @@ function renderSettingsBackup(root) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       try {
         const dump = JSON.parse(ev.target.result);
         for (const k of Object.keys(dump)) { localStorage.setItem(k, dump[k]); }
+        // Force every restored workout to re-sync, regardless of what the
+        // source device's pendingSync/cloudMark state said — those are
+        // meaningless once this data lands under (possibly) a different
+        // account or a stale sync state. See comment above.
+        const restoredLogIds = Object.keys(dump).filter(k => k.startsWith('log:')).map(k => k.slice(4));
+        if (restoredLogIds.length) {
+          const pending = await loadJSON('pendingSync', []);
+          const merged = Array.from(new Set([...pending, ...restoredLogIds]));
+          await saveJSON('pendingSync', merged);
+        }
         showToast('Restored — reloading');
         setTimeout(() => boot(), 800);
       } catch (err) { showToast('Invalid backup file'); }
