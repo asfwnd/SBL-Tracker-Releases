@@ -555,7 +555,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.1';
+const APP_VERSION = '1.1.2';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -4394,10 +4394,11 @@ function fmtRestShort(secs) {
    optional fields (a user only has to enter one), so both are shown only
    when present. Rest duration is intentionally never shown here. */
 function formatSetLine(s) {
+  const nz = (v) => (v === undefined || v === null || v === '') ? '?' : v;
   const repsTxt = (s.repsR !== undefined || s.repsL !== undefined)
-    ? `R${s.repsR||'?'} / L${s.repsL||'?'}`
-    : (s.reps || '?');
-  const parts = [`${s.weight||'?'} ${settings.units} × ${repsTxt}`];
+    ? `R${nz(s.repsR)} / L${nz(s.repsL)}`
+    : nz(s.reps);
+  const parts = [`${nz(s.weight)} ${settings.units} × ${repsTxt}`];
   const effort = [];
   if (s.rir !== '' && s.rir !== undefined && s.rir !== null) effort.push(`${s.rir} RIR`);
   if (s.rpe !== '' && s.rpe !== undefined && s.rpe !== null) effort.push(`${s.rpe} RPE`);
@@ -5300,6 +5301,30 @@ function renderSettingsBackup(root) {
     reader.onload = async (ev) => {
       try {
         const dump = JSON.parse(ev.target.result);
+
+        // Before writing the new dump, find any EXISTING local logs that
+        // share a date+day with something we're about to import, and drop
+        // just the old local copy — no cloud delete, no tombstone, purely
+        // local housekeeping so re-imports don't pile up as duplicates.
+        const incomingByKey = {};
+        for (const k of Object.keys(dump)) {
+          if (!k.startsWith('log:')) continue;
+          try {
+            const incoming = JSON.parse(dump[k]);
+            incomingByKey[incoming.date + '|' + incoming.day] = incoming.id;
+          } catch (e) {}
+        }
+        for (const existingKey of listKeys('log:')) {
+          const existing = await loadJSON(existingKey, null);
+          if (!existing) continue;
+          const gkey = existing.date + '|' + existing.day;
+          const incomingId = incomingByKey[gkey];
+          if (incomingId && incomingId !== existing.id) {
+            deleteKey('log:' + existing.id);
+            deleteKey('cloudMark:' + existing.id);
+          }
+        }
+
         for (const k of Object.keys(dump)) { localStorage.setItem(k, dump[k]); }
         // Force every restored workout to re-sync, regardless of what the
         // source device's pendingSync/cloudMark state said — those are
