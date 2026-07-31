@@ -555,7 +555,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.2';
+const APP_VERSION = '1.1.3';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -1960,6 +1960,14 @@ function render() {
   mediaRegistry = [];
   if (_mediaHydrateObserver) _mediaHydrateObserver.disconnect();
   const app = document.getElementById('app');
+  const isScreenChange = screen !== lastRenderedScreen;
+  // Wiping and rebuilding #app (below) briefly makes the document much
+  // shorter, and the browser clamps window.scrollY down to fit during that
+  // instant. On a genuine navigation we want top-of-page anyway, but on a
+  // same-screen re-render (background sync landing, a timer tick, etc.)
+  // that clamp is pure DOM-diffing noise — remember where we were and put
+  // it back once the full content is back in the tree.
+  const prevScrollY = isScreenChange ? 0 : window.scrollY;
   app.innerHTML = '';
   const wrap = document.createElement('div');
   const anim = pendingAnim;
@@ -2003,7 +2011,8 @@ function render() {
   // (toggling units, adding a set, etc.) must NOT be affected, or the page
   // would jump to the top mid-interaction, so this only fires on an actual
   // screen change.
-  if (screen !== lastRenderedScreen) window.scrollTo(0, 0);
+  if (isScreenChange) window.scrollTo(0, 0);
+  else window.scrollTo(0, prevScrollY);
   lastRenderedScreen = screen;
   updateRestWidgetVisibility();
 }
