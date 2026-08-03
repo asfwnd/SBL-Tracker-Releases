@@ -481,16 +481,24 @@
      other high-emphasis action button. Extra clearance beyond the raw
      safe-area inset is added on top of env() since Android's gesture-nav
      bar / status bar aren't always reflected accurately by env() alone. */
-  #hotbar { position: fixed; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px;
+  #hotbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px;
     box-sizing: border-box; padding: 0 18px; z-index: 220; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
   #hotbar.hb-pos-top { top: calc(env(safe-area-inset-top, 0px) + 18px); }
   #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); }
-  .hb-pill { display: flex; align-items: stretch; background: var(--teal); border-radius: 10px; height: 46px;
+  .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
-  .hb-btn { flex: 1; display: flex; align-items: center; justify-content: center; background: none; border: none;
-    color: var(--teal-ink); font-size: 13.5px; font-weight: 800; cursor: pointer; font-family: inherit;
-    letter-spacing: 0.02em; text-transform: capitalize; line-height: 1; padding: 0 14px; }
+  .hb-btn { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
+    background: var(--teal); border: none; color: var(--teal-ink); font-size: 13.5px; font-weight: 800;
+    cursor: pointer; font-family: inherit; letter-spacing: 0.02em; text-transform: capitalize; line-height: 1;
+    padding: 0 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* Divider between hotbar buttons — only shows when there's more than
+     one (.hb-single has just one child, so this never matches then).
+     Painted as an inset box-shadow rather than border-left: whichever
+     button ends up second after a drag-reorder swap still gets a crisp
+     divider instead of it occasionally painting as an unstyled/blown-out
+     edge. Same border color as widget outlines for visual consistency. */
+  .hb-btn:not(:first-child) { box-shadow: inset 1px 0 0 var(--border); }
   .hb-btn:active { transform: scale(0.96); transition: transform .14s var(--ease-press); }
   .hb-btn.hb-running { font-variant-numeric: tabular-nums; }
   /* A single enabled item fills the whole pill and reads bigger, instead
@@ -515,7 +523,7 @@
   #hbWidgets.hb-hidden { display: none !important; }
   #hbWidgets:empty { display: none; }
   .hb-widget-btn { width: 52px; height: 52px; border-radius: 16px; background: var(--teal); color: var(--teal-ink);
-    border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer;
     box-shadow: 0 6px 20px -8px var(--teal-glow); font-family: inherit; font-weight: 800; font-size: 12.5px; }
   .hb-widget-btn:active { transform: scale(0.9); transition: transform .14s var(--ease-press); }
   .hb-widget-btn svg { width: 24px; height: 24px; }
@@ -526,29 +534,29 @@
     animation: fadeIn 0.22s var(--ease-glide); }
   .notes-panel { position: fixed; box-sizing: border-box; z-index: 226;
     animation: rwPanelIn .26s var(--ease-glide); }
-  .notes-card { background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
+  .notes-card { background: var(--panel); border-radius: 18px;
     box-shadow: 0 14px 40px -10px rgba(0,0,0,0.55); display: flex; flex-direction: column;
-    max-height: min(560px, 70vh); overflow: hidden; }
+    max-height: min(840px, 105vh); overflow: hidden; }
   .notes-tabs { display: flex; align-items: center; gap: 6px; padding: 10px 10px 0; overflow-x: auto;
     flex-shrink: 0; }
-  .notes-tab { flex-shrink: 0; max-width: 140px; background: var(--panel-2); border: 1px solid var(--border);
+  .notes-tab { flex-shrink: 0; max-width: 140px; background: var(--panel-2); border: none;
     color: var(--text-dim); font-size: 13px; font-weight: 700; padding: 9px 12px; border-radius: 11px 11px 0 0;
     cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .notes-tab.active { background: var(--panel); color: var(--teal); border-bottom-color: var(--panel); }
+  .notes-tab.active { background: var(--panel); color: var(--teal); }
   .notes-tab-add { flex-shrink: 0; background: none; border: none; color: var(--teal); font-size: 20px;
     font-weight: 700; width: 34px; height: 34px; cursor: pointer; }
-  .notes-body { padding: 14px 16px calc(16px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; }
+  .notes-body { padding: 14px 16px calc(16px + env(safe-area-inset-bottom));
+    display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; overscroll-behavior: contain; }
   .notes-title-row { display: flex; align-items: center; gap: 8px; }
-  .notes-title-input { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+  .notes-title-input { flex: 1; background: var(--panel-2); border: none; color: var(--text);
     padding: 10px 12px; border-radius: 10px; font-size: 14.5px; font-weight: 700; font-family: inherit; }
   .notes-delete-btn { flex-shrink: 0; background: none; border: none; color: var(--danger);
     display: flex; align-items: center; justify-content: center; padding: 8px 10px; cursor: pointer; }
   .notes-delete-btn svg { width: 18px; height: 18px; }
-  .notes-textarea { width: 100%; min-height: 220px; flex: 1; resize: vertical; background: var(--panel-2);
-    border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 12px; font-size: 15px;
-    line-height: 1.5; font-family: inherit; }
-  .notes-textarea:focus { outline: none; border-color: var(--border); }
+  .notes-textarea { width: 100%; min-height: 330px; flex: 1; resize: vertical; background: var(--panel-2);
+    border: none; color: var(--text); padding: 12px; border-radius: 12px; font-size: 13px;
+    line-height: 1.5; font-family: inherit; overscroll-behavior: contain; }
+  .notes-textarea:focus { outline: none; }
   .notes-save-state { font-size: 11.5px; color: var(--text-dim); text-align: right; height: 14px; }
   .notes-empty { text-align: center; padding: 28px 10px; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
   .notes-empty button { margin-top: 14px; }
@@ -654,7 +662,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.4';
+const APP_VERSION = '1.1.5';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -1857,7 +1865,7 @@ let account = null, loggedIn = false;
 let programType = null, programDays = [];
 let allExSortMode = 'az'; // 'az' | 'recent' | 'sets' | 'volume'
 let exercisesByDay = {};
-let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170 };
+let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, hotbarOrder: ['timer', 'notes'] };
 
 /* ---------- accent color palette (Settings > Appearance) ----------
    Only the hue shifts; saturation/lightness stay put, so every preset keeps
@@ -1928,6 +1936,8 @@ let restPaused = false, restDuration = 120;
 let rwOpen = false;
 let rwPanelEl = null;
 let hbTimerBtn = null, hbNotesBtn = null;
+let hbSuppressClick = false;
+let hbPressTimer = null, hbPressStartX = 0, hbPressStartY = 0;
 let notes = [], activeNoteId = null;
 let notesOpen = false, notesOverlayEl = null, notesPanelEl = null;
 let notesSaveDebounce = null;
@@ -2001,7 +2011,7 @@ async function boot() {
   programDays = await loadJSON('programDays', []);
   exercisesByDay = normalizeExercisesByDay(await loadJSON('exercisesByDay', {}));
   await saveJSON('exercisesByDay', exercisesByDay);
-  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170 });
+  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, hotbarOrder: ['timer', 'notes'] });
   if (settings.accentHue === undefined) settings.accentHue = 170;
   applyAccentHue(settings.accentHue);
   if (settings.alarmSound === undefined) settings.alarmSound = 'default';
@@ -2017,6 +2027,7 @@ async function boot() {
   if (settings.notesEnabled === undefined) settings.notesEnabled = true;
   if (settings.timerDisplay === undefined) settings.timerDisplay = 'hotbar';
   if (settings.notesDisplay === undefined) settings.notesDisplay = 'hotbar';
+  if (!Array.isArray(settings.hotbarOrder) || settings.hotbarOrder.length !== 2) settings.hotbarOrder = ['timer', 'notes'];
   exerciseUnits = await loadJSON('exerciseUnits', {});
   notes = await loadJSON('notes', []);
   if (!activeNoteId && notes.length) activeNoteId = notes[0].id;
@@ -5855,12 +5866,16 @@ function rwRenderPanel() {
     rwMode = 'timer';
     saveJSON('rwMode', rwMode);
     rwRenderPanel();
+    rwPositionPanel();
+    updateHotbarTimerLabel();
   };
   rwPanelEl.querySelector('#rwModeStopwatchBtn').onclick = () => {
     if (rwMode === 'stopwatch') return;
     rwMode = 'stopwatch';
     saveJSON('rwMode', rwMode);
     rwRenderPanel();
+    rwPositionPanel();
+    updateHotbarTimerLabel();
   };
 }
 
@@ -5871,7 +5886,9 @@ function rwRenderPanel() {
 function rwPositionPanel() {
   if (!rwPanelEl || !hbTimerBtn) return;
   const w = window.innerWidth, h = window.innerHeight;
-  const panelW = 220, panelH = 300;
+  const panelW = 220;
+  const measuredH = rwPanelEl.offsetHeight;
+  const panelH = measuredH > 0 ? measuredH : 300;
   const btnRect = hbTimerBtn.getBoundingClientRect();
   let left = btnRect.right - panelW;
   if (left < 8) left = 8;
@@ -5970,6 +5987,101 @@ function hotbarWillHaveContent(s) {
 function initHotbar() {
   refreshHotbarLayout();
   updateHotbarVisibility();
+  initHotbarReorder();
+}
+
+/* Drag a hotbar button left/right to swap Timer/Notes positions — same
+   live pointer-follow approach as the vertical exercise-list drag in
+   makeReorderable(), just measured horizontally across exactly two slots.
+   Arms instantly on pointerdown (no hold delay, matching the exercise
+   drag's handle-starts-immediately feel) and only engages once real
+   movement (MOVE_CANCEL_PX) is seen, so an ordinary tap still opens
+   Timer/Notes normally. The swap previews continuously as the finger
+   crosses back and forth (hysteresis band, not a one-shot threshold) so
+   it can be flipped multiple times within a single press instead of
+   needing to release and re-press for each swap. Uses pointer-event
+   delegation on #hotbar itself rather than rebinding per button, since
+   refreshHotbarLayout recreates the buttons on every settings change. */
+function initHotbarReorder() {
+  const hotbar = document.getElementById('hotbar');
+  if (!hotbar) return;
+  const MOVE_CANCEL_PX = 6;
+  let armed = false, dragging = false, pointerId = null;
+  let dragBtn = null, otherBtn = null, otherW = 0, baseOffset = 0, curSwapped = false;
+
+  hotbar.addEventListener('pointerdown', (e) => {
+    const btn = e.target.closest('.hb-btn');
+    const pill = btn && btn.closest('.hb-pill');
+    if (!btn || !pill || pill.children.length < 2) return;
+    hbPressStartX = e.clientX; hbPressStartY = e.clientY;
+    dragging = false; curSwapped = false;
+    pointerId = e.pointerId;
+    armed = true;
+    dragBtn = btn;
+    otherBtn = Array.from(pill.children).find(c => c !== btn);
+    otherW = otherBtn.getBoundingClientRect().width;
+    // Signed distance dragBtn must travel to land in otherBtn's slot —
+    // same "how far to slide" idea as rowSpacing in the vertical drag.
+    baseOffset = (dragBtn.compareDocumentPosition(otherBtn) & Node.DOCUMENT_POSITION_FOLLOWING) ? otherW : -otherW;
+  });
+
+  hotbar.addEventListener('pointermove', (e) => {
+    if (pointerId === null || e.pointerId !== pointerId) return;
+    const dx = e.clientX - hbPressStartX, dy = e.clientY - hbPressStartY;
+    if (!armed) return;
+    if (!dragging) {
+      // Wait for real movement before engaging — an ordinary tap has near-
+      // zero delta, and this keeps a small vertical scroll from being
+      // mistaken for a reorder drag.
+      if (Math.abs(dx) < MOVE_CANCEL_PX && Math.abs(dy) < MOVE_CANCEL_PX) return;
+      if (Math.abs(dy) > Math.abs(dx)) { armed = false; return; }
+      dragging = true;
+      hbSuppressClick = true;
+      try { dragBtn.setPointerCapture(pointerId); } catch (err) {}
+      dragBtn.style.position = 'relative';
+      dragBtn.style.zIndex = '2';
+      dragBtn.style.transition = 'none';
+      otherBtn.style.transition = 'transform 0.22s var(--ease-glide)';
+    }
+    dragBtn.style.transform = `translateX(${dx}px) scale(1.03)`;
+    // Different thresholds going forward vs. back (hysteresis) so it
+    // doesn't flicker right at the crossing point, while still letting
+    // the same hold swap and un-swap as many times as the finger crosses.
+    const wantSwap = curSwapped
+      ? Math.abs(dx) > Math.abs(baseOffset) * 0.35
+      : Math.abs(dx) > Math.abs(baseOffset) * 0.65;
+    if (wantSwap !== curSwapped) {
+      curSwapped = wantSwap;
+      otherBtn.style.transform = curSwapped ? `translateX(${-baseOffset}px)` : '';
+      try { if (navigator.vibrate) navigator.vibrate(8); } catch (err) {}
+    }
+  });
+
+  function endDrag() {
+    if (!dragging) { armed = false; pointerId = null; return; }
+    dragging = false; armed = false;
+    try { dragBtn.releasePointerCapture(pointerId); } catch (err) {}
+    pointerId = null;
+    if (curSwapped) {
+      const order = settings.hotbarOrder;
+      settings.hotbarOrder = [order[1], order[0]];
+      saveJSON('settings', settings);
+    }
+    // Clear the drag inline styles before refreshHotbarLayout rebuilds the
+    // buttons in their (possibly newly-committed) order, so the fresh
+    // elements don't inherit a stray transform/position.
+    [dragBtn, otherBtn].forEach(el => {
+      el.style.transition = ''; el.style.transform = ''; el.style.position = ''; el.style.zIndex = '';
+    });
+    refreshHotbarLayout();
+    // Safety net: if the DOM under the finger gets swapped mid-touch, the
+    // browser sometimes never delivers a matching click to consume this
+    // flag — left stuck true it would silently eat the very next real tap.
+    setTimeout(() => { hbSuppressClick = false; }, 400);
+    dragBtn = null; otherBtn = null; curSwapped = false;
+  }
+
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => hotbar.addEventListener(evt, endDrag));
 }
 
 /* Rebuilds the hotbar pill (0/1/2 items — a single item fills the whole
@@ -5988,7 +6100,12 @@ function refreshHotbarLayout() {
   const timerWidget = timerOn && settings.timerDisplay === 'widget';
   const notesWidget = notesOn && settings.notesDisplay === 'widget';
 
-  const barItems = (timerOnBar ? 1 : 0) + (notesOnBar ? 1 : 0);
+  const barSlots = [
+    { key: 'timer', on: timerOnBar, html: `<button class="hb-btn" id="hbTimerBtn" data-hb-key="timer" aria-label="Timer">Timer</button>` },
+    { key: 'notes', on: notesOnBar, html: `<button class="hb-btn" id="hbNotesBtn" data-hb-key="notes" aria-label="Notes">Notes</button>` }
+  ].sort((a, b) => settings.hotbarOrder.indexOf(a.key) - settings.hotbarOrder.indexOf(b.key));
+  const barItemsList = barSlots.filter(item => item.on);
+  const barItems = barItemsList.length;
   if (barItems === 0) {
     hotbar.innerHTML = '';
     hotbar.classList.add('hb-empty');
@@ -5996,8 +6113,7 @@ function refreshHotbarLayout() {
     hotbar.classList.remove('hb-empty');
     hotbar.innerHTML = `
       <div class="hb-pill ${barItems === 1 ? 'hb-single' : ''}">
-        ${timerOnBar ? `<button class="hb-btn" id="hbTimerBtn" aria-label="Timer">Timer</button>` : ''}
-        ${notesOnBar ? `<button class="hb-btn" id="hbNotesBtn" aria-label="Notes">Notes</button>` : ''}
+        ${barItemsList.map(item => item.html).join('')}
       </div>`;
   }
 
@@ -6009,10 +6125,12 @@ function refreshHotbarLayout() {
   hbTimerBtn = document.getElementById('hbTimerBtn') || document.getElementById('hbTimerWidgetBtn') || null;
   hbNotesBtn = document.getElementById('hbNotesBtn') || document.getElementById('hbNotesWidgetBtn') || null;
   if (hbTimerBtn) hbTimerBtn.onclick = () => {
+    if (hbSuppressClick) { hbSuppressClick = false; return; }
     ensureAudioCtx();
     if (rwOpen) rwClosePanel(); else rwOpenPanel();
   };
   if (hbNotesBtn) hbNotesBtn.onclick = () => {
+    if (hbSuppressClick) { hbSuppressClick = false; return; }
     if (notesOpen) closeNotesPanel(); else openNotesPanel();
   };
   // If a feature just got turned off (or switched away from its current
@@ -6034,7 +6152,7 @@ function updateHotbarTimerLabel() {
     if (hbTimerBtn.id === 'hbTimerWidgetBtn') {
       hbTimerBtn.innerHTML = label || HB_TIMER_ICON_SVG;
     } else {
-      hbTimerBtn.textContent = label || 'Timer';
+      hbTimerBtn.textContent = label || (rwMode === 'stopwatch' ? 'Stopwatch' : 'Timer');
     }
     hbTimerBtn.classList.toggle('hb-running', !!label);
   }
@@ -6097,8 +6215,12 @@ function positionNotesPanel() {
   if (!notesPanelEl || !hbNotesBtn) return;
   const rect = hbNotesBtn.getBoundingClientRect();
   const w = window.innerWidth, h = window.innerHeight;
-  const panelW = Math.min(340, w - 16);
-  const panelH = Math.min(520, h * 0.72);
+  const panelW = Math.min(376, w - 16);
+  // Once the panel has content, anchor using its real rendered height
+  // instead of the rough estimate — a short note list shouldn't reserve
+  // room (and get pushed further from the button) as if it were tall.
+  const measuredH = notesPanelEl.offsetHeight;
+  const panelH = measuredH > 0 ? measuredH : Math.min(780, h * 1.0);
   let left = rect.right - panelW;
   if (left < 8) left = 8;
   if (left + panelW > w - 8) left = w - panelW - 8;
@@ -6117,10 +6239,11 @@ function openNotesPanel() {
   notesOverlayEl.onclick = () => closeNotesPanel();
   notesPanelEl = document.createElement('div');
   notesPanelEl.className = 'notes-panel';
-  positionNotesPanel();
   document.getElementById('notesRoot').appendChild(notesOverlayEl);
   document.getElementById('notesRoot').appendChild(notesPanelEl);
+  positionNotesPanel();
   renderNotesPanel();
+  positionNotesPanel();
 }
 
 function closeNotesPanel() {
