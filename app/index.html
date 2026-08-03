@@ -6,9 +6,17 @@
 <title>SBL Tracker</title>
 <style>
   :root {
-    --bg: #0a0f0f; --panel: #10181a; --panel-2: #141f21; --border: #1e2c2d; --btn-bg: transparent;
-    --teal: #14f0cc; --teal-dim: #159685; --teal-glow: rgba(20,240,204,0.5);
-    --text: #e4efed; --text-dim: #6e8886; --amber: #e0a860; --danger: #e5484d; --danger-glow: rgba(229,72,77,0.5);
+    /* --hue drives the whole accent palette — everything below is derived from
+       it with fixed offsets/sat/light, so changing --hue alone re-themes the
+       teal accent AND the near-black background tint together (see settings'
+       accentHue + applyAccentHue()). 170 reproduces the original teal exactly. */
+    --hue: 170;
+    --bg: hsl(calc(var(--hue) + 10), 20%, 5%); --panel: hsl(calc(var(--hue) + 22), 24%, 8%); --panel-2: hsl(calc(var(--hue) + 19), 25%, 10%); --border: hsl(calc(var(--hue) + 14), 20%, 15%); --btn-bg: transparent;
+    --teal: hsl(var(--hue), 88%, 51%); --teal-dim: hsl(calc(var(--hue) + 2), 75%, 34%); --teal-glow: hsla(var(--hue), 88%, 51%, 0.5);
+    --teal-a08: hsla(var(--hue), 88%, 51%, 0.08); --teal-a14: hsla(var(--hue), 88%, 51%, 0.14); --teal-a16: hsla(var(--hue), 88%, 51%, 0.16);
+    --teal-ink: hsl(calc(var(--hue) + 1), 68%, 7%); --teal-ink-a18: hsla(calc(var(--hue) + 1), 68%, 7%, 0.18); --teal-ink-a0: hsla(calc(var(--hue) + 1), 68%, 7%, 0);
+    --input-bg: hsl(calc(var(--hue) + 6), 67%, 5%); --muted: hsl(calc(var(--hue) + 4), 15%, 28%);
+    --text: #e4efed; --text-dim: hsl(calc(var(--hue) + 5), 11%, 48%); --amber: #e0a860; --danger: #e5484d; --danger-glow: rgba(229,72,77,0.5);
     --gold: #ffcf5c; --gold-glow: rgba(255,207,92,0.5); --blue: #7ab8f5; --blue-glow: rgba(122,184,245,0.4);
     --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -28,7 +36,7 @@
     overflow-x: hidden;
   }
   .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; }
-  ::placeholder { color: #3d5250; }
+  ::placeholder { color: var(--muted); }
   #app { max-width: 480px; margin: 0 auto; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column;
     padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
   #app * { min-width: 0; }
@@ -72,9 +80,15 @@
   .progress-card .pc-arrow { color: var(--text-dim); font-size: 17px; }
   .progress-help { font-size: 12.5px; color: var(--text-dim); margin: -4px 0 12px; line-height: 1.45; }
   .badge { font-family: "SF Mono", ui-monospace, monospace; font-size: 12.5px; font-weight: 700; padding: 3px 8px; border-radius: 9px; white-space: nowrap; }
-  .badge.up { color: var(--teal); background: rgba(20,240,204,0.16); box-shadow: 0 0 10px -4px var(--teal-glow); }
+  .badge.up { color: var(--teal); background: var(--teal-a16); box-shadow: 0 0 10px -4px var(--teal-glow); }
   .badge.down { color: var(--danger); background: rgba(229,72,77,0.14); }
   .badge.flat { color: var(--text-dim); background: var(--panel-2); }
+
+  .palette-grid { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 4px; }
+  .palette-swatch { width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
+  .palette-swatch.selected { border-color: var(--text); }
+  .palette-swatch svg { width: 20px; height: 20px; color: #0a0f0f; filter: drop-shadow(0 0 2px rgba(255,255,255,0.5)); }
 
   .section-header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 26px; }
   .section-header-row h1.big { margin: 0; }
@@ -89,7 +103,7 @@
 
   .btn-media { width: 100%; background: var(--panel); border: 1.75px solid var(--border); color: var(--text-dim);
     padding: 14px; border-radius: 13px; font-size: 14px; cursor: pointer; margin-top: 14px; font-weight: 600; }
-  .btn-media:active { border-color: #3d5250; transform: scale(0.955); }
+  .btn-media:active { border-color: var(--muted); transform: scale(0.955); }
 
   .media-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
   .media-thumb { position: relative; width: 76px; height: 76px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--panel-2); }
@@ -130,7 +144,7 @@
   input:focus, select:focus, textarea:focus { outline: none; border-color: var(--border); }
 
   .btn-primary {
-    width: 100%; height: 54px; background: var(--teal); color: #06201c; border: none; padding: 0 16px;
+    width: 100%; height: 54px; background: var(--teal); color: var(--teal-ink); border: none; padding: 0 16px;
     border-radius: 13px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 14px;
     box-shadow: 0 6px 22px -8px var(--teal-glow); display: flex; align-items: center; justify-content: center;
   }
@@ -142,27 +156,32 @@
   }
   .btn-danger { color: var(--danger); border-color: var(--border); box-shadow: none; }
   .btn-tertiary {
-    width: 100%; background: rgba(20,240,204,0.08); border: 1.75px solid var(--border); color: var(--teal);
+    width: 100%; background: var(--teal-a08); border: 1.75px solid var(--border); color: var(--teal);
     padding: 14px; border-radius: 13px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px;
     display: flex; align-items: center; justify-content: center; gap: 9px;
     transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), background-color .38s var(--ease-glide);
   }
   .btn-tertiary svg { width: 17px; height: 17px; flex-shrink: 0; }
-  .btn-tertiary:active { transform: scale(0.965); background: rgba(20,240,204,0.16); transition: transform .14s var(--ease-press), background-color .14s var(--ease-press); }
+  .btn-tertiary:active { transform: scale(0.965); background: var(--teal-a16); transition: transform .14s var(--ease-press), background-color .14s var(--ease-press); }
   .link-quiet { display: block; text-align: center; margin-top: 20px; color: var(--text-dim); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
   .update-banner { background: var(--teal); border-radius: 14px; padding: 14px 16px; margin: 0 0 14px 0;
     box-shadow: 0 6px 22px -8px var(--teal-glow); }
-  .update-banner-text { color: #06201c; font-size: 14.5px; font-weight: 800; text-align: center; margin-bottom: 11px; line-height: 1.3; }
+  .update-banner-text { color: var(--teal-ink); font-size: 14.5px; font-weight: 800; text-align: center; margin-bottom: 11px; line-height: 1.3; }
   .update-banner-actions { display: flex; gap: 10px; }
   .update-banner-btn { flex: 1; border: none; border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 800; cursor: pointer; }
-  .update-banner-btn.yes { background: #06201c; color: var(--teal); }
-  .update-banner-btn.later { background: rgba(6,32,28,0.18); color: #06201c; }
+  .update-banner-btn.yes { background: var(--teal-ink); color: var(--teal); }
+  .update-banner-btn.later { background: var(--teal-ink-a18); color: var(--teal-ink); }
   .update-banner-btn:active { transform: scale(0.965); transition: transform .14s var(--ease-press); }
+  .sync-spinner { width: 20px; height: 20px; margin: 2px auto 0; border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--teal-ink-a0) 0%, var(--teal-ink) 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+    animation: spin 0.85s linear infinite; }
 
   .chip-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 6px; }
   .chip { padding: 15px 20px; border-radius: 14px; border: 1.75px solid var(--border); background: var(--panel); color: var(--teal); font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: none; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), color .38s var(--ease-glide), background-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide); }
   .chip:active { border-color: var(--border); transform: scale(0.91); transition: transform .14s var(--ease-press), border-color .14s var(--ease-press); }
-  .chip.selected { border-color: var(--border); color: var(--teal); background: rgba(20,240,204,0.16); box-shadow: none; }
+  .chip.selected { border-color: var(--border); color: var(--teal); background: var(--teal-a16); box-shadow: none; }
   .chip.previewing, .list-item.previewing { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal-glow); }
   .preview-ind { display: inline-block; font-size: 11px; opacity: 0.75; letter-spacing: 0; margin-left: 2px; }
   .chip.wide { width: 100%; text-align: center; }
@@ -172,31 +191,32 @@
     touch-action: manipulation;
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     width: 100%; text-align: left; border: none; cursor: pointer;
-    background: var(--teal); color: #06201c;
+    background: var(--teal); color: var(--teal-ink);
     padding: 18px 18px; border-radius: 14px; margin-bottom: 14px;
-    font-size: 16px; font-weight: 700;
+    font-size: 16px; font-weight: 700; line-height: 1;
     box-shadow: 0 6px 20px -8px var(--teal-glow);
     transition: transform .48s var(--ease-bounce), box-shadow .42s var(--ease-glide), opacity .38s var(--ease-glide);
   }
   .select-btn:active { transform: scale(0.925); box-shadow: 0 3px 14px -6px var(--teal-glow); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }
-  .select-btn .sb-name { display: flex; align-items: center; gap: 10px; }
-  .select-btn .sb-arrow { font-size: 20px; font-weight: 800; line-height: 1; flex-shrink: 0; }
-  .select-btn .li-check { color: #06201c; font-size: 16px; }
+  .select-btn .sb-name { display: flex; align-items: center; gap: 10px; line-height: 1; }
+  .select-btn .sb-arrow { font-size: 20px; font-weight: 800; line-height: 1; flex-shrink: 0; align-self: center; }
+  .select-btn .li-check { color: var(--teal-ink); font-size: 16px; }
   .select-btn.ex-pick { background: var(--panel); color: var(--teal); border: 1.75px solid var(--border); box-shadow: none; padding: 12px 16px; margin-bottom: 8px; font-size: 15px; }
   .select-btn.ex-pick:active { box-shadow: none; }
   .select-btn.ex-pick .li-check { color: var(--teal); }
   .select-btn .li-progress-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; animation: pulseDot 1.1s ease-in-out infinite; }
   @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 
-  .list-item { touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 15px 16px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; margin-bottom: 15px; cursor: pointer; box-shadow: none; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide), background-color .38s var(--ease-glide); }
+  .list-item { touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 15px 16px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; margin-bottom: 15px; cursor: pointer; box-shadow: none; line-height: 1; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide), background-color .38s var(--ease-glide); }
   #exerciseDayList .list-item { margin-bottom: 9px; }
   .list-item:not(.static):not(.dragging):active { transform: scale(0.955); transition: transform .14s var(--ease-press); }
   .list-item.static { border-color: var(--border); box-shadow: none; cursor: default; }
-  .list-item .li-name { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+  .list-item .li-name { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; line-height: 1.25; align-self: center; }
   .list-item:not(.static) .li-name { color: var(--teal); }
   .list-item .li-check { color: var(--teal); font-size: 16px; }
   .list-item .li-meta { font-size: 12.5px; color: var(--text-dim); margin-top: 3px; }
   .list-item .li-right { display: flex; gap: 10px; align-items: center; color: var(--text-dim); flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+  .list-item .li-right > * { align-self: center; line-height: 1; }
   .drag-handle { background: none; border: none; color: var(--text-dim); cursor: grab; padding: 6px 10px 6px 0; margin-right: 2px; display: flex; align-items: center; justify-content: center; touch-action: none; flex-shrink: 0; transition: color .38s var(--ease-glide), transform .48s var(--ease-bounce); }
   .drag-handle:active { cursor: grabbing; color: var(--teal); transform: scale(1.225); transition: color .14s var(--ease-press), transform .14s var(--ease-press); }
   .list-item.dragging { border-color: var(--border); box-shadow: 0 10px 26px -6px rgba(0,0,0,0.55); cursor: grabbing; }
@@ -210,11 +230,14 @@
 
   .row-inline { display: flex; gap: 8px; align-items: stretch; }
   .icon-btn { display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 8px 13px; font-size: 15px; cursor: pointer; flex-shrink: 0; }
-  .icon-btn[data-act="rename"] { padding: 8px 11px; font-size: 14px; }
-  .icon-btn.danger { color: var(--danger); border-color: var(--border); box-shadow: none; }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .icon-btn[data-act="rename"] { color: var(--teal); padding: 9.1px 14.8px; position: relative; top: 0.5px; }
+  .icon-btn[data-act="rename"] svg { width: 20.4px; height: 20.4px; }
+  .icon-btn.danger { color: var(--danger); border-color: var(--border); box-shadow: none; padding: 10px 16px; }
+  .icon-btn.danger svg { width: 22px; height: 22px; }
   .row-inline #newExBtn { padding: 8px 22px; }
   .uni-toggle { display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 8px 13px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: border-color .38s var(--ease-glide), color .38s var(--ease-glide), background-color .38s var(--ease-glide); }
-  .uni-toggle.on { border-color: var(--border); color: var(--teal); background: rgba(20,240,204,0.14); }
+  .uni-toggle.on { border-color: var(--border); color: var(--teal); background: var(--teal-a14); }
   .uni-tag { font-size: 11px; color: var(--teal-dim); border: 1px solid var(--border); border-radius: 8px; padding: 2px 6px; margin-left: 8px; }
 
   .ex-pick-search-wrap { position: sticky; top: 0; z-index: 5; background: var(--bg); padding-bottom: 10px; margin-bottom: 4px; }
@@ -226,7 +249,7 @@
     margin-bottom: 6px; cursor: pointer; color: var(--text); font-size: 15px; font-weight: 600;
     transition: transform .3s var(--ease-bounce), border-color .3s var(--ease-glide), color .3s var(--ease-glide), background-color .3s var(--ease-glide); }
   .ex-pick-row:active { transform: scale(0.97); }
-  .ex-pick-row.selected { color: var(--teal); border-color: var(--border); background: rgba(20,240,204,0.16); font-weight: 700; }
+  .ex-pick-row.selected { color: var(--teal); border-color: var(--border); background: var(--teal-a16); font-weight: 700; }
   .ex-pick-row .ex-pick-name { display: flex; align-items: center; gap: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ex-pick-row .ex-pick-check { flex-shrink: 0; color: var(--teal); }
   .ex-pick-row .uni-toggle { padding: 6px 10px; font-size: 12px; }
@@ -242,7 +265,8 @@
   .set-row { display: grid; grid-template-columns: 32px minmax(0,1fr) minmax(0,1fr) minmax(0,0.85fr) minmax(0,0.85fr) 34px; gap: 5px; align-items: center; margin-bottom: 8px; }
   .set-row.uni { grid-template-columns: 30px minmax(0,0.88fr) minmax(0,0.7fr) minmax(0,0.7fr) minmax(0,0.62fr) minmax(0,0.62fr) 30px; }
   .set-row .set-num { font-size: 12.5px; color: var(--text-dim); font-weight: 700; text-align: center; }
-  .set-row input { width: 100%; min-width: 0; padding: 11px 2px; font-size: 15px; text-align: center; background: #041413; }
+  .set-row input { width: 100%; min-width: 0; padding: 11px 2px; font-size: 15px; text-align: center; background: var(--input-bg); -moz-appearance: textfield; appearance: textfield; }
+  .set-row input::-webkit-outer-spin-button, .set-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .set-row.uni input { padding: 11px 1px; font-size: 13.5px; }
   .set-cell-trend { position: relative; }
   .trend-arrow { position: absolute; top: -6px; right: -4px; width: 15px; height: 15px; border-radius: 50%;
@@ -257,7 +281,7 @@
   .col-labels div { font-size: 11px; color: var(--text-dim); text-align: center; letter-spacing: 0.07em; text-transform: uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
   .set-num-btn { font-size: 11.5px; font-weight: 800; text-align: center; background: none; border: 1.75px solid var(--border); color: var(--text-dim); border-radius: 50%; width: 26px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1; margin: 0 auto; }
-  .set-num-btn.checked { border-color: transparent; color: #06201c; background: var(--teal); box-shadow: 0 0 8px -3px var(--teal-glow); }
+  .set-num-btn.checked { border-color: transparent; color: var(--teal-ink); background: var(--teal); box-shadow: 0 0 8px -3px var(--teal-glow); }
   .set-select-circle { background: none; border: 1.75px solid var(--border); border-radius: 50%; width: 24px; height: 24px; padding: 0; cursor: pointer; margin: 0 auto; display: block; box-sizing: border-box; }
   .set-select-circle.checked { border-color: transparent; background: var(--teal); box-shadow: 0 0 8px -3px var(--teal-glow); }
 
@@ -282,7 +306,7 @@
   .badge.pr { color: var(--gold); background: rgba(255,207,92,0.16); box-shadow: 0 0 10px -4px var(--gold-glow); }
   .badge.new { color: var(--blue); background: rgba(122,184,245,0.14); }
   .summary-hero { display: flex; align-items: center; gap: 14px; margin: 22px 0 20px; }
-  .summary-hero-badge { width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; background: rgba(20,240,204,0.14); box-shadow: 0 0 20px -8px var(--teal-glow); }
+  .summary-hero-badge { width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; background: var(--teal-a14); box-shadow: 0 0 20px -8px var(--teal-glow); }
   .summary-hero-badge svg { width: 24px; height: 24px; color: var(--teal); }
   .summary-card { touch-action: manipulation; display: flex; align-items: center; gap: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 13px 15px; margin-bottom: 9px; cursor: pointer; transition: transform .38s var(--ease-bounce), border-color .3s var(--ease-glide); }
   .summary-card:active { transform: scale(0.97); transition: transform .14s var(--ease-press); }
@@ -290,7 +314,7 @@
   .summary-card-icon { width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; }
   .summary-card-icon.pr { background: rgba(255,207,92,0.16); }
   .summary-card-icon.new { background: rgba(122,184,245,0.16); }
-  .summary-card-icon.up { background: rgba(20,240,204,0.16); }
+  .summary-card-icon.up { background: var(--teal-a16); }
   .summary-card-icon.down { background: rgba(224,168,96,0.12); }
   .summary-card-icon.flat { background: var(--panel-2); }
   .summary-card-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
@@ -307,7 +331,10 @@
   .hd-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
   .hd-stats { display: flex; gap: 22px; padding: 0 16px 14px; margin-top: -2px; }
   .hd-stat { display: flex; flex-direction: column; gap: 3px; }
-  .hd-stat-val { font-size: 17px; font-weight: 800; letter-spacing: 0.01em; }
+  .hd-stat-val { font-size: 17.5px; font-weight: 800; letter-spacing: 0.01em; }
+  .hd-stat-val.hd-volume { color: var(--teal); text-shadow: 0 0 10px var(--teal-glow); }
+  .hd-stat-val.hd-sets { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
+  .hd-stat-val.hd-elapsed { color: var(--blue); text-shadow: 0 0 10px var(--blue-glow); }
   .hd-stat-lbl { font-size: 10.5px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
   .history-body { max-height: 0; opacity: 0; overflow: hidden; padding: 0 16px; transition: max-height .27s cubic-bezier(0.4,0,0.2,1), opacity .507s cubic-bezier(0.4,0,0.2,1), padding .249s cubic-bezier(0.4,0,0.2,1); }
   .history-body.open { max-height: 2400px; opacity: 1; padding: 0 16px 16px; transition: max-height .256s cubic-bezier(0.4,0,0.2,1), opacity .108s cubic-bezier(0.4,0,0.2,1), padding .18s cubic-bezier(0.4,0,0.2,1); }
@@ -328,9 +355,9 @@
   .ex-hist-set-row:first-child { border-top: none; }
   .ex-hist-set-line { font-size: 13.5px; color: var(--text); overflow-wrap: anywhere; word-break: break-word; }
   .ex-hist-set-row.pr .ex-hist-set-line { font-size: 16.5px; font-weight: 800; color: var(--teal); text-shadow: 0 0 14px var(--teal-glow); }
-  .pr-badge { display: inline-block; background: var(--teal); color: #06201c; font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 6px; margin-right: 7px; vertical-align: 2px; letter-spacing: 0.03em; }
+  .pr-badge { display: inline-block; background: var(--teal); color: var(--teal-ink); font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 6px; margin-right: 7px; vertical-align: 2px; letter-spacing: 0.03em; }
 
-  .toast { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%) translateY(14px); background: var(--teal); color: #06201c; padding: 11px 20px; border-radius: 12px; font-size: 13.5px; font-weight: 700; opacity: 0; pointer-events: none; transition: opacity .5s var(--ease-glide), transform .5s var(--ease-glide); box-shadow: 0 8px 26px -6px var(--teal-glow); z-index: 50; max-width: 90%; text-align: center; }
+  .toast { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%) translateY(14px); background: var(--teal); color: var(--teal-ink); padding: 11px 20px; border-radius: 12px; font-size: 13.5px; font-weight: 700; opacity: 0; pointer-events: none; transition: opacity .5s var(--ease-glide), transform .5s var(--ease-glide); box-shadow: 0 8px 26px -6px var(--teal-glow); z-index: 50; max-width: 90%; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   /* Sits above everything (including the app screens and the rest-timer
      FAB) since it needs to be reachable no matter what's on screen when the
@@ -363,7 +390,7 @@
     box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); animation: rwPanelIn .18s var(--ease-glide); }
   .sort-menu-item { display: block; width: 100%; text-align: left; background: none; border: none; color: var(--teal);
     font-size: 14.5px; font-weight: 700; padding: 12px 16px; border-radius: 10px; cursor: pointer; white-space: nowrap; }
-  .sort-menu-item.active { background: rgba(20,240,204,0.14); }
+  .sort-menu-item.active { background: var(--teal-a14); }
   .sort-menu-item:active { background: var(--panel-2); }
 
   /* ---------- in-app media lightbox (custom player, no native popups) ---------- */
@@ -435,6 +462,7 @@
     width: 40px; height: 40px; box-sizing: border-box; display: flex; align-items: center; justify-content: center;
     cursor: pointer; flex-shrink: 0; box-shadow: 0 0 10px -6px var(--teal-glow); }
   .icon-square-btn.danger { border-color: var(--border); color: var(--danger); box-shadow: none; }
+  .icon-square-btn.danger svg { top: 0px; }
   .icon-square-btn svg { width: 24px; height: 24px; position: relative; top: -1px; }
   .icon-square-btn:active, .icon-square-btn.is-pressed { transform: scale(0.82) rotate(-12deg); transition: transform .14s var(--ease-press); }
   .icon-square-btn.text-mode { width: auto; padding: 0 18px; font-size: 15px; font-weight: 700; }
@@ -446,20 +474,88 @@
     color: var(--text); font-size: 16px; padding: 14px 14px; margin-bottom: 16px; box-sizing: border-box; }
   .confirm-input:focus { outline: none; border-color: var(--border); }
 
-  /* ---------- floating rest timer widget ---------- */
-  #restWidget.rw-widget-hidden { display: none !important; }
-  .rw-fab {
-    position: fixed; width: 52px; height: 52px; border-radius: 16px; z-index: 240;
-    background: var(--teal); color: #06201c; border: 1px solid #041413; box-shadow: 0 6px 20px -6px var(--teal-glow);
-    display: flex; align-items: center; justify-content: center; touch-action: none; cursor: grab;
-    font-family: "SF Mono", ui-monospace, monospace; font-weight: 900; font-size: 16.5px; letter-spacing: 0.5px;
-    transition: box-shadow .3s var(--ease-glide), transform .2s var(--ease-glide);
-  }
-  .rw-fab:active { transform: scale(0.9); transition: transform .1s var(--ease-glide); }
-  .rw-fab.rw-dragging { cursor: grabbing; box-shadow: 0 10px 28px -6px rgba(0,0,0,0.6); transition: none; }
-  .rw-fab.rw-snapping { transition: left .24s var(--ease-bounce), top .24s var(--ease-bounce); }
-  .rw-fab svg { width: 23px; height: 23px; }
+  /* ---------- top hotbar (timer + notes) ----------
+     Always position:fixed (in BOTH placements) so it stays on screen no
+     matter how far the page is scrolled — see settings.hotbarPosition,
+     'top' or 'bottom'. Solid teal fill matches .btn-primary, the app's
+     other high-emphasis action button. Extra clearance beyond the raw
+     safe-area inset is added on top of env() since Android's gesture-nav
+     bar / status bar aren't always reflected accurately by env() alone. */
+  #hotbar { position: fixed; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px;
+    box-sizing: border-box; padding: 0 18px; z-index: 220; }
+  #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
+  #hotbar.hb-pos-top { top: calc(env(safe-area-inset-top, 0px) + 18px); }
+  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); }
+  .hb-pill { display: flex; align-items: stretch; background: var(--teal); border-radius: 10px; height: 46px;
+    overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
+  .hb-btn { flex: 1; display: flex; align-items: center; justify-content: center; background: none; border: none;
+    color: var(--teal-ink); font-size: 13.5px; font-weight: 800; cursor: pointer; font-family: inherit;
+    letter-spacing: 0.02em; text-transform: capitalize; line-height: 1; padding: 0 14px; }
+  .hb-btn:active { transform: scale(0.96); transition: transform .14s var(--ease-press); }
+  .hb-btn.hb-running { font-variant-numeric: tabular-nums; }
+  /* A single enabled item fills the whole pill and reads bigger, instead
+     of sitting cramped in a half-width slot meant for two. */
+  .hb-pill.hb-single .hb-btn { font-size: 15.5px; }
+  /* Reserves room so the fixed hotbar never overlaps screen content —
+     toggled by placeHotbar() in JS based on settings.hotbarPosition.
+     app-hb-none applies when both features are off/widget-only, so the
+     hotbar itself is empty and no space needs to be reserved. */
+  #app.app-hb-top { padding-top: calc(env(safe-area-inset-top, 0px) + 78px); }
+  #app.app-hb-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px); }
+  #app.app-hb-none { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 
+  /* ---------- floating widget buttons (Timer and/or Notes, when set to
+     "widget" instead of "hotbar" in Settings) ----------
+     Always bottom-right; --hb-widget-extra (set in placeHotbar()) nudges
+     the stack up above the hotbar itself when the hotbar is also in
+     'bottom' mode and currently showing something, so they never overlap. */
+  #hbWidgets { position: fixed; right: 18px; z-index: 219; display: flex; flex-direction: column-reverse; gap: 12px;
+    align-items: flex-end; --hb-widget-extra: 0px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 26px + var(--hb-widget-extra)); }
+  #hbWidgets.hb-hidden { display: none !important; }
+  #hbWidgets:empty { display: none; }
+  .hb-widget-btn { width: 52px; height: 52px; border-radius: 16px; background: var(--teal); color: var(--teal-ink);
+    border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    box-shadow: 0 6px 20px -8px var(--teal-glow); font-family: inherit; font-weight: 800; font-size: 12.5px; }
+  .hb-widget-btn:active { transform: scale(0.9); transition: transform .14s var(--ease-press); }
+  .hb-widget-btn svg { width: 24px; height: 24px; }
+  .hb-widget-btn.hb-running { font-variant-numeric: tabular-nums; font-size: 11px; padding: 0 2px; }
+
+  /* ---------- notes panel (multi-note, tabbed, opens near the hotbar) ---------- */
+  .notes-overlay { position: fixed; inset: 0; z-index: 225; background: rgba(4,8,8,0.5);
+    animation: fadeIn 0.22s var(--ease-glide); }
+  .notes-panel { position: fixed; box-sizing: border-box; z-index: 226;
+    animation: rwPanelIn .26s var(--ease-glide); }
+  .notes-card { background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
+    box-shadow: 0 14px 40px -10px rgba(0,0,0,0.55); display: flex; flex-direction: column;
+    max-height: min(560px, 70vh); overflow: hidden; }
+  .notes-tabs { display: flex; align-items: center; gap: 6px; padding: 10px 10px 0; overflow-x: auto;
+    flex-shrink: 0; }
+  .notes-tab { flex-shrink: 0; max-width: 140px; background: var(--panel-2); border: 1px solid var(--border);
+    color: var(--text-dim); font-size: 13px; font-weight: 700; padding: 9px 12px; border-radius: 11px 11px 0 0;
+    cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .notes-tab.active { background: var(--panel); color: var(--teal); border-bottom-color: var(--panel); }
+  .notes-tab-add { flex-shrink: 0; background: none; border: none; color: var(--teal); font-size: 20px;
+    font-weight: 700; width: 34px; height: 34px; cursor: pointer; }
+  .notes-body { padding: 14px 16px calc(16px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; }
+  .notes-title-row { display: flex; align-items: center; gap: 8px; }
+  .notes-title-input { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    padding: 10px 12px; border-radius: 10px; font-size: 14.5px; font-weight: 700; font-family: inherit; }
+  .notes-delete-btn { flex-shrink: 0; background: none; border: none; color: var(--danger);
+    display: flex; align-items: center; justify-content: center; padding: 8px 10px; cursor: pointer; }
+  .notes-delete-btn svg { width: 18px; height: 18px; }
+  .notes-textarea { width: 100%; min-height: 220px; flex: 1; resize: vertical; background: var(--panel-2);
+    border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 12px; font-size: 15px;
+    line-height: 1.5; font-family: inherit; }
+  .notes-textarea:focus { outline: none; border-color: var(--border); }
+  .notes-save-state { font-size: 11.5px; color: var(--text-dim); text-align: right; height: 14px; }
+  .notes-empty { text-align: center; padding: 28px 10px; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
+  .notes-empty button { margin-top: 14px; }
+  .notes-close-btn { background: none; border: none; color: var(--text-dim); font-size: 18px; line-height: 1;
+    cursor: pointer; padding: 4px 6px; flex-shrink: 0; }
+
+  /* ---------- floating rest timer widget ---------- */
   .rw-panel {
     position: fixed; z-index: 245; width: 220px; background: var(--panel); border: 1px solid var(--border);
     border-radius: 16px; padding: 16px; box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55);
@@ -469,17 +565,17 @@
   .rw-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .rw-panel-title { font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); font-weight: 700; }
   .rw-panel-close { background: none; border: none; color: var(--text-dim); font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 4px; }
-  .rw-mode-toggle { display: flex; gap: 4px; background: #041413; border: 1px solid var(--border); border-radius: 11px; padding: 3px; margin-bottom: 14px; }
+  .rw-mode-toggle { display: flex; gap: 4px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 11px; padding: 3px; margin-bottom: 14px; }
   .rw-mode-btn { flex: 1; background: none; border: none; color: var(--text-dim); font-size: 12px; font-weight: 700; padding: 7px 6px; border-radius: 8px; cursor: pointer; }
-  .rw-mode-btn.active { background: var(--teal); color: #06201c; }
+  .rw-mode-btn.active { background: var(--teal); color: var(--teal-ink); }
   .rw-display { font-family: "SF Mono", ui-monospace, monospace; font-size: 34px; font-weight: 800; color: var(--teal); text-align: center; margin-bottom: 12px; }
   .rw-panel.rw-paused-state .rw-display { color: var(--amber); }
   .rw-dur-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
   .rw-dur-btn { width: 30px; height: 30px; border-radius: 9px; background: var(--btn-bg); border: none; color: var(--text-dim); font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .rw-dur-input { width: 64px; text-align: center; background: #041413; border: 1px solid var(--border); color: var(--text); padding: 8px 4px; border-radius: 10px; font-size: 16px; font-family: inherit; }
+  .rw-dur-input { width: 64px; text-align: center; background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 8px 4px; border-radius: 10px; font-size: 16px; font-family: inherit; }
   .rw-btn-row { display: flex; gap: 8px; }
   .rw-btn { flex: 1; padding: 11px 8px; border-radius: 11px; border: none; font-weight: 700; font-size: 13.5px; cursor: pointer; }
-  .rw-btn-primary { background: var(--teal); color: #06201c; }
+  .rw-btn-primary { background: var(--teal); color: var(--teal-ink); }
   .rw-btn-ghost { background: var(--btn-bg); border: none; color: var(--text-dim); }
   .media-thumb-wrap { position: relative; display: inline-block; }
   .media-thumb-del { position: absolute; top: -7px; right: -7px; width: 24px; height: 24px; border-radius: 50%;
@@ -514,7 +610,10 @@
 <body>
 <div id="app"></div>
 <div class="toast" id="toast"></div>
+<div id="hotbar"></div>
+<div id="hbWidgets"></div>
 <div id="restWidget"></div>
+<div id="notesRoot"></div>
 <div class="alarm-stop-banner" id="alarmStopBanner"></div>
 
 <script>
@@ -555,12 +654,16 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.3';
+const APP_VERSION = '1.1.4';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
 let updateBannerDismissed = false;
 let updateBannerHideTimer = null;
+// Shows a "Back online! Backing up data now." banner (Home screen, same spot
+// as the update banner) for as long as data logged while offline is still
+// being pushed up — set by runBackOnlineSync() below.
+let backOnlineBannerActive = false;
 function getCapUpdater() {
   try { return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorUpdater; }
   catch (e) { return null; }
@@ -600,6 +703,41 @@ async function applyAppUpdate() {
 const SUPABASE_URL = 'https://bcioaiakatjllscoccuj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjaW9haWFrYXRqbGxzY29jY3VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNDE1ODksImV4cCI6MjEwMDcxNzU4OX0.W9DuKEGYJwKjxHKJ6pMo1uhnTv8BRqq788ykZWFw1KQ';
 supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Matches the storage key supabase-js derives internally (sb-<project-ref>-auth-token) —
+// used as a direct-from-localStorage fallback when getSession() can't be trusted
+// to answer quickly (offline, or a hung network request). See getSessionResilient().
+const SUPABASE_AUTH_STORAGE_KEY = 'sb-' + new URL(SUPABASE_URL).hostname.split('.')[0] + '-auth-token';
+function getStoredSupabaseSession() {
+  try {
+    const raw = localStorage.getItem(SUPABASE_AUTH_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return (parsed && parsed.access_token && parsed.refresh_token && parsed.user) ? parsed : null;
+  } catch (e) { return null; }
+}
+// getSession() silently tries to refresh a near-expiry (or already-expired)
+// token before answering, which is a real network round trip — offline, or
+// on a bad connection, that can hang for a long time (the SDK retries with
+// backoff) before finally giving up, and if it does give up it returns NO
+// session at all, even though a perfectly good one is sitting in storage —
+// which is what was showing up as "takes forever, and logs me out". This
+// bounds the wait and falls back to the locally stored session (still
+// usable offline) instead of treating a slow/failed refresh as a real
+// logout; the background auto-refresh catches the token up for real once
+// the network is actually available.
+async function getSessionResilient() {
+  if (!navigator.onLine) return getStoredSupabaseSession();
+  try {
+    const result = await Promise.race([
+      supabase.auth.getSession(),
+      new Promise(resolve => setTimeout(() => resolve('timeout'), 6000))
+    ]);
+    if (result === 'timeout') return getStoredSupabaseSession();
+    return (result && result.data && result.data.session) || getStoredSupabaseSession();
+  } catch (e) {
+    return getStoredSupabaseSession();
+  }
+}
 
 // Supabase Auth is built around email+password. Since we want username-only
 // signup (no email required from the user), we deterministically turn their
@@ -648,7 +786,7 @@ function logClientError(context, err) {
   } catch (e) {}
 }
 
-const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings'];
+const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings', 'notes'];
 
 async function pushCloudAppState(key, val) {
   if (!account || !account.id) return;
@@ -859,6 +997,9 @@ const ICON_TRASH_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16" s
 const ICON_CAMERA_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.1-1.65A1.5 1.5 0 0 1 9.85 4.5h4.3a1.5 1.5 0 0 1 1.25.85L16.5 7h2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" stroke="currentColor" stroke-width="1.9"/></svg>`;
 const ICON_SELECT_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M9 12.2l2.1 2.1L15.5 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5" stroke="currentColor" stroke-width="1.9"/></svg>`;
 const ICON_SWAP_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M7 4v13M7 4L4 7M7 4l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 20V7M17 20l3-3M17 20l-3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const HB_TIMER_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 9v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 2h6M12 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+// A little spiral-bound notebook — distinct from the app's other icons.
+const HB_NOTES_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="15" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3v18M2 7h3M2 11h3M2 15h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 const ICON_LOGS_SVG = `<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3.5" width="14" height="17" rx="2.2" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_SORT_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M7 5v14M7 5L4 8M7 5l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 8h8M13 12.5h5.5M13 17h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 function fmtDate(dstr) { const d=new Date(dstr); return d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'}); }
@@ -875,13 +1016,13 @@ function ordinalSuffix(n) {
   if (v >= 11 && v <= 13) return 'th';
   switch (n % 10) { case 1: return 'st'; case 2: return 'nd'; case 3: return 'rd'; default: return 'th'; }
 }
-function fmtLogTitle(dstr, day, setCount) {
+function fmtLogTitle(dstr, day) {
   const d = new Date(dstr + 'T00:00:00');
   const weekday = d.toLocaleDateString(undefined, { weekday: 'long' });
   const month = d.toLocaleDateString(undefined, { month: 'long' });
   const dayNum = d.getDate();
   const year = d.getFullYear();
-  return `${weekday}, ${month} ${dayNum}${ordinalSuffix(dayNum)} ${year}. ${day} – ${setCount} ${setCount === 1 ? 'Set' : 'Sets'}.`;
+  return `${weekday}, ${month} ${dayNum}${ordinalSuffix(dayNum)} ${year}. ${day}`;
 }
 function fmtTime(ts) { return new Date(ts).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}); }
 /* Epley (weight*(1+reps/30)) systematically undercounts once reps climb past
@@ -1716,7 +1857,40 @@ let account = null, loggedIn = false;
 let programType = null, programDays = [];
 let allExSortMode = 'az'; // 'az' | 'recent' | 'sets' | 'volume'
 let exercisesByDay = {};
-let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false };
+let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170 };
+
+/* ---------- accent color palette (Settings > Appearance) ----------
+   Only the hue shifts; saturation/lightness stay put, so every preset keeps
+   the same look-and-feel as the original teal — just a different color,
+   background/panels included (see the --hue-driven vars in :root). */
+const ACCENT_PALETTES = [
+  { name: 'Teal',   hue: 170 },
+  { name: 'Blue',   hue: 205 },
+  { name: 'Purple', hue: 265 },
+  { name: 'Pink',   hue: 330 },
+  { name: 'Red',    hue: 355 },
+  { name: 'Orange', hue: 25  },
+  { name: 'Amber',  hue: 45  },
+  { name: 'Green',  hue: 140 },
+];
+function applyAccentHue(hue) {
+  document.documentElement.style.setProperty('--hue', hue);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());
+}
+// Apply immediately from whatever's in localStorage, before boot() runs, so
+// there's no flash of the default teal for someone who picked another color.
+(function () {
+  try {
+    const saved = JSON.parse(localStorage.getItem('settings') || 'null');
+    if (saved && saved.accentHue !== undefined) applyAccentHue(saved.accentHue);
+  } catch (e) {}
+})();
+// Per-exercise unit overrides — { [nameKey]: 'kg'|'lb' }. An exercise with no
+// entry here just follows settings.units like before. This lets one exercise
+// (e.g. hand grippers, sold in lb) live in a different unit than the rest of
+// the app without touching the global toggle. See exerciseUnit()/convertExerciseUnit().
+let exerciseUnits = {};
 let screen = 'loading';
 let currentDay = null;
 // True for the duration of a session started via "Track planned workout" —
@@ -1751,9 +1925,12 @@ let exerciseHistoryName = null;
 let restInterval = null, restRemaining = 0, restBoundEls = [];
 let restEndTime = null, restAlarmFired = false, audioCtx = null;
 let restPaused = false, restDuration = 120;
-let rwPos = { x: 20, y: 140 };
 let rwOpen = false;
-let rwFab = null, rwPanelEl = null;
+let rwPanelEl = null;
+let hbTimerBtn = null, hbNotesBtn = null;
+let notes = [], activeNoteId = null;
+let notesOpen = false, notesOverlayEl = null, notesPanelEl = null;
+let notesSaveDebounce = null;
 /* Stopwatch — a second mode on the same floating widget, toggled from the
    panel. Counts up from an absolute start timestamp (like the rest timer
    counts down from one) so it survives backgrounding/reload without drift. */
@@ -1780,10 +1957,11 @@ async function boot() {
       window.Capacitor.Plugins.SplashScreen.hide();
     }
   } catch (e) {}
-  const { data: { session } } = await supabase.auth.getSession();
+  const session = await getSessionResilient();
   if (!session) { screen = 'register'; render(); return; }
   account = { username: session.user.user_metadata.username, id: session.user.id };
   loggedIn = true;
+  updateHotbarVisibility();
   // Nothing in this app was ever scoped by account — log:*, settings,
   // programType/programDays/exercisesByDay, draft, bestLifts, all lived as
   // flat global keys. On a device/browser that's had a different account
@@ -1823,13 +2001,27 @@ async function boot() {
   programDays = await loadJSON('programDays', []);
   exercisesByDay = normalizeExercisesByDay(await loadJSON('exercisesByDay', {}));
   await saveJSON('exercisesByDay', exercisesByDay);
-  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false });
+  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170 });
+  if (settings.accentHue === undefined) settings.accentHue = 170;
+  applyAccentHue(settings.accentHue);
   if (settings.alarmSound === undefined) settings.alarmSound = 'default';
   if (settings.customAlarmData === undefined) settings.customAlarmData = null;
   if (settings.customAlarmName === undefined) settings.customAlarmName = null;
   if (settings.autoStartTimer === undefined) settings.autoStartTimer = true;
   if (settings.autoCarry === undefined) settings.autoCarry = true;
   if (settings.onboardingDone === undefined) settings.onboardingDone = true;
+  // Migrates the earlier three-way setting (top-above/top-below/bottom) down
+  // to the current two-way one (top/bottom).
+  if (!settings.hotbarPosition || settings.hotbarPosition === 'top-above' || settings.hotbarPosition === 'top-below') settings.hotbarPosition = 'top';
+  if (settings.timerEnabled === undefined) settings.timerEnabled = true;
+  if (settings.notesEnabled === undefined) settings.notesEnabled = true;
+  if (settings.timerDisplay === undefined) settings.timerDisplay = 'hotbar';
+  if (settings.notesDisplay === undefined) settings.notesDisplay = 'hotbar';
+  exerciseUnits = await loadJSON('exerciseUnits', {});
+  notes = await loadJSON('notes', []);
+  if (!activeNoteId && notes.length) activeNoteId = notes[0].id;
+  refreshHotbarLayout();
+  updateHotbarVisibility();
   const unconfigured = programDays.filter(d => !exercisesByDay[d] || exercisesByDay[d].length === 0);
   if (unconfigured.length > 0) {
     setupDays = unconfigured; setupIndex = 0; setupTemp = [];
@@ -1877,13 +2069,11 @@ async function autoFinishStaleDraft() {
     bodyweight = prior ? prior.bodyweight : '';
   }
 
-  let totalVolume = 0;
   let prHit = null;
   const prevBest = await loadJSON('bestLifts', {});
   cleanExercises.forEach(ex => {
     ex.sets.forEach(s => {
       const w = parseFloat(s.weight) || 0;
-      totalVolume += w * totalReps(s);
       const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
       const key = nameKey(ex.name);
       if (!prevBest[key] || est > prevBest[key]) { prevBest[key] = est; prHit = ex.name; }
@@ -1895,7 +2085,7 @@ async function autoFinishStaleDraft() {
     id: uid(), date: draftDateStr,
     day: staleDay, startTime: draft.startTime, endTime: draft.startTime,
     durationMin: 0, // real end time was never recorded — the session was closed automatically
-    exercises: cleanExercises, totalVolume: Math.round(totalVolume),
+    exercises: cleanExercises, totalVolume: sessionTotalVolume(cleanExercises),
     bodyweight,
     media: ensureMediaShape(draft.media),
     autoFinished: true
@@ -1954,13 +2144,35 @@ window.addEventListener('popstate', () => {
   if (navStack.length > 0 || pendingBackFallback) performBack();
   pushNavHistoryEntry();
 });
+document.addEventListener('touchstart', () => { userIsTouching = true; }, { passive: true });
+function _flushDeferredRender() {
+  userIsTouching = false;
+  if (pendingBackgroundRender) { pendingBackgroundRender = false; render(); }
+}
+document.addEventListener('touchend', _flushDeferredRender, { passive: true });
+document.addEventListener('touchcancel', _flushDeferredRender, { passive: true });
 
 let lastRenderedScreen = null;
+// Background updates (cloud sync landing, realtime pulls, etc.) call the
+// same render() used for navigation. That's fine when idle, but if one of
+// those lands WHILE the person is mid-scroll, wiping and rebuilding #app
+// (below) aborts the browser's in-progress touch-scroll/momentum on the
+// old, now-destroyed elements — even though we restore the numeric scroll
+// position afterward, the gesture itself is cut off, which reads as being
+// yanked back up partway down a long list (e.g. right after opening Edit
+// Logs, while the initial cloud pull is still landing). So: same-screen
+// re-renders are deferred for as long as a touch is active, and fire once
+// the finger lifts instead. Genuine navigations (isScreenChange true)
+// always render immediately — this only affects background refreshes of
+// the screen already on-screen.
+let userIsTouching = false;
+let pendingBackgroundRender = false;
 function render() {
   mediaRegistry = [];
   if (_mediaHydrateObserver) _mediaHydrateObserver.disconnect();
   const app = document.getElementById('app');
   const isScreenChange = screen !== lastRenderedScreen;
+  if (!isScreenChange && userIsTouching) { pendingBackgroundRender = true; return; }
   // Wiping and rebuilding #app (below) briefly makes the document much
   // shorter, and the browser clamps window.scrollY down to fit during that
   // instant. On a genuine navigation we want top-of-page anyway, but on a
@@ -2014,7 +2226,6 @@ function render() {
   if (isScreenChange) window.scrollTo(0, 0);
   else window.scrollTo(0, prevScrollY);
   lastRenderedScreen = screen;
-  updateRestWidgetVisibility();
 }
 
 /* ---------- hardware back button ----------
@@ -2336,7 +2547,7 @@ function renderExPickList(root, day) {
       html += `<div class="ex-pick-row selected" data-act="deselect" data-name="${entry.name.replace(/"/g,'&quot;')}">
         <span class="ex-pick-name"><span class="ex-pick-check">✓</span>${entry.name}</span>
         <div class="ex-pick-row-right">
-          <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" data-name="${entry.name.replace(/"/g,'&quot;')}" title="One side at a time, tracked as separate R/L reps">Uni</button>
+          <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" data-name="${entry.name.replace(/"/g,'&quot;')}" title="One side at a time, tracked as separate R/L reps">L | R</button>
           <span class="ex-pick-drag" data-act="drag" data-name="${entry.name.replace(/"/g,'&quot;')}" title="Drag to reorder">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
           </span>
@@ -2413,6 +2624,10 @@ function renderHome(root) {
         <button class="update-banner-btn yes" id="updateBadgeYes">Yes</button>
         <button class="update-banner-btn later" id="updateBadgeLater">Later</button>
       </div>
+    </div>` : ''}
+    ${backOnlineBannerActive ? `<div class="update-banner">
+      <div class="update-banner-text">Back online! Backing up data now.</div>
+      <div class="sync-spinner"></div>
     </div>` : ''}
     <div class="home-topbar">
       <div class="eyebrow" style="padding-top:0; padding-bottom:0; margin-bottom:0; position:static;">SBL Tracker</div>
@@ -2641,7 +2856,7 @@ function renderAllExercises(root) {
     const row = document.createElement('div');
     row.className = 'list-item';
     const vol = Math.round(item.totalVolume).toLocaleString();
-    row.innerHTML = `<div><div class="li-name">${item.name}</div><div class="li-meta mono">${item.totalSets} set${item.totalSets !== 1 ? 's' : ''} · ${vol}${settings.units} volume · Last done ${fmtFullDate(new Date(item.lastDate).toISOString())}</div></div><div class="li-right">›</div>`;
+    row.innerHTML = `<div><div class="li-name">${item.name}</div><div class="li-meta mono">${item.totalSets} set${item.totalSets !== 1 ? 's' : ''} · ${vol}${exerciseUnit(item.name)} volume · Last done ${fmtFullDate(new Date(item.lastDate).toISOString())}</div></div><div class="li-right">›</div>`;
     row.onclick = () => { exerciseHistoryName = item.name; goTo('exercise-history'); };
     listEl.appendChild(row);
   });
@@ -2661,7 +2876,7 @@ function renderWorkoutDetail(root) {
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${entry.day}</div>
     <h1 class="big">${homeProgressLabel(entry.date)}</h1>
-    <p class="sub" style="margin:2px 0 18px;">${fmtLogTitle(entry.date, entry.day, setCount)}</p>
+    <p class="sub" style="margin:2px 0 18px;">${fmtLogTitle(entry.date, entry.day)}</p>
     <div class="stat-grid cols-4">
       <div class="stat-box"><div class="sv mono">${entry.durationMin ?? '—'}m</div><div class="sk">Duration</div></div>
       <div class="stat-box"><div class="sv mono">${(entry.totalVolume ?? 0).toLocaleString()}</div><div class="sk">Volume (${settings.units})</div></div>
@@ -2725,7 +2940,7 @@ function renderExerciseList(root) {
       <h1 class="big">Exercises</h1>
       <div style="display:flex; align-items:center; gap:8px;">
         <button class="unit-toggle-btn" id="sessionUnitBtn" title="Switch units">${ICON_SWAP_SVG}${settings.units}</button>
-        <button class="icon-edit-btn" id="editExBtn" title="Edit Exercises">
+        <button class="icon-edit-btn" id="editExBtn" title="Edit Exercises" style="position:relative; top:2px;">
           <svg viewBox="0 0 24 24" fill="none"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
@@ -2959,7 +3174,7 @@ function renderExerciseEdit(root) {
         <input type="text" id="newExInput" placeholder="+ Add exercise" autocomplete="off">
         <div class="ex-ac-dropdown" id="newExDropdown" style="display:none;"></div>
       </div>
-      <button class="uni-toggle" id="newUniToggle" title="One side at a time, tracked as separate R/L reps">Unilateral</button>
+      <button class="uni-toggle" id="newUniToggle" title="One side at a time, tracked as separate R/L reps">L | R</button>
       <button class="icon-btn no-pop" id="newExBtn">Add</button>
     </div>
   `;
@@ -2976,9 +3191,9 @@ function renderExerciseEdit(root) {
       </button>
       <div class="li-name">${entry.name}</div>
       <div class="li-right">
-        <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="Toggle unilateral tracking">Uni</button>
-        <button class="icon-btn no-pop" data-act="rename">Rename</button>
-        <button class="icon-btn danger no-pop" data-act="del">Delete</button>
+        <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="Toggle unilateral tracking">L | R</button>
+        <button class="icon-btn no-pop" data-act="rename" title="Rename">${ICON_EDIT_SVG}</button>
+        <button class="icon-btn danger no-pop" data-act="del" title="Delete">${ICON_TRASH_SVG}</button>
       </div>`;
     item.querySelector('[data-act="uni"]').onclick = (e) => {
       const i = indexOfItem(item);
@@ -3308,7 +3523,7 @@ function renderSetLog(root) {
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${ex.name}</div>
     <div class="section-header-row" style="justify-content:flex-end;">
       <div style="display:flex; align-items:center; gap:8px;">
-        <button class="unit-toggle-btn" id="exUnitBtn" title="Switch units">${ICON_SWAP_SVG}${settings.units}</button>
+        <button class="unit-toggle-btn" id="exUnitBtn" title="Switch units for this exercise only">${ICON_SWAP_SVG}${exerciseUnit(ex.name)}</button>
         <button class="icon-square-btn danger${selecting ? ' text-mode' : ''}" id="clearExBtn" title="${selecting ? 'Cancel' : 'Select sets to delete'}">${selecting ? 'Cancel' : ICON_TRASH_SVG}</button>
       </div>
     </div>
@@ -3343,9 +3558,7 @@ function renderSetLog(root) {
     renderSetLog(root);
   };
   root.querySelector('#exUnitBtn').onclick = async () => {
-    const changed = await runUnitFixFlow((factor) => {
-      ex.sets.forEach(s => { if (s.weight !== undefined && s.weight !== '') s.weight = convertWeightValue(s.weight, factor); });
-    });
+    const changed = await convertExerciseUnit(ex.name);
     if (changed) { persistDraft(); renderSetLog(root); }
   };
   if (selecting) {
@@ -3615,7 +3828,7 @@ function startRestTimer(seconds) {
   scheduleBackgroundAlarm(seconds);
   tickRestTimer();
   restInterval = setInterval(tickRestTimer, 250);
-  updateRestWidgetUI();
+  updateHotbarTimerLabel();
 }
 /* Freezes the countdown without losing it — stores the remaining whole
    seconds and drops the absolute end-timestamp, so nothing keeps counting
@@ -3630,7 +3843,7 @@ function pauseRestTimer() {
   cancelScheduledBackgroundAlarm();
   saveJSON('restTimer', { endTime: null, duration: restDuration, paused: true, remaining: restRemaining });
   updateRestDisplay();
-  updateRestWidgetUI();
+  updateHotbarTimerLabel();
 }
 function resumeRestTimer() {
   if (!restPaused) return;
@@ -3641,7 +3854,7 @@ function resumeRestTimer() {
   scheduleBackgroundAlarm(restRemaining);
   tickRestTimer();
   restInterval = setInterval(tickRestTimer, 250);
-  updateRestWidgetUI();
+  updateHotbarTimerLabel();
 }
 function tickRestTimer() {
   if (restEndTime == null) return;
@@ -3657,11 +3870,8 @@ function updateRestDisplay() {
   const s = Math.max(0, restRemaining%60);
   const txt = `${m}:${s.toString().padStart(2,'0')}`;
   restBoundEls.forEach(el => { if (el && el.isConnected) el.textContent = txt; });
-  // Cheap per-tick refresh of the FAB's compact label (running/paused only —
-  // the idle icon swap is handled separately by updateRestWidgetUI).
-  if (typeof rwFab !== 'undefined' && rwFab && (restEndTime != null || restPaused)) {
-    rwFab.textContent = txt;
-  }
+  // Cheap per-tick refresh of the hotbar's compact timer label.
+  if (restEndTime != null || restPaused) updateHotbarTimerLabel();
 }
 function stopRestTimer() {
   if (restInterval) clearInterval(restInterval);
@@ -3673,7 +3883,7 @@ function stopRestTimer() {
   deleteKey('restTimer');
   cancelScheduledBackgroundAlarm();
   updateRestDisplay();
-  updateRestWidgetUI();
+  updateHotbarTimerLabel();
 }
 /* ---------- stopwatch (second mode of the floating widget) ---------- */
 function currentStopwatchMs() {
@@ -3691,7 +3901,7 @@ function startStopwatch() {
   saveJSON('stopwatch', { elapsedMs: swElapsedMs, startTimestamp: swStartTimestamp });
   updateStopwatchDisplay();
   swInterval = setInterval(updateStopwatchDisplay, 250);
-  updateRestWidgetUI();
+  updateHotbarTimerLabel();
 }
 function pauseStopwatch() {
   if (swStartTimestamp == null) return;
@@ -3701,7 +3911,7 @@ function pauseStopwatch() {
   swInterval = null;
   saveJSON('stopwatch', { elapsedMs: swElapsedMs, startTimestamp: null });
   updateStopwatchDisplay();
-  updateRestWidgetUI();
+  updateHotbarTimerLabel();
 }
 function resetStopwatch() {
   swElapsedMs = 0;
@@ -3710,16 +3920,14 @@ function resetStopwatch() {
   swInterval = null;
   deleteKey('stopwatch');
   updateStopwatchDisplay();
-  updateRestWidgetUI();
+  updateHotbarTimerLabel();
 }
 function updateStopwatchDisplay() {
   const txt = formatStopwatch(currentStopwatchMs());
   swBoundEls.forEach(el => { if (el && el.isConnected) el.textContent = txt; });
-  // Only steal the FAB label if the rest timer isn't the one actively
+  // Only steal the hotbar label if the rest timer isn't the one actively
   // showing on it — the rest countdown always takes priority there.
-  if (rwFab && restEndTime == null && !restPaused && (swStartTimestamp != null || swElapsedMs > 0)) {
-    rwFab.textContent = txt;
-  }
+  if (restEndTime == null && !restPaused && (swStartTimestamp != null || swElapsedMs > 0)) updateHotbarTimerLabel();
 }
 function fireRestAlarm() {
   playAlarmBeeps();
@@ -4161,7 +4369,28 @@ let onlineSyncListenerAttached = false;
 function ensureOnlineSyncListener() {
   if (onlineSyncListenerAttached || typeof window === 'undefined') return;
   onlineSyncListenerAttached = true;
-  window.addEventListener('online', () => { syncPendingWorkouts(); syncPendingDeletes(); syncPendingAppState(); });
+  window.addEventListener('online', () => { runBackOnlineSync(); });
+}
+// Only shows the banner when there's actually something queued from being
+// offline — reconnecting with nothing pending stays silent. Stays up for
+// the whole push, not a fixed delay, since a slow reconnect (e.g. one bar
+// of signal at the gym) can take a while to actually finish uploading.
+async function runBackOnlineSync() {
+  const [pendingWorkouts, pendingDeletes, pendingAppState] = await Promise.all([
+    loadJSON('pendingSync', []),
+    loadJSON('pendingDelete', []),
+    loadJSON('pendingAppState', {})
+  ]);
+  const hasPending = pendingWorkouts.length > 0 || pendingDeletes.length > 0 || Object.keys(pendingAppState).length > 0;
+  if (!hasPending) return;
+  backOnlineBannerActive = true;
+  if (screen === 'home') render();
+  try {
+    await Promise.all([syncPendingWorkouts(), syncPendingDeletes(), syncPendingAppState()]);
+  } finally {
+    backOnlineBannerActive = false;
+    if (screen === 'home') render();
+  }
 }
 
 // Pull down any workouts that exist in the cloud but not on this device yet
@@ -4246,11 +4475,10 @@ async function finishWorkout() {
 
   await loadHistory(); // need prior sessions to compare against for the summary screen
 
-  let totalVolume = 0;
   const prevBest = await loadJSON('bestLifts', {});
   const summary = [];
   cleanExercises.forEach(ex => {
-    ex.sets.forEach(s => { totalVolume += (parseFloat(s.weight) || 0) * totalReps(s); });
+    const exU = exerciseUnit(ex.name);
     const topSet = topSetByEst(ex.sets);
     const topEst = topSet ? topSet.est : 0, topWeight = topSet ? topSet.weight : 0, topReps = topSet ? topSet.reps : 0;
     const bestKey = nameKey(ex.name);
@@ -4264,7 +4492,7 @@ async function finishWorkout() {
     if (!priorLog) {
       status = 'new'; detail = 'First time logging this exercise';
     } else if (isPR) {
-      status = 'pr'; detail = `New estimated 1RM: ${Math.round(topEst)}${settings.units} (${topWeight}${settings.units}×${topReps})`;
+      status = 'pr'; detail = `New estimated 1RM: ${Math.round(topEst)}${exU} (${topWeight}${exU}×${topReps})`;
     } else {
       const priorEx = priorLog.exercises.find(x => sameExName(x.name, ex.name));
       const priorTop = topSetByEst(priorEx.sets);
@@ -4275,9 +4503,9 @@ async function finishWorkout() {
       status = trendStatus(priorTopEst, topEst, 1);
       const volPct = priorVol > 0 ? Math.round(((sessionVol - priorVol) / priorVol) * 100) : null;
       const volTxt = volPct === null ? '' : (Math.abs(volPct) < 1 ? ', volume steady' : `, volume ${volPct > 0 ? '+' : ''}${volPct}%`);
-      if (status === 'up') detail = `Top set ${topWeight}${settings.units}×${topReps}, est. 1RM up to ${Math.round(topEst)}${settings.units} (from ${Math.round(priorTopEst)}${settings.units})${volTxt}`;
-      else if (status === 'down') detail = `Top set ${topWeight}${settings.units}, est. 1RM down to ${Math.round(topEst)}${settings.units} (from ${Math.round(priorTopEst)}${settings.units})${volTxt}`;
-      else detail = `Est. 1RM held at ~${Math.round(topEst)}${settings.units}${volTxt}`;
+      if (status === 'up') detail = `Top set ${topWeight}${exU}×${topReps}, est. 1RM up to ${Math.round(topEst)}${exU} (from ${Math.round(priorTopEst)}${exU})${volTxt}`;
+      else if (status === 'down') detail = `Top set ${topWeight}${exU}, est. 1RM down to ${Math.round(topEst)}${exU} (from ${Math.round(priorTopEst)}${exU})${volTxt}`;
+      else detail = `Est. 1RM held at ~${Math.round(topEst)}${exU}${volTxt}`;
     }
     summary.push({ name: ex.name, status, detail });
   });
@@ -4287,7 +4515,7 @@ async function finishWorkout() {
     id: uid(), date: new Date(draft.startTime).toISOString().slice(0,10),
     day: draft.day, startTime: draft.startTime, endTime,
     durationMin: Math.round((endTime - draft.startTime)/60000),
-    exercises: cleanExercises, totalVolume: Math.round(totalVolume),
+    exercises: cleanExercises, totalVolume: sessionTotalVolume(cleanExercises),
     bodyweight: draft.bodyweight,
     notes: draft.notes || '',
     media: ensureMediaShape(draft.media)
@@ -4402,12 +4630,14 @@ function fmtRestShort(secs) {
    to be displayed (Logs, Exercise History). RIR and RPE are independent
    optional fields (a user only has to enter one), so both are shown only
    when present. Rest duration is intentionally never shown here. */
-function formatSetLine(s) {
+function formatSetLine(s, exName) {
   const nz = (v) => (v === undefined || v === null || v === '') ? '?' : v;
+  const nzWeight = (v) => (v === undefined || v === null || v === '') ? 0 : v;
   const repsTxt = (s.repsR !== undefined || s.repsL !== undefined)
     ? `R${nz(s.repsR)} / L${nz(s.repsL)}`
     : nz(s.reps);
-  const parts = [`${nz(s.weight)} ${settings.units} × ${repsTxt}`];
+  const unit = exName ? exerciseUnit(exName) : settings.units;
+  const parts = [`${nzWeight(s.weight)} ${unit} × ${repsTxt}`];
   const effort = [];
   if (s.rir !== '' && s.rir !== undefined && s.rir !== null) effort.push(`${s.rir} RIR`);
   if (s.rpe !== '' && s.rpe !== undefined && s.rpe !== null) effort.push(`${s.rpe} RPE`);
@@ -4430,13 +4660,13 @@ function buildHistoryBodyHTML(e, dayMedia, hasDayMedia) {
       const top = topSetByEst(ex.sets.filter(hasSetData));
       const pct = top && top.est ? exerciseStrengthTrend(ex.name, e.id) : null;
       const pctTxt = pct === null ? '' : ` (${pct >= 0 ? '+' : ''}${Math.round(pct * 10) / 10}%)`;
-      const prHtml = top && top.est ? `<span class="hex-pr">Est. PR ${top.est}${settings.units}${pctTxt}</span>` : '';
+      const prHtml = top && top.est ? `<span class="hex-pr">Est. PR ${top.est}${exerciseUnit(ex.name)}${pctTxt}</span>` : '';
       return `
       <div class="hex">
         <div class="hex-name" data-ex="${ex.name}"><span>${ex.name}</span>${prHtml}</div>
         ${ex.sets.map((s,i) => `
           <div style="margin-bottom:10px;">
-            <div class="hex-sets mono">Set ${i+1}: ${formatSetLine(s)}</div>
+            <div class="hex-sets mono">Set ${i+1}: ${formatSetLine(s, ex.name)}</div>
             ${s.media && s.media.length ? `<div class="media-strip">${s.media.map(renderMediaItem).join('')}</div>` : ''}
           </div>`).join('')}
       </div>`;
@@ -4469,22 +4699,29 @@ function renderLogs(root) {
     const dayMedia = ensureMediaShape(e.media);
     const hasDayMedia = dayMedia.items.length > 0;
     const setCount = e.exercises.reduce((a, ex) => a + ex.sets.length, 0);
-    // "Overall performance" — total volume vs the most recent prior session
-    // of the same day type (Push vs Push, Legs vs Legs, etc.), not just
-    // whatever happened yesterday. No bar to compare against yet = no badge.
-    const prevSameDay = historyEntries.slice(idx + 1).find(x => x.day === e.day);
-    const perfPct = (prevSameDay && prevSameDay.totalVolume) ? ((e.totalVolume - prevSameDay.totalVolume) / prevSameDay.totalVolume) * 100 : null;
+    // Prefer the precise start/end timestamps for a mm:ss reading; fall back
+    // to durationMin (minute precision, but always populated — it's the
+    // same field the Home and Workout Detail screens already show as
+    // "Duration") for any entry where those timestamps aren't usable, e.g.
+    // pulled from the cloud with a null end_time.
+    let elapsedTxt = '—';
+    if (e.endTime && e.startTime && e.endTime > e.startTime) {
+      elapsedTxt = formatStopwatch(e.endTime - e.startTime);
+    } else if (typeof e.durationMin === 'number' && e.durationMin > 0) {
+      elapsedTxt = formatStopwatch(e.durationMin * 60000);
+    }
     item.innerHTML = `
       <div class="history-head">
-        <div class="hd-left"><div class="hd-date">${fmtLogTitle(e.date, e.day, setCount)}</div>${e.bodyweight ? `<div class="hd-meta mono">BW ${e.bodyweight}${settings.units}</div>` : ''}</div>
+        <div class="hd-left"><div class="hd-date">${fmtLogTitle(e.date, e.day)}</div>${e.bodyweight ? `<div class="hd-meta mono">BW ${e.bodyweight}${settings.units}</div>` : ''}</div>
         <div class="hd-right">
           <button class="icon-edit-btn" data-log-edit="${e.id}" title="Edit">${ICON_EDIT_SVG}</button>
           <div class="hd-arrow" style="color:var(--text-dim);">${isOpen?'▴':'▾'}</div>
         </div>
       </div>
       <div class="hd-stats">
-        <div class="hd-stat"><span class="hd-stat-val mono">${e.totalVolume}${settings.units}</span><span class="hd-stat-lbl">Volume</span></div>
-        <div class="hd-stat">${perfPct === null ? `<span class="hd-stat-val mono" style="color:var(--text-dim);">—</span>` : badgeFor(perfPct)}<span class="hd-stat-lbl">Overall performance</span></div>
+        <div class="hd-stat"><span class="hd-stat-val hd-volume mono">${e.totalVolume}${settings.units}</span><span class="hd-stat-lbl">Volume</span></div>
+        <div class="hd-stat"><span class="hd-stat-val hd-sets mono">${setCount}</span><span class="hd-stat-lbl">Sets</span></div>
+        <div class="hd-stat"><span class="hd-stat-val hd-elapsed mono">${elapsedTxt}</span><span class="hd-stat-lbl">Elapsed</span></div>
       </div>
       <div class="history-body ${isOpen?'open':''}">${isOpen ? buildHistoryBodyHTML(e, dayMedia, hasDayMedia) : ''}</div>`;
     if (isOpen) { item.dataset.bodyBuilt = '1'; wireHistoryExNameClicks(item); }
@@ -4574,7 +4811,7 @@ function renderExerciseHistory(root) {
       const row = document.createElement('div');
       row.className = 'ex-hist-set-row' + (isPR ? ' pr' : '');
       row.innerHTML = `
-        <div class="ex-hist-set-line mono">${isPR ? '<span class="pr-badge">PR</span>' : ''}Set ${i+1}: ${formatSetLine(s)}</div>
+        <div class="ex-hist-set-line mono">${isPR ? '<span class="pr-badge">PR</span>' : ''}Set ${i+1}: ${formatSetLine(s, exerciseHistoryName)}</div>
         ${s.media && s.media.length ? `<div class="media-strip">${s.media.map(renderMediaItem).join('')}</div>` : ''}
       `;
       setsWrap.appendChild(row);
@@ -4758,35 +4995,32 @@ function renderEditLog(root) {
       delRow.style.marginTop = '10px';
       delRow.innerHTML = `
         <button class="btn-secondary btn-danger" style="margin-top:0;">Delete Selected</button>
-        <button class="btn-secondary btn-danger" style="margin-top:0;">Delete All</button>
+        <button class="btn-secondary btn-danger" style="margin-top:0;">Delete Exercise</button>
       `;
       const [delSelBtn, delAllBtn] = delRow.querySelectorAll('button');
       delSelBtn.onclick = async () => {
         if (editLogSelected.size === 0) { showToast('No sets selected'); return; }
         const n = editLogSelected.size;
-        const ok = await appConfirmDelete(`Delete ${n} selected set${n > 1 ? 's' : ''}? This can't be undone.`);
+        const wholeExercise = n >= ex.sets.length;
+        const ok = await appConfirmDelete(wholeExercise
+          ? `Delete ${ex.name} from this workout? This can't be undone.`
+          : `Delete ${n} selected set${n > 1 ? 's' : ''}? This can't be undone.`);
         if (!ok) return;
         const idxs = Array.from(editLogSelected).sort((a, b) => b - a);
         for (const idx of idxs) {
           for (const m of (ex.sets[idx].media || [])) { await deleteMediaFile(m); }
           ex.sets.splice(idx, 1);
         }
-        if (ex.sets.length === 0) {
-          ex.sets.push(ex.unilateral
-            ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: settings.restDefault, media: [] }
-            : { weight: '', reps: '', rir: '', rpe: '', rest: settings.restDefault, media: [] });
-        }
         editLogSelectExIdx = null; editLogSelected = new Set();
+        if (ex.sets.length === 0) w.exercises.splice(exIdx, 1);
         persistEditDraft();
         renderEditLog(root);
       };
       delAllBtn.onclick = async () => {
-        const ok = await appConfirmDelete(`Delete all tracked sets for ${ex.name}? This can't be undone.`);
+        const ok = await appConfirmDelete(`Delete ${ex.name} from this workout? This can't be undone.`);
         if (!ok) return;
         for (const s2 of ex.sets) { for (const m of (s2.media || [])) { await deleteMediaFile(m); } }
-        ex.sets = [ex.unilateral
-          ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: settings.restDefault, media: [] }
-          : { weight: '', reps: '', rir: '', rpe: '', rest: settings.restDefault, media: [] }];
+        w.exercises.splice(exIdx, 1);
         editLogSelectExIdx = null; editLogSelected = new Set();
         persistEditDraft();
         renderEditLog(root);
@@ -4873,11 +5107,7 @@ function renderEditLog(root) {
   reuseCachedMediaEls(root);
   hydrateMediaEls(root);
   root.querySelector('#saveEditBtn').onclick = async () => {
-    w.totalVolume = Math.round(w.exercises.reduce((tot, ex) => tot + ex.sets.reduce((a, s) => {
-      const wt = parseFloat(s.weight) || 0;
-      const reps = (s.repsR !== undefined) ? (parseFloat(s.repsR)||0) + (parseFloat(s.repsL)||0) : (parseFloat(s.reps)||0);
-      return a + wt * reps;
-    }, 0), 0));
+    w.totalVolume = sessionTotalVolume(w.exercises);
     await saveJSON('log:' + w.id, w);
     syncWorkoutToCloud(w);
     const idx = historyEntries.findIndex(e => e.id === w.id);
@@ -4961,7 +5191,7 @@ function renderProgress(root) {
     const row = document.createElement('div');
     row.className = 'list-item';
     const bwTxt = pr.bw ? ` · BW ${pr.bw}${settings.units}` : '';
-    row.innerHTML = `<div><div class="li-name">${pr.name}</div><div class="li-meta mono">${formatSetLine(pr.set)} · est. 1RM ${pr.est}${settings.units}${bwTxt}</div></div><div class="li-right">›</div>`;
+    row.innerHTML = `<div><div class="li-name">${pr.name}</div><div class="li-meta mono">${formatSetLine(pr.set, pr.name)} · est. 1RM ${pr.est}${exerciseUnit(pr.name)}${bwTxt}</div></div><div class="li-right">›</div>`;
     row.onclick = () => { exerciseHistoryName = pr.name; goTo('exercise-history'); };
     prList.appendChild(row);
   });
@@ -4972,6 +5202,81 @@ function convertWeightValue(val, factor) {
   const n = parseFloat(val);
   if (isNaN(n)) return val;
   return Math.round(n * factor * 10) / 10;
+}
+/* The unit a given exercise is tracked in — its own override if it has one,
+   otherwise the app-wide default. */
+function exerciseUnit(name) { return exerciseUnits[nameKey(name)] || settings.units; }
+function convertBetweenUnits(val, fromU, toU) {
+  if (fromU === toU) return val;
+  const factor = toU === 'lb' ? 2.2046226218 : 1 / 2.2046226218;
+  return convertWeightValue(val, factor);
+}
+/* Normalizes one exercise's weight into the app-wide unit — used anywhere
+   weights from different exercises get summed together (session/lifetime
+   volume), since an overridden exercise's raw numbers are stored in its own
+   unit, not necessarily settings.units. */
+function toGlobalWeight(weight, name) { return convertBetweenUnits(weight, exerciseUnit(name), settings.units); }
+function sessionTotalVolume(exercises) {
+  return Math.round((exercises || []).reduce((tot, ex) =>
+    tot + (ex.sets || []).reduce((a, s) => a + toGlobalWeight(parseFloat(s.weight) || 0, ex.name) * totalReps(s), 0), 0));
+}
+/* Per-exercise unit toggle — lives only on that exercise's set-tracking
+   screen. Unlike the global Settings toggle, this never touches
+   settings.units or any other exercise: it flips (and optionally converts)
+   every past and present logged set for THIS exercise name only, across all
+   history logs, the in-progress draft, and its cached best-lift, then
+   remembers the override in exerciseUnits so future entries for it default
+   to the new unit too. */
+async function convertExerciseUnit(exName) {
+  const from = exerciseUnit(exName);
+  const to = from === 'kg' ? 'lb' : 'kg';
+  const choice = await showAppConfirm(
+    `Convert unit from ${from} to ${to} for "${exName}" only? Every other exercise stays in its current unit.`,
+    [
+      { label: 'Yes, Change Unit and Convert Data', value: 'convert' },
+      { label: 'No, Just Change Unit', value: 'label' },
+    ]
+  );
+  if (!choice) return false;
+  const key = nameKey(exName);
+  exerciseUnits[key] = to;
+  await saveJSON('exerciseUnits', exerciseUnits);
+  if (choice === 'convert') {
+    const factor = to === 'lb' ? 2.2046226218 : 1 / 2.2046226218;
+    const logKeys = listKeys('log:');
+    for (const k of logKeys) {
+      const log = loadJSON(k, null);
+      if (!log) continue;
+      let touched = false;
+      (log.exercises || []).forEach(ex => {
+        if (!sameExName(ex.name, exName)) return;
+        (ex.sets || []).forEach(s => {
+          if (s.weight !== undefined && s.weight !== '') { s.weight = convertWeightValue(s.weight, factor); touched = true; }
+        });
+      });
+      if (touched) {
+        log.totalVolume = sessionTotalVolume(log.exercises);
+        await saveJSON(k, log);
+      }
+    }
+    const bestLifts = await loadJSON('bestLifts', {});
+    if (bestLifts[key] !== undefined) {
+      bestLifts[key] = convertWeightValue(bestLifts[key], factor);
+      await saveJSON('bestLifts', bestLifts);
+    }
+    if (draft) {
+      let draftTouched = false;
+      (draft.exercises || []).forEach(ex => {
+        if (!sameExName(ex.name, exName)) return;
+        (ex.sets || []).forEach(s => {
+          if (s.weight !== undefined && s.weight !== '') { s.weight = convertWeightValue(s.weight, factor); draftTouched = true; }
+        });
+      });
+      if (draftTouched) await saveJSON('draft', draft);
+    }
+    historyEntries = []; // force a fresh reload from the converted logs
+  }
+  return true;
 }
 /* Scoped unit fix — for correcting one exercise, one session, or one saved
    log when the unit toggle was mispressed, without touching the rest of
@@ -5050,9 +5355,15 @@ async function convertStoredUnits(oldUnit, newUnit) {
 function renderSettings(root) {
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Settings</div>
-    <h1 class="big">Settings</h1>
     <div class="section-label">Profile</div>
     <div class="list-item static"><div class="li-name">${account.username}</div></div>
+    <div class="section-label">Appearance</div>
+    <div class="palette-grid" id="paletteGrid">
+      ${ACCENT_PALETTES.map(p => `
+        <button class="palette-swatch ${((settings.accentHue ?? 170) === p.hue) ? 'selected' : ''}" data-hue="${p.hue}" title="${p.name}" style="background: hsl(${p.hue}, 88%, 51%);">
+          ${((settings.accentHue ?? 170) === p.hue) ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L9 17L20 6"/></svg>' : ''}
+        </button>`).join('')}
+    </div>
     <div class="section-label">Program</div>
     <div class="list-item" id="programRow"><div><div class="li-name">${programTitleLabel(programType)}</div><div class="li-meta">${programMetaLabel(programType, programDays)}</div></div><div class="li-right">Change ›</div></div>
     <div class="section-label">Exercises</div>
@@ -5074,6 +5385,35 @@ function renderSettings(root) {
       <button class="chip ${settings.units==='kg'?'selected':''}" id="unitKg">kg</button>
       <button class="chip ${settings.units==='lb'?'selected':''}" id="unitLb">lb</button>
     </div>
+    <div class="section-label">Timer</div>
+    <p class="progress-help">Quick access to the rest timer/stopwatch from any screen.</p>
+    <div class="chip-grid" id="timerEnabledGrid">
+      <button class="chip ${settings.timerEnabled!==false?'selected':''}" data-v="on">On</button>
+      <button class="chip ${settings.timerEnabled===false?'selected':''}" data-v="off">Off</button>
+    </div>
+    ${settings.timerEnabled!==false ? `
+    <div class="chip-grid" id="timerDisplayGrid">
+      <button class="chip ${settings.timerDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
+      <button class="chip ${settings.timerDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
+    </div>` : ''}
+    <div class="section-label">Notes</div>
+    <p class="progress-help">Keep a program, cues, or anything else handy from any screen.</p>
+    <div class="chip-grid" id="notesEnabledGrid">
+      <button class="chip ${settings.notesEnabled!==false?'selected':''}" data-v="on">On</button>
+      <button class="chip ${settings.notesEnabled===false?'selected':''}" data-v="off">Off</button>
+    </div>
+    ${settings.notesEnabled!==false ? `
+    <div class="chip-grid" id="notesDisplayGrid">
+      <button class="chip ${settings.notesDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
+      <button class="chip ${settings.notesDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
+    </div>` : ''}
+    ${hotbarWillHaveContent(settings) ? `
+    <div class="section-label">Hotbar position</div>
+    <p class="progress-help">Where the Timer/Notes bar sits on screen — stays fixed while you scroll either way.</p>
+    <div class="chip-grid" id="hotbarPosGrid">
+      <button class="chip ${settings.hotbarPosition!=='bottom'?'selected':''}" data-v="top">Top</button>
+      <button class="chip ${settings.hotbarPosition==='bottom'?'selected':''}" data-v="bottom">Bottom</button>
+    </div>` : ''}
     <div class="section-label">Legal</div>
     <div class="list-item" id="termsRow"><div class="li-name">Terms &amp; Conditions</div><div class="li-right">›</div></div>
     <div class="list-item" id="privacyRow"><div class="li-name">Privacy Policy</div><div class="li-right">›</div></div>
@@ -5082,6 +5422,14 @@ function renderSettings(root) {
     <button class="btn-secondary btn-danger" id="logoutBtn">Log Out</button>
   `;
   root.querySelector('#backBtn').onclick = () => goBack();
+  root.querySelectorAll('#paletteGrid .palette-swatch').forEach(btn => {
+    btn.onclick = async () => {
+      settings.accentHue = parseInt(btn.dataset.hue, 10);
+      await saveJSON('settings', settings);
+      applyAccentHue(settings.accentHue);
+      renderSettings(root);
+    };
+  });
   root.querySelector('#programRow').onclick = () => goTo('settings-program');
   const dayList = root.querySelector('#exerciseDayList');
   programDays.forEach(day => {
@@ -5162,6 +5510,48 @@ function renderSettings(root) {
     showToast('Converted your data to lb');
     render();
   };
+  root.querySelectorAll('#hotbarPosGrid .chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.hotbarPosition = btn.dataset.v;
+      await saveJSON('settings', settings);
+      placeHotbar();
+      root.querySelectorAll('#hotbarPosGrid .chip').forEach(b => b.classList.toggle('selected', b === btn));
+    };
+  });
+  root.querySelectorAll('#timerEnabledGrid .chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.timerEnabled = (btn.dataset.v === 'on');
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSettings(root); // re-render just this screen's content in place, no full-app rebuild/animation
+    };
+  });
+  const timerDisplayGrid = root.querySelector('#timerDisplayGrid');
+  if (timerDisplayGrid) timerDisplayGrid.querySelectorAll('.chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.timerDisplay = btn.dataset.v;
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSettings(root);
+    };
+  });
+  root.querySelectorAll('#notesEnabledGrid .chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.notesEnabled = (btn.dataset.v === 'on');
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSettings(root);
+    };
+  });
+  const notesDisplayGrid = root.querySelector('#notesDisplayGrid');
+  if (notesDisplayGrid) notesDisplayGrid.querySelectorAll('.chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.notesDisplay = btn.dataset.v;
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSettings(root);
+    };
+  });
   root.querySelector('#termsRow').onclick = () => showLegalDoc('Terms & Conditions', TERMS_HTML);
   root.querySelector('#privacyRow').onclick = () => showLegalDoc('Privacy Policy', PRIVACY_HTML);
   root.querySelector('#backupBtn').onclick = () => goTo('settings-backup');
@@ -5170,6 +5560,7 @@ function renderSettings(root) {
     await supabase.auth.signOut();
     account = null;
     loggedIn = false;
+    updateHotbarVisibility();
     goTo('login');
   };
 }
@@ -5353,129 +5744,13 @@ function renderSettingsBackup(root) {
   };
 }
 
-/* ---------- floating rest timer widget ----------
-   Lives outside #app so render() never touches or destroys it — it stays
-   on screen and keeps ticking no matter what screen you navigate to,
-   including settings, login, etc. Drag it anywhere; tap (without dragging)
-   to open the control panel. rwPos/rwOpen/rwFab/rwPanelEl are declared
-   with the rest of the global state near the top of the file. */
-function rwClamp() {
-  const w = window.innerWidth, h = window.innerHeight;
-  const size = 52;
-  rwPos.x = Math.min(Math.max(rwPos.x, 8), w - size - 8);
-  rwPos.y = Math.min(Math.max(rwPos.y, 8), h - size - 8);
-}
-function rwApplyPos(x, y) {
-  if (!rwFab) return;
-  rwFab.style.left = x + 'px';
-  rwFab.style.top = y + 'px';
-}
-function rwClampAndApply() {
-  if (!rwFab) return;
-  rwClamp();
-  rwApplyPos(rwPos.x, rwPos.y);
-}
-/* Smooth, low-friction "puck on a powdered board" glide: while dragging, the
-   FAB doesn't jump straight to the pointer — it eases toward it every frame,
-   so it always trails a touch behind the finger instead of feeling rigidly
-   pinned to it. rwRenderX/Y is the on-screen position; rwPos is the target
-   the finger is dragging toward. */
-let rwRenderX = null, rwRenderY = null, rwGlideFrame = null, rwGliding = false;
-function rwStepGlide() {
-  const lerp = 0.22;
-  rwRenderX += (rwPos.x - rwRenderX) * lerp;
-  rwRenderY += (rwPos.y - rwRenderY) * lerp;
-  rwApplyPos(rwRenderX, rwRenderY);
-  if (rwGliding || Math.abs(rwPos.x - rwRenderX) > 0.3 || Math.abs(rwPos.y - rwRenderY) > 0.3) {
-    rwGlideFrame = requestAnimationFrame(rwStepGlide);
-  } else {
-    rwRenderX = rwPos.x; rwRenderY = rwPos.y;
-    rwApplyPos(rwRenderX, rwRenderY);
-    rwGlideFrame = null;
-  }
-}
-function rwStartGlide() {
-  if (rwRenderX === null) { rwRenderX = rwPos.x; rwRenderY = rwPos.y; }
-  if (!rwGlideFrame) rwGlideFrame = requestAnimationFrame(rwStepGlide);
-}
-function rwStopGlide() {
-  rwGliding = false;
-  if (rwGlideFrame) { cancelAnimationFrame(rwGlideFrame); rwGlideFrame = null; }
-  rwRenderX = rwPos.x; rwRenderY = rwPos.y;
-}
-/* Snaps the FAB to whichever horizontal edge is closer once a drag ends —
-   crossing the midpoint of the screen sends it to the opposite edge, the
-   same way chat-head style floating buttons behave. */
-/* Throwing the FAB used to just drop it wherever the finger let go — no
-   carry-through, so a real flick barely moved it. This gives it momentum:
-   it launches at the speed of the last bit of the drag and decelerates
-   like something sliding across a surface — fast at first, then tapering
-   off to a stop — before snapping to whichever edge it lands nearest. */
-let rwFlingFrame = null;
-function rwCancelFling() {
-  if (rwFlingFrame) { cancelAnimationFrame(rwFlingFrame); rwFlingFrame = null; }
-}
-function rwStartFling(vx, vy, startedLeft) {
-  rwCancelFling();
-  // vx/vy come in as px/ms; scale to px/frame at a nominal 60fps for the loop below,
-  // then knock it down hard — a straight 1:1 translation of flick speed felt way too fast.
-  // Snappy launch — most of the flick's actual speed carries through — but
-  // heavier friction so it dies out quickly instead of drifting.
-  let velX = vx * 16 * 0.6, velY = vy * 16 * 0.6;
-  const friction = 0.86; // per-frame decay — sharper taper, stops in a beat
-  const minVel = 0.4; // px/frame — below this it's effectively stopped
-  function step() {
-    rwPos.x += velX; rwPos.y += velY;
-    const beforeX = rwPos.x, beforeY = rwPos.y;
-    rwClamp();
-    // Hitting a wall kills velocity on that axis instead of pinning it there
-    // at full speed forever.
-    if (rwPos.x !== beforeX) velX = 0;
-    if (rwPos.y !== beforeY) velY = 0;
-    rwRenderX = rwPos.x; rwRenderY = rwPos.y;
-    rwApplyPos(rwRenderX, rwRenderY);
-    if (rwOpen) rwPositionPanel();
-    velX *= friction; velY *= friction;
-    if (Math.abs(velX) > minVel || Math.abs(velY) > minVel) {
-      rwFlingFrame = requestAnimationFrame(step);
-    } else {
-      rwFlingFrame = null;
-      rwSnapToEdge(startedLeft);
-      saveJSON('restWidgetPos', { x: rwPos.x, y: rwPos.y });
-    }
-  }
-  rwFlingFrame = requestAnimationFrame(step);
-}
-/* Estimates release velocity from the tail of the drag (samples from the
-   last ~100ms) rather than the whole gesture, so a flick-then-hold-still
-   correctly reads as "no throw" instead of averaging in the fast part. */
-function rwComputeVelocity(samples) {
-  if (samples.length < 2) return { vx: 0, vy: 0 };
-  const last = samples[samples.length - 1];
-  let ref = samples[0];
-  for (let i = samples.length - 2; i >= 0; i--) {
-    if (last.t - samples[i].t <= 100) ref = samples[i]; else break;
-  }
-  const dt = last.t - ref.t;
-  if (dt <= 0) return { vx: 0, vy: 0 };
-  return { vx: (last.x - ref.x) / dt, vy: (last.y - ref.y) / dt };
-}
-function rwSnapToEdge(startedLeft) {
-  if (!rwFab) return;
-  const w = window.innerWidth, h = window.innerHeight;
-  const size = 52;
-  const center = rwPos.x + size / 2;
-  const thirdMark = startedLeft ? w / 3 : (w * 2) / 3;
-  const targetX = (center < thirdMark) ? 8 : (w - size - 8);
-  rwPos.x = targetX;
-  rwPos.y = Math.min(Math.max(rwPos.y, 8), h - size - 8);
-  rwFab.classList.add('rw-snapping');
-  rwClampAndApply();
-  rwRenderX = rwPos.x; rwRenderY = rwPos.y;
-  if (rwOpen) rwPositionPanel();
-  setTimeout(() => { if (rwFab) rwFab.classList.remove('rw-snapping'); }, 260);
-}
-
+/* ---------- rest timer / stopwatch panel ----------
+   The control panel is opened from the static "timer" half of the top
+   hotbar (see initHotbar() below) instead of a draggable floating button —
+   rwOpen/rwPanelEl are declared with the rest of the global state near the
+   top of the file. The timer/stopwatch state itself (restEndTime,
+   swStartTimestamp, etc.) is unchanged and keeps ticking across every
+   screen exactly like before. */
 function rwFabLabel() {
   if (restEndTime != null || restPaused) {
     const m = Math.max(0, Math.floor(restRemaining/60));
@@ -5486,31 +5761,6 @@ function rwFabLabel() {
     return formatStopwatch(currentStopwatchMs());
   }
   return null;
-}
-
-/* Only show the floating rest-timer/stopwatch FAB while a workout is
-   actively being tracked (i.e. a draft session exists) — never during
-   onboarding/auth, and never on home/settings/logs/etc. once there's no
-   active session. It stays visible across any screen as long as tracking
-   is in progress, and disappears the moment the session ends (Finish
-   Tracking) or the in-progress draft is otherwise cleared. */
-function updateRestWidgetVisibility() {
-  const container = document.getElementById('restWidget');
-  if (!container) return;
-  const shouldShow = !!draft;
-  if (!shouldShow) {
-    if (typeof rwOpen !== 'undefined' && rwOpen) rwClosePanel();
-    container.classList.add('rw-widget-hidden');
-  } else {
-    container.classList.remove('rw-widget-hidden');
-  }
-}
-
-function updateRestWidgetUI() {
-  if (!rwFab) return;
-  const label = rwFabLabel();
-  rwFab.innerHTML = label ? label : `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 9v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 2h6M12 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
-  if (rwOpen) rwRenderPanel();
 }
 
 function rwRenderPanel() {
@@ -5614,21 +5864,27 @@ function rwRenderPanel() {
   };
 }
 
+/* Anchors the panel under (or, if there's no room below — e.g. the hotbar
+   is in "bottom" mode — above) the "timer" half of the hotbar. Live
+   getBoundingClientRect() means this works correctly no matter where the
+   hotbar actually sits, without hardcoding per-mode offsets. */
 function rwPositionPanel() {
-  if (!rwPanelEl || !rwFab) return;
+  if (!rwPanelEl || !hbTimerBtn) return;
   const w = window.innerWidth, h = window.innerHeight;
-  const panelW = 220, panelH = 260;
-  const fabRect = { left: rwPos.x, top: rwPos.y, size: 52 };
-  let left = fabRect.left + fabRect.size + 12;
-  if (left + panelW > w - 8) left = fabRect.left - panelW - 12;
-  if (left < 8) left = Math.min(Math.max(fabRect.left, 8), w - panelW - 8);
-  let top = fabRect.top;
-  if (top + panelH > h - 8) top = Math.max(8, h - panelH - 8);
+  const panelW = 220, panelH = 300;
+  const btnRect = hbTimerBtn.getBoundingClientRect();
+  let left = btnRect.right - panelW;
+  if (left < 8) left = 8;
+  if (left + panelW > w - 8) left = w - panelW - 8;
+  const spaceBelow = h - btnRect.bottom;
+  let top = (spaceBelow >= panelH + 10 || btnRect.top < panelH) ? btnRect.bottom + 10 : btnRect.top - panelH - 10;
+  top = Math.max(8, Math.min(top, h - panelH - 8));
   rwPanelEl.style.left = left + 'px';
   rwPanelEl.style.top = top + 'px';
 }
 
 function rwOpenPanel() {
+  closeNotesPanel();
   rwOpen = true;
   rwPanelEl = document.createElement('div');
   rwPanelEl.className = 'rw-panel';
@@ -5638,7 +5894,7 @@ function rwOpenPanel() {
   setTimeout(() => document.addEventListener('pointerdown', rwOutsideClick), 0);
 }
 function rwOutsideClick(e) {
-  if (rwPanelEl && !rwPanelEl.contains(e.target) && !(rwFab && rwFab.contains(e.target))) rwClosePanel();
+  if (rwPanelEl && !rwPanelEl.contains(e.target) && !(hbTimerBtn && hbTimerBtn.contains(e.target))) rwClosePanel();
 }
 function rwClosePanel() {
   rwOpen = false;
@@ -5653,73 +5909,10 @@ function rwClosePanel() {
 }
 
 function initRestWidget() {
-  const container = document.getElementById('restWidget');
-  const savedPos = loadJSON('restWidgetPos', null);
-  if (savedPos && typeof savedPos.x === 'number' && typeof savedPos.y === 'number') rwPos = savedPos;
-  else { rwPos = { x: window.innerWidth - 66, y: window.innerHeight - 220 }; }
-
-  rwFab = document.createElement('button');
-  rwFab.className = 'rw-fab';
-  rwFab.setAttribute('aria-label', 'Rest timer');
-  container.appendChild(rwFab);
-
-  rwClampAndApply();
-  updateRestWidgetUI();
-
-  let dragging = false, moved = false, startX = 0, startY = 0, origX = 0, origY = 0;
-  let rwMoveSamples = [];
-  rwFab.addEventListener('pointerdown', (e) => {
-    dragging = true; moved = false;
-    startX = e.clientX; startY = e.clientY;
-    origX = rwPos.x; origY = rwPos.y;
-    rwCancelFling();
-    rwMoveSamples = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
-    rwFab.setPointerCapture(e.pointerId);
-    rwFab.classList.add('rw-dragging');
-  });
-  rwFab.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - startX, dy = e.clientY - startY;
-    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) moved = true;
-    if (moved) {
-      rwPos.x = origX + dx; rwPos.y = origY + dy;
-      rwClamp();
-      // Track the finger directly while dragging — no lag here. The eased
-      // glide is reserved for after release (fling/edge-snap), so it
-      // doesn't fall behind mid-drag and then jump to catch up.
-      rwStopGlide();
-      rwApplyPos(rwPos.x, rwPos.y);
-      if (rwOpen) rwPositionPanel();
-      rwMoveSamples.push({ x: e.clientX, y: e.clientY, t: performance.now() });
-      if (rwMoveSamples.length > 8) rwMoveSamples.shift();
-    }
-  });
-  const endDrag = (e) => {
-    if (!dragging) return;
-    dragging = false;
-    rwFab.classList.remove('rw-dragging');
-    if (moved) {
-      rwStopGlide();
-      const startedLeft = (origX + 23) < window.innerWidth / 2;
-      const { vx, vy } = rwComputeVelocity(rwMoveSamples);
-      if (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05) {
-        rwStartFling(vx, vy, startedLeft);
-      } else {
-        rwSnapToEdge(startedLeft);
-        saveJSON('restWidgetPos', { x: rwPos.x, y: rwPos.y });
-      }
-    } else {
-      rwStopGlide();
-      if (rwOpen) rwClosePanel(); else rwOpenPanel();
-    }
-  };
-  rwFab.addEventListener('pointerup', endDrag);
-  rwFab.addEventListener('pointercancel', endDrag);
-
   let rwResizeDebounce = null;
   window.addEventListener('resize', () => {
     clearTimeout(rwResizeDebounce);
-    rwResizeDebounce = setTimeout(() => { rwClampAndApply(); if (rwOpen) rwPositionPanel(); }, 200);
+    rwResizeDebounce = setTimeout(() => { if (rwOpen) rwPositionPanel(); }, 200);
   });
 
   // Restore any timer that was running or paused before the app closed.
@@ -5730,7 +5923,6 @@ function initRestWidget() {
       restPaused = true;
       restRemaining = saved.remaining || 0;
       updateRestDisplay();
-      updateRestWidgetUI();
     } else if (saved.endTime && saved.endTime > Date.now()) {
       restEndTime = saved.endTime;
       restAlarmFired = false;
@@ -5753,11 +5945,281 @@ function initRestWidget() {
       updateStopwatchDisplay();
     }
   }
-  updateRestWidgetUI();
-  updateRestWidgetVisibility();
+  updateHotbarTimerLabel();
+}
+
+/* ---------- top hotbar (timer + notes) ----------
+   Each of Timer/Notes can independently be off, shown in the hotbar, or
+   shown as its own small floating widget button (settings.timerEnabled/
+   timerDisplay and notesEnabled/notesDisplay). hbTimerBtn/hbNotesBtn
+   always point at whichever element currently triggers that feature
+   (hotbar half or widget button) so rwPositionPanel()/positionNotesPanel()
+   don't need to care which mode is active. refreshHotbarLayout() rebuilds
+   both the hotbar pill and the widget stack any time a relevant setting
+   changes. Both containers are position:fixed so neither scrolls away. */
+/* Whether the hotbar pill itself will show anything at all, given a
+   settings object — used to hide the "Hotbar position" setting entirely
+   when both Timer and Notes are off or set to "Floating widget", since a
+   position setting for an empty/invisible bar makes no sense. */
+function hotbarWillHaveContent(s) {
+  const timerOnBar = s.timerEnabled !== false && s.timerDisplay !== 'widget';
+  const notesOnBar = s.notesEnabled !== false && s.notesDisplay !== 'widget';
+  return timerOnBar || notesOnBar;
+}
+
+function initHotbar() {
+  refreshHotbarLayout();
+  updateHotbarVisibility();
+}
+
+/* Rebuilds the hotbar pill (0/1/2 items — a single item fills the whole
+   pill and centers, matching "big, centered" for a lone feature) and the
+   floating-widget stack, then re-wires their click handlers. Call this
+   whenever timerEnabled/notesEnabled/timerDisplay/notesDisplay/
+   hotbarPosition changes. */
+function refreshHotbarLayout() {
+  const hotbar = document.getElementById('hotbar');
+  const widgets = document.getElementById('hbWidgets');
+  if (!hotbar || !widgets) return;
+  const timerOn = settings.timerEnabled !== false;
+  const notesOn = settings.notesEnabled !== false;
+  const timerOnBar = timerOn && settings.timerDisplay !== 'widget';
+  const notesOnBar = notesOn && settings.notesDisplay !== 'widget';
+  const timerWidget = timerOn && settings.timerDisplay === 'widget';
+  const notesWidget = notesOn && settings.notesDisplay === 'widget';
+
+  const barItems = (timerOnBar ? 1 : 0) + (notesOnBar ? 1 : 0);
+  if (barItems === 0) {
+    hotbar.innerHTML = '';
+    hotbar.classList.add('hb-empty');
+  } else {
+    hotbar.classList.remove('hb-empty');
+    hotbar.innerHTML = `
+      <div class="hb-pill ${barItems === 1 ? 'hb-single' : ''}">
+        ${timerOnBar ? `<button class="hb-btn" id="hbTimerBtn" aria-label="Timer">Timer</button>` : ''}
+        ${notesOnBar ? `<button class="hb-btn" id="hbNotesBtn" aria-label="Notes">Notes</button>` : ''}
+      </div>`;
+  }
+
+  let widgetsHtml = '';
+  if (timerWidget) widgetsHtml += `<button class="hb-widget-btn" id="hbTimerWidgetBtn" aria-label="Timer">${HB_TIMER_ICON_SVG}</button>`;
+  if (notesWidget) widgetsHtml += `<button class="hb-widget-btn" id="hbNotesWidgetBtn" aria-label="Notes">${HB_NOTES_ICON_SVG}</button>`;
+  widgets.innerHTML = widgetsHtml;
+
+  hbTimerBtn = document.getElementById('hbTimerBtn') || document.getElementById('hbTimerWidgetBtn') || null;
+  hbNotesBtn = document.getElementById('hbNotesBtn') || document.getElementById('hbNotesWidgetBtn') || null;
+  if (hbTimerBtn) hbTimerBtn.onclick = () => {
+    ensureAudioCtx();
+    if (rwOpen) rwClosePanel(); else rwOpenPanel();
+  };
+  if (hbNotesBtn) hbNotesBtn.onclick = () => {
+    if (notesOpen) closeNotesPanel(); else openNotesPanel();
+  };
+  // If a feature just got turned off (or switched away from its current
+  // display mode) while its panel was open, that trigger no longer exists
+  // — close the now-orphaned panel instead of leaving it stranded.
+  if (rwOpen && !document.getElementById('hbTimerBtn') && !document.getElementById('hbTimerWidgetBtn')) rwClosePanel();
+  if (notesOpen && !document.getElementById('hbNotesBtn') && !document.getElementById('hbNotesWidgetBtn')) closeNotesPanel();
+
+  placeHotbar();
+  updateHotbarTimerLabel();
+}
+
+function updateHotbarTimerLabel() {
+  if (hbTimerBtn) {
+    const label = rwFabLabel();
+    // The widget button is a small circle with no room for "Timer" text
+    // when idle — it shows an icon instead, swapping to the live
+    // countdown/stopwatch text only while something is actually running.
+    if (hbTimerBtn.id === 'hbTimerWidgetBtn') {
+      hbTimerBtn.innerHTML = label || HB_TIMER_ICON_SVG;
+    } else {
+      hbTimerBtn.textContent = label || 'Timer';
+    }
+    hbTimerBtn.classList.toggle('hb-running', !!label);
+  }
+  if (rwOpen) rwRenderPanel();
+}
+
+/* Two hotbar placements only: 'top' (fixed just below the status bar /
+   notch, above every screen's title) or 'bottom' (fixed just above the
+   home indicator / gesture bar). #app gets matching reserved padding so
+   content never sits underneath it. The floating-widget stack is always
+   bottom-right, but is nudged up above the hotbar if the hotbar is also
+   in 'bottom' mode and currently showing something, so the two never
+   overlap. Called on boot, whenever a relevant setting changes, and
+   after login. */
+function placeHotbar() {
+  const container = document.getElementById('hotbar');
+  const widgets = document.getElementById('hbWidgets');
+  const app = document.getElementById('app');
+  if (!container || !app) return;
+  const pos = (settings.hotbarPosition === 'bottom') ? 'bottom' : 'top';
+  const hotbarHasContent = !container.classList.contains('hb-empty') && !container.classList.contains('hb-hidden');
+  container.classList.remove('hb-pos-top', 'hb-pos-bottom');
+  container.classList.add('hb-pos-' + pos);
+  app.classList.remove('app-hb-top', 'app-hb-bottom', 'app-hb-none');
+  app.classList.add('app-hb-' + (hotbarHasContent ? pos : 'none'));
+  if (widgets) {
+    const extra = (pos === 'bottom' && hotbarHasContent) ? 62 : 0;
+    widgets.style.setProperty('--hb-widget-extra', extra + 'px');
+  }
+  if (rwOpen) rwPositionPanel();
+  if (notesOpen) positionNotesPanel();
+}
+
+/* The hotbar/widgets (and their panels) only make sense once someone is
+   signed in and past auth — hidden during loading/register/login so they
+   don't appear over the splash/auth screens. */
+function updateHotbarVisibility() {
+  const container = document.getElementById('hotbar');
+  const widgets = document.getElementById('hbWidgets');
+  if (!container || !widgets) return;
+  if (!loggedIn) {
+    if (rwOpen) rwClosePanel();
+    closeNotesPanel();
+    container.classList.add('hb-hidden');
+    widgets.classList.add('hb-hidden');
+  } else {
+    container.classList.remove('hb-hidden');
+    widgets.classList.remove('hb-hidden');
+  }
+}
+
+/* ---------- notes panel ----------
+   Multiple free-form notes (e.g. a program copied over from WhatsApp),
+   shown as tabs — tap a tab to switch, edits auto-save (debounced) as you
+   type. Synced via the same app_state cloud-sync path as everything else
+   (see CLOUD_SYNC_KEYS / pushCloudAppState). Positioned live under (or,
+   if there's no room, above) whichever element currently triggers it —
+   the hotbar's "notes" half, or the standalone notes widget button. */
+function positionNotesPanel() {
+  if (!notesPanelEl || !hbNotesBtn) return;
+  const rect = hbNotesBtn.getBoundingClientRect();
+  const w = window.innerWidth, h = window.innerHeight;
+  const panelW = Math.min(340, w - 16);
+  const panelH = Math.min(520, h * 0.72);
+  let left = rect.right - panelW;
+  if (left < 8) left = 8;
+  if (left + panelW > w - 8) left = w - panelW - 8;
+  const spaceBelow = h - rect.bottom;
+  let top = (spaceBelow >= panelH + 10) ? rect.bottom + 8 : Math.max(8, rect.top - panelH - 8);
+  notesPanelEl.style.left = left + 'px';
+  notesPanelEl.style.top = top + 'px';
+  notesPanelEl.style.width = panelW + 'px';
+}
+
+function openNotesPanel() {
+  rwClosePanel();
+  notesOpen = true;
+  notesOverlayEl = document.createElement('div');
+  notesOverlayEl.className = 'notes-overlay';
+  notesOverlayEl.onclick = () => closeNotesPanel();
+  notesPanelEl = document.createElement('div');
+  notesPanelEl.className = 'notes-panel';
+  positionNotesPanel();
+  document.getElementById('notesRoot').appendChild(notesOverlayEl);
+  document.getElementById('notesRoot').appendChild(notesPanelEl);
+  renderNotesPanel();
+}
+
+function closeNotesPanel() {
+  if (notesSaveDebounce) { clearTimeout(notesSaveDebounce); notesSaveDebounce = null; }
+  notesOpen = false;
+  if (notesOverlayEl) { notesOverlayEl.remove(); notesOverlayEl = null; }
+  if (notesPanelEl) { notesPanelEl.remove(); notesPanelEl = null; }
+}
+
+function persistNotes() { saveJSON('notes', notes); }
+
+function createNote() {
+  const n = { id: uid(), title: 'Untitled', text: '', updatedAt: Date.now() };
+  notes.push(n);
+  activeNoteId = n.id;
+  persistNotes();
+  renderNotesPanel();
+}
+
+function deleteActiveNote() {
+  if (!activeNoteId) return;
+  appConfirmDelete('Delete this note?').then((ok) => {
+    if (!ok) return;
+    notes = notes.filter(n => n.id !== activeNoteId);
+    activeNoteId = notes.length ? notes[0].id : null;
+    persistNotes();
+    renderNotesPanel();
+  });
+}
+
+function renderNotesPanel() {
+  if (!notesPanelEl) return;
+  const active = notes.find(n => n.id === activeNoteId) || null;
+  const tabsHtml = notes.map(n => `
+    <button class="notes-tab ${n.id === activeNoteId ? 'active' : ''}" data-id="${n.id}">${(n.title || 'Untitled').replace(/</g,'&lt;')}</button>
+  `).join('');
+  notesPanelEl.innerHTML = `
+    <div class="notes-card">
+      <div class="notes-tabs">
+        ${tabsHtml}
+        <button class="notes-tab-add" id="notesAddBtn" aria-label="New note">+</button>
+        <button class="notes-close-btn" id="notesCloseBtn" style="margin-left:auto;">&times;</button>
+      </div>
+      ${active ? `
+        <div class="notes-body">
+          <div class="notes-title-row">
+            <input class="notes-title-input" id="notesTitleInput" value="${(active.title || '').replace(/"/g,'&quot;')}" placeholder="Note title">
+            <button class="notes-delete-btn" id="notesDeleteBtn" title="Delete note">${ICON_TRASH_SVG}</button>
+          </div>
+          <textarea class="notes-textarea" id="notesTextArea" placeholder="Paste or write your program here...">${active.text || ''}</textarea>
+          <div class="notes-save-state" id="notesSaveState"></div>
+        </div>
+      ` : `
+        <div class="notes-body">
+          <div class="notes-empty">
+            No notes yet — add one to keep your program, cues, or anything else handy from any screen.
+            <div><button class="chip wide" id="notesEmptyAddBtn">+ New note</button></div>
+          </div>
+        </div>
+      `}
+    </div>
+  `;
+  notesPanelEl.querySelector('#notesCloseBtn').onclick = () => closeNotesPanel();
+  notesPanelEl.querySelector('#notesAddBtn').onclick = () => createNote();
+  const emptyAddBtn = notesPanelEl.querySelector('#notesEmptyAddBtn');
+  if (emptyAddBtn) emptyAddBtn.onclick = () => createNote();
+  notesPanelEl.querySelectorAll('.notes-tab').forEach(tab => {
+    tab.onclick = () => {
+      activeNoteId = tab.dataset.id;
+      renderNotesPanel();
+    };
+  });
+  if (active) {
+    const titleInput = notesPanelEl.querySelector('#notesTitleInput');
+    const textArea = notesPanelEl.querySelector('#notesTextArea');
+    const saveStateEl = notesPanelEl.querySelector('#notesSaveState');
+    const scheduleSave = () => {
+      if (saveStateEl) saveStateEl.textContent = 'Saving...';
+      if (notesSaveDebounce) clearTimeout(notesSaveDebounce);
+      notesSaveDebounce = setTimeout(() => {
+        active.title = titleInput.value.trim() || 'Untitled';
+        active.text = textArea.value;
+        active.updatedAt = Date.now();
+        persistNotes();
+        // Only the tab label needs to reflect a title change live; re-rendering
+        // the whole panel here would steal focus mid-type.
+        const tabEl = notesPanelEl.querySelector(`.notes-tab[data-id="${active.id}"]`);
+        if (tabEl) tabEl.textContent = active.title;
+        if (saveStateEl) saveStateEl.textContent = 'Saved';
+      }, 500);
+    };
+    titleInput.oninput = scheduleSave;
+    textArea.oninput = scheduleSave;
+    notesPanelEl.querySelector('#notesDeleteBtn').onclick = () => deleteActiveNote();
+  }
 }
 
 /* ---------- boot ---------- */
+initHotbar();
 initRestWidget();
 boot();
 // Instant press feedback for icon buttons — CSS :active can lag on touch
