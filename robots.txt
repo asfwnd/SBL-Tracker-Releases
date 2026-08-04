@@ -1,5 +1,4 @@
-User-agent:
-
+User-agent: *
 Allow: /
 
 Sitemap: https://sbltracker.pages.dev/sitemap.xml
