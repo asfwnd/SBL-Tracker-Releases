@@ -1,4 +1,4 @@
-const CACHE = 'sbl-tracker-v2'; // bumped: now also caches the icon files the themed-icon regeneration reads from
+const CACHE = 'sbl-tracker-v3'; // bumped after the manifest blob->data URI fix
 
 self.addEventListener('install', (e) => {
   e.waitUntil(

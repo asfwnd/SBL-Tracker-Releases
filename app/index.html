@@ -725,7 +725,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.6';
+const APP_VERSION = '1.1.7';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -2090,11 +2090,15 @@ function regenerateThemedManifest(hue, satMult) {
       { src: c512.toDataURL('image/png'), sizes: '512x512', type: 'image/png' },
     ],
   };
-  const url = URL.createObjectURL(new Blob([JSON.stringify(manifestObj)], { type: 'application/json' }));
-  const old = document.querySelector('link[rel="manifest"]');
-  const oldBlobUrl = old ? old.getAttribute('data-blob-url') : null;
-  const link = setOrCreateLink('manifest', url, { 'data-blob-url': url });
-  if (oldBlobUrl) URL.revokeObjectURL(oldBlobUrl); // free the previous generation once the new one's live
+  // data: URI instead of blob: — Chrome's "Add to Home Screen" flow reads
+  // whatever's in <link rel="manifest"> at the moment the user taps install.
+  // blob: URLs are session-scoped object references that some Chromium
+  // versions/WebView builds fail to resolve in time for that flow (and need
+  // manual revoke bookkeeping); a data: URI is just inline bytes, so it's
+  // resolved synchronously and there's no lifecycle to manage or race to lose.
+  const json = JSON.stringify(manifestObj);
+  const dataUrl = 'data:application/json;base64,' + btoa(unescape(encodeURIComponent(json)));
+  setOrCreateLink('manifest', dataUrl);
 }
 // Common recent-iPhone CSS-px/device-pixel-ratio pairs (Apple's own published
 // resolutions) — covers most phones people actually use today. Android's
@@ -7402,22 +7406,60 @@ function updateHotbarVisibility() {
    the hotbar's "notes" half, or the standalone notes widget button. */
 function positionNotesPanel() {
   if (!notesPanelEl || !hbNotesBtn) return;
-  const rect = hbNotesBtn.getBoundingClientRect();
-  const w = window.innerWidth, h = window.innerHeight;
+  // visualViewport shrinks (and offsets) when the on-screen keyboard opens;
+  // window.innerHeight/vh in CSS do NOT, on most mobile browsers — using
+  // those here is what let the panel stay full-screen-sized and get its
+  // bottom half (textarea included) hidden behind the keyboard. Falling
+  // back to window.* just means no keyboard is open / API unsupported.
+  const vv = window.visualViewport;
+  const w = vv ? vv.width : window.innerWidth;
+  const h = vv ? vv.height : window.innerHeight;
+  const vvTop = vv ? vv.offsetTop : 0;
+  const vvLeft = vv ? vv.offsetLeft : 0;
   const panelW = Math.min(376, w - 16);
+  // Keep the panel's max-height in sync with the actual visible area —
+  // overrides the CSS `min(840px, 105vh)` cap, which doesn't account for
+  // the keyboard eating into the viewport.
+  notesPanelEl.style.maxHeight = (h - 16) + 'px';
+  const rect = hbNotesBtn.getBoundingClientRect();
   // Once the panel has content, anchor using its real rendered height
   // instead of the rough estimate — a short note list shouldn't reserve
   // room (and get pushed further from the button) as if it were tall.
   const measuredH = notesPanelEl.offsetHeight;
-  const panelH = measuredH > 0 ? measuredH : Math.min(780, h * 1.0);
+  const panelH = Math.min(measuredH > 0 ? measuredH : Math.min(780, h), h - 16);
   let left = rect.right - panelW;
-  if (left < 8) left = 8;
-  if (left + panelW > w - 8) left = w - panelW - 8;
-  const spaceBelow = h - rect.bottom;
-  let top = (spaceBelow >= panelH + 10) ? rect.bottom + 8 : Math.max(8, rect.top - panelH - 8);
+  if (left < vvLeft + 8) left = vvLeft + 8;
+  if (left + panelW > vvLeft + w - 8) left = vvLeft + w - panelW - 8;
+  // If the trigger button is no longer inside the visible (above-keyboard)
+  // area — the common case once the keyboard is up and you've scrolled —
+  // anchoring relative to it makes no sense anymore; just pin the panel
+  // near the top of whatever's currently visible instead.
+  const btnVisible = rect.bottom > vvTop && rect.top < vvTop + h;
+  let top;
+  if (!btnVisible) {
+    top = vvTop + 8;
+  } else {
+    const spaceBelow = (vvTop + h) - rect.bottom;
+    top = (spaceBelow >= panelH + 10) ? rect.bottom + 8 : Math.max(vvTop + 8, rect.top - panelH - 8);
+  }
   notesPanelEl.style.left = left + 'px';
   notesPanelEl.style.top = top + 'px';
   notesPanelEl.style.width = panelW + 'px';
+}
+// Keeps the panel tracking the visible area live as the keyboard opens,
+// closes, or the page gets scrolled to bring the focused textarea into
+// view — without this, positionNotesPanel() only ever ran once, at open
+// time, so the panel just sat there while the keyboard covered it.
+function handleNotesViewportChange() { if (notesOpen) positionNotesPanel(); }
+function attachNotesViewportListeners() {
+  if (!window.visualViewport) return;
+  window.visualViewport.addEventListener('resize', handleNotesViewportChange);
+  window.visualViewport.addEventListener('scroll', handleNotesViewportChange);
+}
+function detachNotesViewportListeners() {
+  if (!window.visualViewport) return;
+  window.visualViewport.removeEventListener('resize', handleNotesViewportChange);
+  window.visualViewport.removeEventListener('scroll', handleNotesViewportChange);
 }
 
 function openNotesPanel() {
@@ -7433,11 +7475,13 @@ function openNotesPanel() {
   positionNotesPanel();
   renderNotesPanel();
   positionNotesPanel();
+  attachNotesViewportListeners();
 }
 
 function closeNotesPanel() {
   if (notesSaveDebounce) { clearTimeout(notesSaveDebounce); notesSaveDebounce = null; }
   notesOpen = false;
+  detachNotesViewportListeners();
   if (notesOverlayEl) { notesOverlayEl.remove(); notesOverlayEl = null; }
   if (notesPanelEl) { notesPanelEl.remove(); notesPanelEl = null; }
 }
