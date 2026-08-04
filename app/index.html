@@ -11,12 +11,17 @@
        teal accent AND the near-black background tint together (see settings'
        accentHue + applyAccentHue()). 170 reproduces the original teal exactly. */
     --hue: 170;
-    --bg: hsl(calc(var(--hue) + 10), 20%, 5%); --panel: hsl(calc(var(--hue) + 22), 24%, 8%); --panel-2: hsl(calc(var(--hue) + 19), 25%, 10%); --border: hsl(calc(var(--hue) + 14), 20%, 15%); --btn-bg: transparent;
-    --teal: hsl(var(--hue), 88%, 51%); --teal-dim: hsl(calc(var(--hue) + 2), 75%, 34%); --teal-glow: hsla(var(--hue), 88%, 51%, 0.5);
-    --teal-a08: hsla(var(--hue), 88%, 51%, 0.08); --teal-a14: hsla(var(--hue), 88%, 51%, 0.14); --teal-a16: hsla(var(--hue), 88%, 51%, 0.16);
-    --teal-ink: hsl(calc(var(--hue) + 1), 68%, 7%); --teal-ink-a18: hsla(calc(var(--hue) + 1), 68%, 7%, 0.18); --teal-ink-a0: hsla(calc(var(--hue) + 1), 68%, 7%, 0);
-    --input-bg: hsl(calc(var(--hue) + 6), 67%, 5%); --muted: hsl(calc(var(--hue) + 4), 15%, 28%);
-    --text: #e4efed; --text-dim: hsl(calc(var(--hue) + 5), 11%, 48%); --amber: #e0a860; --danger: #e5484d; --danger-glow: rgba(229,72,77,0.5);
+    /* --sat-mult scales every saturation figure below (1 = full color, 0 =
+       grayscale/B&W). The color wheel writes both vars together via
+       applyAccentTheme(); the fixed swatches just set --hue and leave
+       --sat-mult at whatever it already was. */
+    --sat-mult: 1;
+    --bg: hsl(calc(var(--hue) + 10), calc(23% * var(--sat-mult)), 5%); --panel: hsl(calc(var(--hue) + 22), calc(27.6% * var(--sat-mult)), 8%); --panel-2: hsl(calc(var(--hue) + 19), calc(28.75% * var(--sat-mult)), 10%); --border: hsl(calc(var(--hue) + 14), calc(23% * var(--sat-mult)), 15%); --btn-bg: transparent;
+    --teal: hsl(var(--hue), calc(100% * var(--sat-mult)), 51%); --teal-dim: hsl(calc(var(--hue) + 2), calc(86.25% * var(--sat-mult)), 34%); --teal-glow: hsla(var(--hue), calc(100% * var(--sat-mult)), 51%, 0.5);
+    --teal-a08: hsla(var(--hue), calc(100% * var(--sat-mult)), 51%, 0.08); --teal-a14: hsla(var(--hue), calc(100% * var(--sat-mult)), 51%, 0.14); --teal-a16: hsla(var(--hue), calc(100% * var(--sat-mult)), 51%, 0.16);
+    --teal-ink: hsl(calc(var(--hue) + 1), calc(78.2% * var(--sat-mult)), 7%); --teal-ink-a18: hsla(calc(var(--hue) + 1), calc(78.2% * var(--sat-mult)), 7%, 0.18); --teal-ink-a0: hsla(calc(var(--hue) + 1), calc(78.2% * var(--sat-mult)), 7%, 0);
+    --input-bg: hsl(calc(var(--hue) + 6), calc(77.05% * var(--sat-mult)), 5%); --muted: hsl(calc(var(--hue) + 4), calc(17.25% * var(--sat-mult)), 28%);
+    --text: #e4efed; --text-dim: hsl(calc(var(--hue) + 5), calc(11% * var(--sat-mult)), 48%); --amber: #e0a860; --danger: #e5484d; --danger-glow: rgba(229,72,77,0.5);
     --gold: #ffcf5c; --gold-glow: rgba(255,207,92,0.5); --blue: #7ab8f5; --blue-glow: rgba(122,184,245,0.4);
     --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -84,11 +89,45 @@
   .badge.down { color: var(--danger); background: rgba(229,72,77,0.14); }
   .badge.flat { color: var(--text-dim); background: var(--panel-2); }
 
-  .palette-grid { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 4px; }
-  .palette-swatch { width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer;
+  .palette-grid { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
+  .palette-swatch { position: relative; width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer;
     display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
   .palette-swatch.selected { border-color: var(--text); }
   .palette-swatch svg { width: 20px; height: 20px; color: #0a0f0f; filter: drop-shadow(0 0 2px rgba(255,255,255,0.5)); }
+  .wheel-toggle-swatch { background: none; box-shadow: none; overflow: hidden; border: none; }
+  .wheel-toggle-swatch.selected { outline: 2.5px solid var(--text); outline-offset: -2.5px; }
+  .wheel-toggle-swatch canvas { width: 100%; height: 100%; border-radius: 50%; display: block; }
+  .appearance-label-row { display: flex; align-items: center; gap: 8px; }
+  .appearance-label-row::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .palette-edit-btn { flex: none; background: none; border: 1.5px solid var(--border); color: var(--teal); font-size: 11.5px;
+    letter-spacing: normal; text-transform: none; font-weight: 700; padding: 5px 13px; border-radius: 999px; cursor: pointer; }
+  .palette-swatch.editing-jiggle { animation: swatchJiggle 0.28s ease-in-out infinite alternate; }
+  .palette-swatch.dragging { animation: none !important; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25), 0 10px 20px rgba(0,0,0,0.5); }
+  @keyframes swatchJiggle { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
+  .swatch-del-btn { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--danger); color: #fff; border: 2px solid var(--bg); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; line-height: 1; cursor: pointer; padding: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  .add-custom-color-btn { width: 100%; margin-top: 6px; }
+
+  .color-wheel-wrap { position: relative; width: 220px; height: 220px; margin: 14px auto 4px; touch-action: none; cursor: pointer; }
+  .color-wheel-wrap canvas { width: 100%; height: 100%; border-radius: 50%; display: block;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35), 0 0 16px -6px rgba(0,0,0,0.6); }
+  .color-wheel-knob { position: absolute; width: 22px; height: 22px; border-radius: 50%; pointer-events: none;
+    border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.5);
+    transform: translate(-50%, -50%); background: var(--teal); }
+  .color-wheel-help { text-align: center; font-size: 12.5px; color: var(--text-dim); margin-bottom: 10px; }
+  .sat-slider-row { margin: 4px 0 20px; }
+  .sat-slider-row .lbl { display: block; margin-bottom: 8px; }
+  .sat-slider-row input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 22px;
+    background: transparent; margin: 0; cursor: pointer; }
+  .sat-slider-row input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px;
+    background: linear-gradient(to right, var(--teal) 0%, var(--teal) var(--fill, 100%), var(--border) var(--fill, 100%), var(--border) 100%); }
+  .sat-slider-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px;
+    border-radius: 50%; background: var(--teal); border: none; margin-top: -8px; box-shadow: 0 1px 4px rgba(0,0,0,0.45); }
+  .sat-slider-row input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--border); }
+  .sat-slider-row input[type="range"]::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--teal); }
+  .sat-slider-row input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%;
+    background: var(--teal); border: none; box-shadow: 0 1px 4px rgba(0,0,0,0.45); }
 
   .section-header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 26px; }
   .section-header-row h1.big { margin: 0; }
@@ -215,6 +254,7 @@
   .list-item:not(.static) .li-name { color: var(--teal); }
   .list-item .li-check { color: var(--teal); font-size: 16px; }
   .list-item .li-meta { font-size: 12.5px; color: var(--text-dim); margin-top: 3px; }
+  .list-item .li-pr { font-size: 12.5px; color: var(--teal); font-weight: 700; margin-top: 3px; }
   .list-item .li-right { display: flex; gap: 10px; align-items: center; color: var(--text-dim); flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
   .list-item .li-right > * { align-self: center; line-height: 1; }
   .drag-handle { background: none; border: none; color: var(--text-dim); cursor: grab; padding: 6px 10px 6px 0; margin-right: 2px; display: flex; align-items: center; justify-content: center; touch-action: none; flex-shrink: 0; transition: color .38s var(--ease-glide), transform .48s var(--ease-bounce); }
@@ -489,9 +529,16 @@
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
   .hb-btn { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
-    background: var(--teal); border: none; color: var(--teal-ink); font-size: 13.5px; font-weight: 800;
+    background: var(--teal); border: none; color: var(--teal-ink); font-size: 17.5px; font-weight: 800;
     cursor: pointer; font-family: inherit; letter-spacing: 0.02em; text-transform: capitalize; line-height: 1;
-    padding: 0 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    padding: 0 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    /* Overrides the global `button { touch-action: manipulation }` rule.
+       "manipulation" lets the OS treat a moving touch as a pan/scroll
+       gesture, which fires pointercancel on our drag listener the instant
+       a finger moves — killing initHotbarReorder() before it can engage.
+       Mouse drags never hit this (touch-action only governs touch), which
+       is why it worked in-browser but not on a real phone. */
+    touch-action: none; }
   /* Divider between hotbar buttons — only shows when there's more than
      one (.hb-single has just one child, so this never matches then).
      Painted as an inset box-shadow rather than border-left: whichever
@@ -503,7 +550,7 @@
   .hb-btn.hb-running { font-variant-numeric: tabular-nums; }
   /* A single enabled item fills the whole pill and reads bigger, instead
      of sitting cramped in a half-width slot meant for two. */
-  .hb-pill.hb-single .hb-btn { font-size: 15.5px; }
+  .hb-pill.hb-single .hb-btn { font-size: 20px; }
   /* Reserves room so the fixed hotbar never overlaps screen content —
      toggled by placeHotbar() in JS based on settings.hotbarPosition.
      app-hb-none applies when both features are off/widget-only, so the
@@ -522,12 +569,21 @@
     bottom: calc(env(safe-area-inset-bottom, 0px) + 26px + var(--hb-widget-extra)); }
   #hbWidgets.hb-hidden { display: none !important; }
   #hbWidgets:empty { display: none; }
-  .hb-widget-btn { width: 52px; height: 52px; border-radius: 16px; background: var(--teal); color: var(--teal-ink);
-    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer;
-    box-shadow: 0 6px 20px -8px var(--teal-glow); font-family: inherit; font-weight: 800; font-size: 12.5px; }
-  .hb-widget-btn:active { transform: scale(0.9); transition: transform .14s var(--ease-press); }
+  /* position: fixed + explicit left/top (set in JS by makeWidgetDraggable)
+     so each widget button can be dragged anywhere on screen independently
+     — same physical drag/glide/fling/snap-to-edge mechanism the old
+     single floating rest-timer FAB used, just generalized to work for
+     however many of these buttons are on screen at once. */
+  .hb-widget-btn { position: fixed; width: 52px; height: 52px; border-radius: 16px; background: var(--teal); color: var(--teal-ink);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: grab;
+    touch-action: none; z-index: 240;
+    box-shadow: 0 6px 20px -8px var(--teal-glow); font-family: inherit; font-weight: 800; font-size: 16.25px;
+    transition: box-shadow .3s var(--ease-glide), transform .2s var(--ease-glide); }
+  .hb-widget-btn:active { transform: scale(0.9); transition: transform .1s var(--ease-glide); }
+  .hb-widget-btn.hbw-dragging { cursor: grabbing; box-shadow: 0 10px 28px -6px rgba(0,0,0,0.6); transition: none; }
+  .hb-widget-btn.hbw-snapping { transition: left .24s var(--ease-bounce), top .24s var(--ease-bounce); }
   .hb-widget-btn svg { width: 24px; height: 24px; }
-  .hb-widget-btn.hb-running { font-variant-numeric: tabular-nums; font-size: 11px; padding: 0 2px; }
+  .hb-widget-btn.hb-running { font-variant-numeric: tabular-nums; font-size: 14.3px; padding: 0 2px; }
 
   /* ---------- notes panel (multi-note, tabbed, opens near the hotbar) ---------- */
   .notes-overlay { position: fixed; inset: 0; z-index: 225; background: rgba(4,8,8,0.5);
@@ -595,6 +651,13 @@
     font-size: 28px; font-weight: 300; cursor: pointer; flex-shrink: 0; }
 </style>
 <link rel="manifest" href="manifest.json">
+<!-- Static fallback favicon — shows immediately on page load, before the
+     JS-generated themed one (regenerateThemedFavicon, further down) can run
+     or in case that ever fails (e.g. icon-512.png 404s, canvas filter
+     unsupported). Without this, the tab has no rel="icon" at all until JS
+     finishes, which is why the browser was falling back to its default
+     globe icon. -->
+<link rel="icon" type="image/png" href="icon-192.png">
 <meta name="theme-color" content="#0a0f0f">
 <!-- iOS doesn't read manifest.json for install behavior — it needs these
      specific tags to treat "Add to Home Screen" as a real full-screen app
@@ -662,7 +725,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.5';
+const APP_VERSION = '1.1.6';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -953,7 +1016,7 @@ const TERMS_HTML = `
   <h3>9. Governing law</h3>
   <p>These terms are governed by the laws of Pakistan.</p>
   <h3>10. Contact</h3>
-  <p>Questions about these terms: <strong>asfqnd@gmail.com</strong></p>
+  <p>Questions about these terms: <strong>sbltrackerapp@gmail.com</strong></p>
 `;
 const PRIVACY_HTML = `
   <h3>What data is collected</h3>
@@ -977,7 +1040,7 @@ const PRIVACY_HTML = `
   <h3>Changes to this policy</h3>
   <p>This policy may be updated as the App changes. Continued use after a change means you accept the update.</p>
   <h3>Contact</h3>
-  <p>Questions about this policy: <strong>asfqnd@gmail.com</strong></p>
+  <p>Questions about this policy: <strong>sbltrackerapp@gmail.com</strong></p>
 `;
 /* Reusable scrollable document viewer — used for both Terms and Privacy,
    from the signup screen (must read before accepting) and from Settings
@@ -1865,7 +1928,7 @@ let account = null, loggedIn = false;
 let programType = null, programDays = [];
 let allExSortMode = 'az'; // 'az' | 'recent' | 'sets' | 'volume'
 let exercisesByDay = {};
-let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, hotbarOrder: ['timer', 'notes'] };
+let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
 
 /* ---------- accent color palette (Settings > Appearance) ----------
    Only the hue shifts; saturation/lightness stay put, so every preset keeps
@@ -1881,19 +1944,240 @@ const ACCENT_PALETTES = [
   { name: 'Amber',  hue: 45  },
   { name: 'Green',  hue: 140 },
 ];
-function applyAccentHue(hue) {
+/* Unified, orderable, deletable palette shown in Settings > Appearance —
+   merges the built-in presets (minus any the person deleted) with their
+   own wheel-picked custom colors, then applies settings.paletteOrder (if
+   any swatches have been dragged into a custom order). Each entry gets a
+   stable `id` — 'd:<hue>' for a default, 'c:<uid>' for a custom color —
+   used for click/delete/reorder handlers and to persist ordering. */
+function buildAccentSwatchList() {
+  const defaults = ACCENT_PALETTES
+    .filter(p => !(settings.deletedDefaultHues || []).includes(p.hue))
+    .map(p => ({ id: 'd:' + p.hue, hue: p.hue, sat: 1, name: p.name, isDefault: true }));
+  const customs = (settings.customAccentColors || [])
+    .map(c => ({ id: 'c:' + c.id, hue: c.hue, sat: c.sat, name: 'Custom', isDefault: false }));
+  const all = [...defaults, ...customs];
+  const order = settings.paletteOrder;
+  if (order && order.length) {
+    all.sort((a, b) => {
+      const ia = order.indexOf(a.id), ib = order.indexOf(b.id);
+      if (ia === -1 && ib === -1) return 0;
+      if (ia === -1) return 1; // newly added swatches not yet in a saved order fall to the end
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
+  }
+  return all;
+}
+// If the color currently applied belonged to a swatch (a default or a saved
+// custom color) that's since been deleted, fall back to the first remaining
+// swatch — or original Teal if someone deletes their way down to nothing.
+// Deliberately does NOT touch the active color when settings.activeSwatchId
+// is null — that's the freeform state while someone's mid-drag on the wheel
+// picking a color that was never saved as a swatch in the first place, and
+// resetting it there would yank the color back out from under them on every
+// re-render (which is exactly what happened before this was id-based).
+function reconcileActiveAccentColor(swatches) {
+  if (!settings.activeSwatchId) return; // freeform wheel color — nothing to reconcile against
+  const stillExists = swatches.some(s => s.id === settings.activeSwatchId);
+  if (stillExists) return;
+  const fallback = swatches[0];
+  settings.activeSwatchId = fallback ? fallback.id : null;
+  settings.accentHue = fallback ? fallback.hue : 170;
+  settings.accentSat = fallback ? fallback.sat : 1;
+  applyAccentTheme(settings.accentHue, settings.accentSat);
+  saveJSON('settings', settings);
+}
+/* --sat-mult (0..1) scales saturation for every themed color, including the
+   app icon/favicon/manifest/splash below — 0 gives a full black & white
+   theme, 1 is normal full color. accentHue/accentSat both live in `settings`,
+   which already syncs across devices via CLOUD_SYNC_KEYS, so picking a
+   theme on one phone carries over the moment another device logs in. */
+function applyAccentTheme(hue, satMult) {
+  if (satMult === undefined || satMult === null || Number.isNaN(satMult)) satMult = 1;
   document.documentElement.style.setProperty('--hue', hue);
+  document.documentElement.style.setProperty('--sat-mult', satMult);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());
+  // Icon/manifest/splash regen is debounced — cheap CSS vars above update
+  // instantly for live wheel-drag feedback, but redrawing ~12 canvases on
+  // every pointermove would be wasteful, so that part waits for a short
+  // pause (e.g. the wheel being released) before it actually runs.
+  clearTimeout(applyAccentTheme._t);
+  applyAccentTheme._t = setTimeout(() => regenerateThemedAssets(hue, satMult), 220);
 }
+// Back-compat alias — existing call sites (swatches, boot) just want full
+// saturation unless told otherwise.
+function applyAccentHue(hue, satMult) { applyAccentTheme(hue, satMult); }
 // Apply immediately from whatever's in localStorage, before boot() runs, so
-// there's no flash of the default teal for someone who picked another color.
+// there's no flash of the default teal (or wrong saturation) for someone
+// who picked another color.
 (function () {
   try {
     const saved = JSON.parse(localStorage.getItem('settings') || 'null');
-    if (saved && saved.accentHue !== undefined) applyAccentHue(saved.accentHue);
+    if (saved && saved.accentHue !== undefined) applyAccentTheme(saved.accentHue, saved.accentSat ?? 1);
   } catch (e) {}
 })();
+
+/* ---------- themed app icon / manifest / splash ----------
+   icon-512.png's neon line art already sits on a near-black background at
+   hue ~170 (the app's original default teal) — the same hue the --hue-driven
+   CSS background above is built from. Rotating that whole bitmap's hue by
+   (targetHue - 170) and scaling its saturation by satMult reproduces both
+   the neon color AND the subtle background tint change together, so the
+   home-screen icon/tab favicon/manifest icons/iOS splash all track whatever
+   was picked in Settings > Appearance — on this device and, once synced,
+   any other. Browsers without canvas filter support (very old Safari) just
+   keep the static teal icon files instead of erroring. */
+const ICON_SRC_HUE = 176; // measured from icon-512.png's actual neon-line hue — was 170, off by ~6°
+let themedIconImg = null;
+let themedAssetGenToken = 0;
+
+function loadThemedIconImg() {
+  if (themedIconImg) return Promise.resolve(themedIconImg);
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => { themedIconImg = img; resolve(img); };
+    img.onerror = reject;
+    img.src = 'icon-512.png';
+  });
+}
+function canvasFilterSupported(ctx) {
+  return !!ctx && 'filter' in ctx;
+}
+function drawThemedIconToCanvas(canvas, size, hue, satMult) {
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (!canvasFilterSupported(ctx)) return false;
+  ctx.clearRect(0, 0, size, size);
+  ctx.save();
+  ctx.filter = `hue-rotate(${hue - ICON_SRC_HUE}deg) saturate(${satMult})`;
+  ctx.drawImage(themedIconImg, 0, 0, size, size);
+  ctx.restore();
+  return true;
+}
+function setOrCreateLink(rel, href, attrs) {
+  let link = document.querySelector(`link[rel="${rel}"]`);
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = rel;
+    document.head.appendChild(link);
+  }
+  if (attrs) Object.keys(attrs).forEach(k => link.setAttribute(k, attrs[k]));
+  link.href = href;
+  return link;
+}
+function regenerateThemedFavicon(hue, satMult) {
+  const c = document.createElement('canvas');
+  if (!drawThemedIconToCanvas(c, 64, hue, satMult)) return;
+  setOrCreateLink('icon', c.toDataURL('image/png'), { type: 'image/png' });
+}
+function regenerateThemedAppleIcon(hue, satMult) {
+  const c = document.createElement('canvas');
+  if (!drawThemedIconToCanvas(c, 180, hue, satMult)) return;
+  setOrCreateLink('apple-touch-icon', c.toDataURL('image/png'));
+}
+function regenerateThemedManifest(hue, satMult) {
+  const c192 = document.createElement('canvas'), c512 = document.createElement('canvas');
+  if (!drawThemedIconToCanvas(c192, 192, hue, satMult)) return;
+  if (!drawThemedIconToCanvas(c512, 512, hue, satMult)) return;
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0a0f0f';
+  const manifestObj = {
+    name: 'SBL Tracker', short_name: 'SBL Tracker', start_url: './index.html',
+    display: 'standalone', background_color: bg, theme_color: bg, orientation: 'portrait',
+    icons: [
+      { src: c192.toDataURL('image/png'), sizes: '192x192', type: 'image/png' },
+      { src: c512.toDataURL('image/png'), sizes: '512x512', type: 'image/png' },
+    ],
+  };
+  const url = URL.createObjectURL(new Blob([JSON.stringify(manifestObj)], { type: 'application/json' }));
+  const old = document.querySelector('link[rel="manifest"]');
+  const oldBlobUrl = old ? old.getAttribute('data-blob-url') : null;
+  const link = setOrCreateLink('manifest', url, { 'data-blob-url': url });
+  if (oldBlobUrl) URL.revokeObjectURL(oldBlobUrl); // free the previous generation once the new one's live
+}
+// Common recent-iPhone CSS-px/device-pixel-ratio pairs (Apple's own published
+// resolutions) — covers most phones people actually use today. Android's
+// install splash is generated by Chrome from the manifest above instead, so
+// it doesn't need any of this.
+const APPLE_SPLASH_SIZES = [
+  [320, 568, 2], [375, 667, 2], [414, 736, 3], [375, 812, 3],
+  [414, 896, 2], [414, 896, 3], [390, 844, 3], [428, 926, 3],
+  [393, 852, 3], [430, 932, 3],
+];
+function regenerateThemedSplash(hue, satMult) {
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0a0f0f';
+  document.querySelectorAll('link[rel="apple-touch-startup-image"]').forEach(l => {
+    const u = l.getAttribute('data-blob-url'); if (u) URL.revokeObjectURL(u);
+    l.remove();
+  });
+  APPLE_SPLASH_SIZES.forEach(([cssW, cssH, dpr]) => {
+    const w = cssW * dpr, h = cssH * dpr;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!canvasFilterSupported(ctx)) return;
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+    const iconSize = Math.round(Math.min(w, h) * 0.34);
+    ctx.save();
+    ctx.filter = `hue-rotate(${hue - ICON_SRC_HUE}deg) saturate(${satMult})`;
+    ctx.drawImage(themedIconImg, (w - iconSize) / 2, (h - iconSize) / 2, iconSize, iconSize);
+    ctx.restore();
+    const link = document.createElement('link');
+    link.rel = 'apple-touch-startup-image';
+    link.media = `(device-width: ${cssW}px) and (device-height: ${cssH}px) and (-webkit-device-pixel-ratio: ${dpr}) and (orientation: portrait)`;
+    link.href = canvas.toDataURL('image/png');
+    document.head.appendChild(link);
+  });
+}
+async function regenerateThemedAssets(hue, satMult) {
+  const myToken = ++themedAssetGenToken;
+  try { await loadThemedIconImg(); } catch (e) { return; } // e.g. offline before icon-512.png ever cached — keep static icons
+  if (myToken !== themedAssetGenToken) return; // a newer hue/sat change already superseded this run
+  regenerateThemedFavicon(hue, satMult);
+  regenerateThemedAppleIcon(hue, satMult);
+  regenerateThemedManifest(hue, satMult);
+  regenerateThemedSplash(hue, satMult);
+}
+
+/* ---------- color wheel (Settings > Appearance) ----------
+   Angle around the circle = hue (0-360°), distance from center = --sat-mult
+   (center = gray/B&W, edge = full color) — drawn once per Settings render,
+   not per drag frame. */
+function hslToRgbByte(h, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+  if (h < 60)       { r = c; g = x; b = 0; }
+  else if (h < 120) { r = x; g = c; b = 0; }
+  else if (h < 180) { r = 0; g = c; b = x; }
+  else if (h < 240) { r = 0; g = x; b = c; }
+  else if (h < 300) { r = x; g = 0; b = c; }
+  else              { r = c; g = 0; b = x; }
+  return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+}
+function drawColorWheel(canvas) {
+  const w = canvas.width, h = canvas.height;
+  const ctx = canvas.getContext('2d');
+  const cx = w / 2, cy = h / 2, r = Math.min(cx, cy);
+  const img = ctx.createImageData(w, h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const dx = x - cx, dy = y - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const idx = (y * w + x) * 4;
+      if (dist > r) { img.data[idx + 3] = 0; continue; }
+      let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      angle = (angle + 360) % 360;
+      const satMult = Math.min(1, dist / r);
+      const [rr, gg, bb] = hslToRgbByte(angle, satMult, 0.5);
+      img.data[idx] = rr; img.data[idx + 1] = gg; img.data[idx + 2] = bb; img.data[idx + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
 // Per-exercise unit overrides — { [nameKey]: 'kg'|'lb' }. An exercise with no
 // entry here just follows settings.units like before. This lets one exercise
 // (e.g. hand grippers, sold in lb) live in a different unit than the rest of
@@ -1970,8 +2254,17 @@ async function boot() {
   const session = await getSessionResilient();
   if (!session) { screen = 'register'; render(); return; }
   account = { username: session.user.user_metadata.username, id: session.user.id };
-  loggedIn = true;
-  updateHotbarVisibility();
+  await continueBootAfterAuth();
+}
+/* Everything boot() does once an authenticated account is known — split out
+   so the login form (which already has a confirmed account from
+   signInWithPassword, without needing another getSessionResilient() round
+   trip) can run straight into it instead of calling the full boot() again.
+   Re-running boot() from the top after login used to flash the branded
+   'loading' screen a second time right after the person had just been
+   looking at the login form — a jarring extra "refresh" that had nothing to
+   do with actually loading anything, since the app was already up. */
+async function continueBootAfterAuth() {
   // Nothing in this app was ever scoped by account — log:*, settings,
   // programType/programDays/exercisesByDay, draft, bestLifts, all lived as
   // flat global keys. On a device/browser that's had a different account
@@ -2003,21 +2296,38 @@ async function boot() {
   ensureOnlineSyncListener();
   ensureRealtimeSync();
   checkForAppUpdate();
-  await pullCloudAppState(); // must finish before the onboarding check below —
-                              // this is what lets a new device see the program
-                              // that was already set up elsewhere
-  programType = await loadJSON('programType', null);
-  if (!programType) { screen = 'select-program'; render(); return; }
-  programDays = await loadJSON('programDays', []);
-  exercisesByDay = normalizeExercisesByDay(await loadJSON('exercisesByDay', {}));
-  await saveJSON('exercisesByDay', exercisesByDay);
-  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, hotbarOrder: ['timer', 'notes'] });
+  await pullCloudAppState(); // must finish before the settings load below —
+                              // this is what lets a device that's never had
+                              // local settings pick up the real ones (e.g.
+                              // hotbarPosition) instead of the defaults
+  // Settings are fully resolved (including anything the cloud pull above
+  // just landed) *before* the hotbar is revealed a few lines down. Doing it
+  // in the other order — reveal, then load/migrate settings afterward — is
+  // what used to make the hotbar visibly jump position right after login:
+  // on a device with no local settings yet, it would render at the
+  // hardcoded default ('top') the instant it appeared, then jump to wherever
+  // the account's real cloud-synced position was once that load caught up.
+  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
   if (settings.accentHue === undefined) settings.accentHue = 170;
-  applyAccentHue(settings.accentHue);
+  if (settings.accentSat === undefined) settings.accentSat = 1;
+  if (settings.customAccentColors === undefined) settings.customAccentColors = [];
+  if (settings.deletedDefaultHues === undefined) settings.deletedDefaultHues = [];
+  if (settings.paletteOrder === undefined) settings.paletteOrder = null;
+  if (settings.activeSwatchId === undefined) {
+    // Upgrading from before swatches had ids: if the saved color exactly
+    // matches a default preset, tag it as that swatch; otherwise it's a
+    // freeform wheel color from before this feature existed, so leave it
+    // untagged (null) rather than guessing — untagged means reconcile never
+    // touches it, which is exactly right for a color with no matching swatch.
+    const matchingDefault = ACCENT_PALETTES.find(p => p.hue === settings.accentHue && settings.accentSat === 1);
+    settings.activeSwatchId = matchingDefault ? ('d:' + matchingDefault.hue) : null;
+  }
+  applyAccentTheme(settings.accentHue, settings.accentSat);
   if (settings.alarmSound === undefined) settings.alarmSound = 'default';
   if (settings.customAlarmData === undefined) settings.customAlarmData = null;
   if (settings.customAlarmName === undefined) settings.customAlarmName = null;
   if (settings.autoStartTimer === undefined) settings.autoStartTimer = true;
+  if (settings.autoQueueExercises === undefined) settings.autoQueueExercises = false;
   if (settings.autoCarry === undefined) settings.autoCarry = true;
   if (settings.onboardingDone === undefined) settings.onboardingDone = true;
   // Migrates the earlier three-way setting (top-above/top-below/bottom) down
@@ -2031,8 +2341,14 @@ async function boot() {
   exerciseUnits = await loadJSON('exerciseUnits', {});
   notes = await loadJSON('notes', []);
   if (!activeNoteId && notes.length) activeNoteId = notes[0].id;
+  loggedIn = true;
   refreshHotbarLayout();
   updateHotbarVisibility();
+  programType = await loadJSON('programType', null);
+  if (!programType) { screen = 'select-program'; render(); return; }
+  programDays = await loadJSON('programDays', []);
+  exercisesByDay = normalizeExercisesByDay(await loadJSON('exercisesByDay', {}));
+  await saveJSON('exercisesByDay', exercisesByDay);
   const unconfigured = programDays.filter(d => !exercisesByDay[d] || exercisesByDay[d].length === 0);
   if (unconfigured.length > 0) {
     setupDays = unconfigured; setupIndex = 0; setupTemp = [];
@@ -2211,6 +2527,7 @@ function render() {
     'fb-count': (r) => renderSplitCountPicker(r, { type: 'FB', max: 4, title: 'How many Full Body templates?', sub: 'e.g. pick 2 to alternate FB1 / FB2, or up to 4 for more variety.', isSwitch: false }),
     'setup-exercises': renderSetupExercises, 'home': renderHome,
     'setup-rest-timer': renderSetupRestTimer, 'setup-preferences': renderSetupPreferences,
+    'setup-sound': renderSetupSound, 'setup-appearance': renderSetupAppearance, 'setup-widgets': renderSetupWidgets,
     'track-select': renderTrackSelect, 'exercise-list': renderExerciseList,
     'exercise-edit': renderExerciseEdit, 'set-log': renderSetLog,
     'logs': renderLogs, 'exercise-history': renderExerciseHistory,
@@ -2355,7 +2672,7 @@ function renderLogin(root) {
     }
     account = { username: u, id: data.user.id };
     authError = '';
-    boot();
+    continueBootAfterAuth();
   };
   root.querySelector('#toRegisterLink').onclick = () => { authError = ''; goToReplace('register'); };
 }
@@ -2848,10 +3165,18 @@ function renderAllExercises(root) {
   historyEntries.forEach(e => (e.exercises || []).forEach(ex => {
     if (!ex.sets || ex.sets.length === 0) return;
     const key = nameKey(ex.name);
-    if (!byKey[key]) byKey[key] = { name: ex.name, lastDate: e.startTime, sessions: 0, totalSets: 0, totalVolume: 0 };
+    if (!byKey[key]) byKey[key] = { name: ex.name, lastDate: e.startTime, sessions: 0, totalSets: 0, totalVolume: 0, pr: null, prEst: 0 };
     byKey[key].sessions += 1;
     byKey[key].totalSets += ex.sets.length;
-    ex.sets.forEach(s => { byKey[key].totalVolume += (parseFloat(s.weight) || 0) * totalReps(s); });
+    ex.sets.forEach(s => {
+      const w = parseFloat(s.weight) || 0;
+      byKey[key].totalVolume += w * totalReps(s);
+      // All-time PR — same estimate1RM() (Brzycki + RIR/RPE effort) used
+      // everywhere else in the app for "which set was actually the strongest",
+      // not just whichever had the biggest weight or most reps on its own.
+      const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+      if (est > byKey[key].prEst) { byKey[key].prEst = est; byKey[key].pr = s; }
+    });
     if (e.startTime > byKey[key].lastDate) { byKey[key].lastDate = e.startTime; byKey[key].name = ex.name; }
   }));
   const items = Object.values(byKey);
@@ -2867,7 +3192,8 @@ function renderAllExercises(root) {
     const row = document.createElement('div');
     row.className = 'list-item';
     const vol = Math.round(item.totalVolume).toLocaleString();
-    row.innerHTML = `<div><div class="li-name">${item.name}</div><div class="li-meta mono">${item.totalSets} set${item.totalSets !== 1 ? 's' : ''} · ${vol}${exerciseUnit(item.name)} volume · Last done ${fmtFullDate(new Date(item.lastDate).toISOString())}</div></div><div class="li-right">›</div>`;
+    const prLine = item.pr ? `<div class="li-pr mono">PR &nbsp;${formatSetLine(item.pr, item.name)}</div>` : '';
+    row.innerHTML = `<div><div class="li-name">${item.name}</div><div class="li-meta mono">${item.totalSets} set${item.totalSets !== 1 ? 's' : ''} · ${vol}${exerciseUnit(item.name)} volume · Last done ${fmtFullDate(new Date(item.lastDate).toISOString())}</div>${prLine}</div><div class="li-right">›</div>`;
     row.onclick = () => { exerciseHistoryName = item.name; goTo('exercise-history'); };
     listEl.appendChild(row);
   });
@@ -2917,6 +3243,25 @@ function badgeFor(pct, label) {
 }
 
 /* ---------- track workout ---------- */
+/* Finds the next exercise in `day`'s CURRENT list order (exercisesByDay is
+   read fresh every call, so a mid-session reorder is picked up immediately)
+   that isn't already marked done in the active draft. Pass afterName=null
+   to get the first one (start of a fresh queue); pass an exercise name to
+   get whatever comes after it. Used by both auto-starting the first
+   exercise and auto-queuing each subsequent one after Done. */
+function nextQueuedExercise(day, afterName) {
+  const dayList = exercisesByDay[day] || [];
+  let startIdx = 0;
+  if (afterName) {
+    const idx = dayList.findIndex(item => sameExName(item.name, afterName));
+    if (idx === -1) return null;
+    startIdx = idx + 1;
+  }
+  return dayList.slice(startIdx).find(item => {
+    const ex = draft && draft.exercises.find(e => sameExName(e.name, item.name));
+    return !ex || !ex.done;
+  }) || null;
+}
 function renderTrackSelect(root) {
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Track Workout</div>
@@ -2935,6 +3280,24 @@ function renderTrackSelect(root) {
         await saveJSON('draft', draft);
       }
       currentDay = day;
+      if (settings.autoQueueExercises) {
+        const first = nextQueuedExercise(day, null);
+        if (first) {
+          activeExerciseName = first.name;
+          activeExerciseUnilateral = !!first.unilateral;
+          // Compresses the normal track-select -> exercise-list -> set-log
+          // double-hop into one tap, same trick renderHome's resumeBtn uses
+          // for track-select -> exercise-list — so Back still walks
+          // set-log -> exercise-list -> track-select like every other path.
+          navStack.push('track-select');
+          navStack.push('exercise-list');
+          screen = 'set-log';
+          pushNavHistoryEntry();
+          pushNavHistoryEntry();
+          render();
+          return;
+        }
+      }
       goTo('exercise-list');
     };
     grid.appendChild(b);
@@ -3173,6 +3536,21 @@ function syncDraftUnilateral(entry) {
   persistDraft();
 }
 
+/* Renaming an exercise in the Edit Exercises list only updated
+   exercisesByDay — the matching entry inside the active session's `draft`
+   kept the old name, so sameExName() stopped matching it: the exercise list
+   screen would then create a brand-new empty entry under the new name the
+   next time it was tapped, orphaning every set already logged today under
+   the old name. Mirrors syncDraftUnilateral(). */
+function syncDraftRename(oldName, newName) {
+  if (!draft || draft.day !== editingDay || oldName === newName) return;
+  const ex = draft.exercises.find(e => sameExName(e.name, oldName));
+  if (!ex) return;
+  ex.name = newName;
+  if (activeExerciseName && sameExName(activeExerciseName, oldName)) activeExerciseName = newName;
+  persistDraft();
+}
+
 function renderExerciseEdit(root) {
   const list = exercisesByDay[editingDay] || [];
   root.innerHTML = `
@@ -3233,7 +3611,11 @@ function renderExerciseEdit(root) {
         }
         committed = true;
         if (vvCleanup) vvCleanup();
-        if (v) list[idx].name = v;
+        if (v) {
+          const oldName = list[idx].name;
+          list[idx].name = v;
+          syncDraftRename(oldName, v);
+        }
         persistEditList();
         nameDiv.innerHTML = `${list[idx].name}`;
       };
@@ -3457,6 +3839,106 @@ function makeReorderable(container, list, onDrop) {
   }
 }
 
+/* Drag reordering for a wrapping grid of circular swatches (Settings >
+   Appearance palette). Unlike makeReorderable above this isn't a single
+   column, so instead of tracking one offset axis it lifts the dragged
+   swatch to `position: fixed` and follows the pointer directly; whenever
+   the pointer crosses into a neighboring swatch's box, that swatch swaps
+   DOM position with it (FLIP-animated), so the grid re-wraps live as you
+   drag. Only active while `container` has the 'editing' class — callers
+   gate that by only invoking the drag start when paletteEditMode is on. */
+function makeGridReorderable(container, onReorder) {
+  let dragEl = null, pointerId = null, offsetX = 0, offsetY = 0;
+
+  container.addEventListener('pointerdown', (e) => {
+    if (!container.classList.contains('editing')) return;
+    if (e.target.closest('.swatch-del-btn')) return; // let the delete badge handle its own tap
+    const swatch = e.target.closest('.palette-swatch');
+    if (!swatch || swatch.dataset.locked || swatch.parentElement !== container) return;
+    e.preventDefault();
+    dragEl = swatch;
+    pointerId = e.pointerId;
+    const rect = swatch.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    swatch.style.position = 'fixed';
+    swatch.style.left = rect.left + 'px';
+    swatch.style.top = rect.top + 'px';
+    swatch.style.width = rect.width + 'px';
+    swatch.style.height = rect.height + 'px';
+    swatch.style.zIndex = '50';
+    swatch.style.transition = 'none';
+    swatch.classList.remove('editing-jiggle');
+    swatch.classList.add('dragging');
+    try { swatch.setPointerCapture(pointerId); } catch (err) {}
+    swatch.addEventListener('pointermove', onMove);
+    swatch.addEventListener('pointerup', onUp);
+    swatch.addEventListener('pointercancel', onUp);
+  });
+
+  function onMove(e) {
+    if (!dragEl) return;
+    dragEl.style.left = (e.clientX - offsetX) + 'px';
+    dragEl.style.top = (e.clientY - offsetY) + 'px';
+    const cx = e.clientX, cy = e.clientY;
+    const siblings = Array.from(container.querySelectorAll('.palette-swatch')).filter(el => el !== dragEl && !el.dataset.locked);
+    for (const sib of siblings) {
+      const r = sib.getBoundingClientRect();
+      if (cx <= r.left || cx >= r.right || cy <= r.top || cy >= r.bottom) continue;
+      const firstRects = new Map();
+      Array.from(container.children).forEach(el => { if (el !== dragEl) firstRects.set(el, el.getBoundingClientRect()); });
+      const dragIsAfter = !!(sib.compareDocumentPosition(dragEl) & Node.DOCUMENT_POSITION_FOLLOWING);
+      container.insertBefore(dragEl, dragIsAfter ? sib : sib.nextSibling);
+      Array.from(container.children).forEach(el => {
+        if (el === dragEl) return;
+        const first = firstRects.get(el);
+        if (!first) return;
+        const last = el.getBoundingClientRect();
+        const dx = first.left - last.left, dy = first.top - last.top;
+        if (!dx && !dy) return;
+        el.style.transition = 'none';
+        el.style.transform = `translate(${dx}px, ${dy}px)`;
+        requestAnimationFrame(() => {
+          el.style.transition = 'transform 0.28s var(--ease-glide)';
+          el.style.transform = '';
+        });
+      });
+      break;
+    }
+  }
+
+  function onUp(e) {
+    if (!dragEl) return;
+    const settleEl = dragEl;
+    settleEl.removeEventListener('pointermove', onMove);
+    settleEl.removeEventListener('pointerup', onUp);
+    settleEl.removeEventListener('pointercancel', onUp);
+    try { settleEl.releasePointerCapture(pointerId); } catch (err) {}
+    const beforeRect = settleEl.getBoundingClientRect();
+    settleEl.style.position = '';
+    settleEl.style.left = '';
+    settleEl.style.top = '';
+    settleEl.style.width = '';
+    settleEl.style.height = '';
+    settleEl.style.zIndex = '';
+    const afterRect = settleEl.getBoundingClientRect();
+    const dx = beforeRect.left - afterRect.left, dy = beforeRect.top - afterRect.top;
+    settleEl.style.transition = 'none';
+    settleEl.style.transform = (dx || dy) ? `translate(${dx}px, ${dy}px)` : '';
+    void settleEl.offsetHeight; // force reflow so the instant offset above paints first
+    settleEl.style.transition = 'transform 0.4s var(--ease-bounce)';
+    settleEl.style.transform = '';
+    dragEl = null;
+    const newOrder = Array.from(container.querySelectorAll('.palette-swatch')).map(el => el.dataset.swatchId).filter(Boolean);
+    setTimeout(() => {
+      settleEl.style.transition = '';
+      settleEl.classList.remove('dragging');
+      settleEl.classList.add('editing-jiggle');
+      onReorder(newOrder);
+    }, 400);
+  }
+}
+
 /* ---------- set logging ---------- */
 /* ---------- carry-over prefill + progress arrows ----------
    Finding the exact numbers a lifter used last time (and letting them just
@@ -3494,25 +3976,41 @@ function buildPrefilledSet(name, unilateral, setIndex, fallback) {
     ? { weight: prior.weight ?? '', repsR: prior.repsR ?? '', repsL: prior.repsL ?? '', rir: prior.rir ?? '', rpe: prior.rpe ?? '', rest, media: [] }
     : { weight: prior.weight ?? '', reps: prior.reps ?? '', rir: prior.rir ?? '', rpe: prior.rpe ?? '', rest, media: [] };
   set.baseline = unilateral
-    ? { weight: set.weight, repsR: set.repsR, repsL: set.repsL }
-    : { weight: set.weight, reps: set.reps };
+    ? { weight: set.weight, repsR: set.repsR, repsL: set.repsL, rir: set.rir, rpe: set.rpe }
+    : { weight: set.weight, reps: set.reps, rir: set.rir, rpe: set.rpe };
   return set;
 }
-/* Null (no arrow) unless both sides of the comparison are real numbers and
-   actually differ — equal values, or either side blank, show nothing. */
-function computeTrend(current, baseline) {
-  if (baseline === undefined || baseline === null || baseline === '') return null;
-  if (current === undefined || current === null || current === '') return null;
-  const c = parseFloat(current), b = parseFloat(baseline);
-  if (isNaN(c) || isNaN(b) || c === b) return null;
-  return c > b ? 'up' : 'down';
+/* The old per-field arrows compared weight-vs-weight and reps-vs-reps in
+   isolation — 25x9 vs last week's 20x10 showed weight UP but reps DOWN,
+   even though 25x9 is a clearly bigger lift. That's not how progress
+   actually gets judged: powerlifting/strength-coaching tools (RP, Boostcamp,
+   Juggernaut) score a set by its estimated 1RM, which is the one number
+   that already fuses weight, reps, and effort (RIR/RPE) into a single
+   comparable strength figure — same formula estimate1RM() already uses for
+   the exercise-history PR trend. Both arrows on a row now report that same
+   single verdict instead of two numbers that can (and did) disagree. */
+function estSetTrend(set, baseline) {
+  if (!baseline) return null;
+  const curW = parseFloat(set.weight) || 0;
+  const curReps = effectiveReps(set);
+  const baseW = parseFloat(baseline.weight) || 0;
+  const baseReps = effectiveReps(baseline);
+  if (!curW || !curReps || !baseW || !baseReps) return null;
+  const curEst = estimate1RM(curW, curReps, set.rir, set.rpe);
+  const baseEst = estimate1RM(baseW, baseReps, baseline.rir, baseline.rpe);
+  if (!curEst || !baseEst) return null;
+  // Deadzone matches badgeFor()'s ~1% — plate-math/rounding noise on an
+  // essentially-unchanged set shouldn't flip an arrow either direction.
+  if (Math.abs((curEst - baseEst) / baseEst) < 0.01) return null;
+  return curEst > baseEst ? 'up' : 'down';
 }
-function applyTrend(arrowEl, current, baseline) {
-  if (!arrowEl) return;
-  const trend = computeTrend(current, baseline);
-  arrowEl.classList.remove('show', 'up', 'down');
-  if (trend) { arrowEl.classList.add('show', trend); arrowEl.textContent = trend === 'up' ? '▲' : '▼'; }
-  else { arrowEl.textContent = ''; }
+function applySetTrend(arrowEls, trend) {
+  arrowEls.forEach(el => {
+    if (!el) return;
+    el.classList.remove('show', 'up', 'down');
+    if (trend) { el.classList.add('show', trend); el.textContent = trend === 'up' ? '▲' : '▼'; }
+    else el.textContent = '';
+  });
 }
 
 function renderSetLog(root) {
@@ -3649,6 +4147,16 @@ function renderSetLog(root) {
     ex.done = true;
     ex.lastTouched = Date.now();
     persistDraft();
+    if (settings.autoQueueExercises) {
+      const next = nextQueuedExercise(currentDay, ex.name);
+      if (next) {
+        activeExerciseName = next.name;
+        activeExerciseUnilateral = !!next.unilateral;
+        pendingAnim = { type: 'slide-forward' };
+        goToReplace('set-log');
+        return;
+      }
+    }
     goBack();
   };
 }
@@ -3725,40 +4233,57 @@ function renderSets(root, ex) {
     row.querySelectorAll('input[type="number"]').forEach(inp => { inp.onfocus = (e) => e.target.select(); });
     const baseline = set.baseline || {};
     const wArrow = row.querySelector('[data-trend="w"]');
-    applyTrend(wArrow, set.weight, baseline.weight);
+    const rlArrow = ex.unilateral ? row.querySelector('[data-trend="rl"]') : null;
+    const rr2Arrow = ex.unilateral ? row.querySelector('[data-trend="rr2"]') : null;
+    const rArrow = ex.unilateral ? null : row.querySelector('[data-trend="r"]');
+    const rowArrows = ex.unilateral ? [wArrow, rlArrow, rr2Arrow] : [wArrow, rArrow];
+    const refreshTrend = () => applySetTrend(rowArrows, estSetTrend(set, baseline));
+    refreshTrend();
     row.querySelector('.w').oninput = (e) => {
       set.weight = e.target.value; ex.lastTouched = Date.now(); persistDraftDebounced();
-      applyTrend(wArrow, set.weight, baseline.weight);
+      refreshTrend();
     };
+    // Auto-start arming: comparing against the live previous value (the old
+    // "wasEmpty" check) can't tell a fresh entry from an edit once a reps
+    // field already holds something — the onfocus handler above selects the
+    // existing text, so typing over a carried-over/already-entered value
+    // replaces it in a single oninput event and never passes through an
+    // empty intermediate state for that check to catch. Arm explicitly on
+    // focus instead (every time the field is entered, whatever it holds),
+    // and fire auto-start once on the very next change, then disarm — so
+    // re-typing a value still starts the timer, but further keystrokes
+    // while still editing that same value don't restart it repeatedly.
     if (ex.unilateral) {
-      const rlArrow = row.querySelector('[data-trend="rl"]');
-      const rr2Arrow = row.querySelector('[data-trend="rr2"]');
-      applyTrend(rlArrow, set.repsR, baseline.repsR);
-      applyTrend(rr2Arrow, set.repsL, baseline.repsL);
-      row.querySelector('.rl').oninput = (e) => {
-        const wasEmpty = !set.repsR;
+      const rlInput = row.querySelector('.rl');
+      const rr2Input = row.querySelector('.rr2');
+      let rlAutoStartArmed = false, rr2AutoStartArmed = false;
+      rlInput.addEventListener('focus', () => { rlAutoStartArmed = true; });
+      rlInput.oninput = (e) => {
         set.repsR = e.target.value; ex.lastTouched = Date.now(); ex.done = false; persistDraftDebounced();
-        applyTrend(rlArrow, set.repsR, baseline.repsR);
-        if (wasEmpty && set.repsR) autoStartRestOrStopwatch(set);
+        refreshTrend();
+        if (rlAutoStartArmed && set.repsR) autoStartRestOrStopwatch(set);
+        rlAutoStartArmed = false;
       };
-      row.querySelector('.rr2').oninput = (e) => {
-        const wasEmpty = !set.repsL;
+      rr2Input.addEventListener('focus', () => { rr2AutoStartArmed = true; });
+      rr2Input.oninput = (e) => {
         set.repsL = e.target.value; ex.lastTouched = Date.now(); ex.done = false; persistDraftDebounced();
-        applyTrend(rr2Arrow, set.repsL, baseline.repsL);
-        if (wasEmpty && set.repsL) autoStartRestOrStopwatch(set);
+        refreshTrend();
+        if (rr2AutoStartArmed && set.repsL) autoStartRestOrStopwatch(set);
+        rr2AutoStartArmed = false;
       };
     } else {
-      const rArrow = row.querySelector('[data-trend="r"]');
-      applyTrend(rArrow, set.reps, baseline.reps);
-      row.querySelector('.r').oninput = (e) => {
-        const wasEmpty = !set.reps;
+      const rInput = row.querySelector('.r');
+      let rAutoStartArmed = false;
+      rInput.addEventListener('focus', () => { rAutoStartArmed = true; });
+      rInput.oninput = (e) => {
         set.reps = e.target.value; ex.lastTouched = Date.now(); ex.done = false; persistDraftDebounced();
-        applyTrend(rArrow, set.reps, baseline.reps);
-        if (wasEmpty && set.reps) autoStartRestOrStopwatch(set);
+        refreshTrend();
+        if (rAutoStartArmed && set.reps) autoStartRestOrStopwatch(set);
+        rAutoStartArmed = false;
       };
     }
-    row.querySelector('.rr').oninput = (e) => { set.rir = e.target.value; ex.lastTouched = Date.now(); ex.done = false; persistDraftDebounced(); };
-    row.querySelector('.rp').oninput = (e) => { set.rpe = e.target.value; ex.lastTouched = Date.now(); ex.done = false; persistDraftDebounced(); };
+    row.querySelector('.rr').oninput = (e) => { set.rir = e.target.value; ex.lastTouched = Date.now(); ex.done = false; persistDraftDebounced(); refreshTrend(); };
+    row.querySelector('.rp').oninput = (e) => { set.rpe = e.target.value; ex.lastTouched = Date.now(); ex.done = false; persistDraftDebounced(); refreshTrend(); };
     if (setLogSelectMode) {
       row.querySelector('[data-select-set]').onclick = (e) => {
         if (setLogSelected.has(i)) setLogSelected.delete(i); else setLogSelected.add(i);
@@ -3876,11 +4401,23 @@ function tickRestTimer() {
     fireRestAlarm();
   }
 }
-function updateRestDisplay() {
+// Just paints the countdown text onto whatever elements are currently
+// bound to it (restBoundEls) — no side effects. Split out from
+// updateRestDisplay() so rwRenderPanel() can refresh its own #rwDisplay
+// element without also triggering updateHotbarTimerLabel() -> rwRenderPanel()
+// again: that cycle (tick -> updateRestDisplay -> updateHotbarTimerLabel ->
+// rwRenderPanel -> updateRestDisplay -> ...) was an infinite recursion that
+// crashed with "Maximum call stack size exceeded" the instant the panel was
+// opened while a rest timer was actively running — which is exactly why it
+// wouldn't open.
+function syncRestDisplayText() {
   const m = Math.max(0, Math.floor(restRemaining/60));
   const s = Math.max(0, restRemaining%60);
   const txt = `${m}:${s.toString().padStart(2,'0')}`;
   restBoundEls.forEach(el => { if (el && el.isConnected) el.textContent = txt; });
+}
+function updateRestDisplay() {
+  syncRestDisplayText();
   // Cheap per-tick refresh of the hotbar's compact timer label.
   if (restEndTime != null || restPaused) updateHotbarTimerLabel();
 }
@@ -4043,6 +4580,8 @@ function playDefaultBeeps() {
    cuts it off. Kept fully separate from activeAlarmAudio/activeBeepOscillators
    so previewing a sound here can never interfere with a real alarm firing. */
 let previewingKey = null; // 'default' | 'custom' | null
+let colorWheelOpen = false; // whether the custom color wheel/intensity picker is expanded in Settings
+let paletteEditMode = false; // whether the Appearance palette is in delete/reorder mode
 let previewAudio = null;
 let previewBeepOscillators = [];
 let previewAutoStopTimeout = null;
@@ -4229,10 +4768,24 @@ function ensureRealtimeSync() {
 function teardownRealtimeSync() {
   if (realtimeChannel) { supabase.removeChannel(realtimeChannel); realtimeChannel = null; }
 }
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkRestCatchUp(); checkDayRolloverOnResume(); syncOnResumeIfDue(); } });
+// checkRestCatchUp() recomputes restRemaining correctly on resume, but that
+// alone doesn't guarantee the hotbar's DOM/click-binding survived the
+// background period intact (Android can leave a backgrounded WebView's
+// fixed-position elements in a stale state without a full page reload).
+// refreshHotbarLayout() rebuilds the button and re-wires its onclick from
+// scratch every time, so both the displayed label and the tap-to-open
+// handler are guaranteed correct the moment the app comes back.
+function resyncOnForeground() {
+  checkRestCatchUp();
+  checkDayRolloverOnResume();
+  syncOnResumeIfDue();
+  updateStopwatchDisplay();
+  refreshHotbarLayout();
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) resyncOnForeground(); });
 try {
   if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-    window.Capacitor.Plugins.App.addListener('resume', () => { checkRestCatchUp(); checkDayRolloverOnResume(); syncOnResumeIfDue(); });
+    window.Capacitor.Plugins.App.addListener('resume', resyncOnForeground);
   }
 } catch (e) {}
 /* Covers the case where the app was only backgrounded overnight, not fully
@@ -5364,16 +5917,37 @@ async function convertStoredUnits(oldUnit, newUnit) {
 
 /* ---------- settings ---------- */
 function renderSettings(root) {
+  const accentSwatches = buildAccentSwatchList();
+  reconcileActiveAccentColor(accentSwatches); // in case the active color's swatch was deleted elsewhere/another device
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Settings</div>
     <div class="section-label">Profile</div>
     <div class="list-item static"><div class="li-name">${account.username}</div></div>
-    <div class="section-label">Appearance</div>
-    <div class="palette-grid" id="paletteGrid">
-      ${ACCENT_PALETTES.map(p => `
-        <button class="palette-swatch ${((settings.accentHue ?? 170) === p.hue) ? 'selected' : ''}" data-hue="${p.hue}" title="${p.name}" style="background: hsl(${p.hue}, 88%, 51%);">
-          ${((settings.accentHue ?? 170) === p.hue) ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L9 17L20 6"/></svg>' : ''}
-        </button>`).join('')}
+    <div class="section-label">Appearance<button class="palette-edit-btn" id="paletteEditToggle">${paletteEditMode ? 'Done' : 'Edit'}</button></div>
+    ${paletteEditMode ? '<p class="color-wheel-help" style="text-align:left; margin: -4px 0 10px;">Drag a color to reorder it, or tap &times; to remove it.</p>' : ''}
+    <div class="palette-grid ${paletteEditMode ? 'editing' : ''}" id="paletteGrid">
+      ${accentSwatches.map(s => {
+        const isSelected = settings.activeSwatchId === s.id;
+        return `
+        <button class="palette-swatch ${isSelected ? 'selected' : ''} ${paletteEditMode ? 'editing-jiggle' : ''}" data-swatch-id="${s.id}" data-hue="${s.hue}" data-sat="${s.sat}" title="${s.name}" style="background: hsl(${s.hue}, ${Math.round(88 * s.sat)}%, 51%);">
+          ${isSelected && !paletteEditMode ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L9 17L20 6"/></svg>' : ''}
+          ${paletteEditMode ? `<span class="swatch-del-btn" data-del="${s.id}">&times;</span>` : ''}
+        </button>`;
+      }).join('')}
+      <button class="palette-swatch wheel-toggle-swatch ${colorWheelOpen ? 'selected' : ''}" id="wheelToggleBtn" title="Add a custom color" data-locked="1"><canvas id="wheelToggleCanvas" width="96" height="96"></canvas></button>
+    </div>
+    <div id="colorWheelSection" style="display:${colorWheelOpen ? '' : 'none'};">
+      <p class="color-wheel-help">Drag anywhere on the wheel — angle picks the color, distance from center fades it toward black &amp; white.</p>
+      <div class="color-wheel-wrap" id="colorWheelWrap">
+        <canvas id="colorWheelCanvas" width="220" height="220"></canvas>
+        <div class="color-wheel-knob" id="colorWheelKnob"></div>
+      </div>
+      <div class="sat-slider-row">
+        <label class="lbl">Color intensity (dull ↔ saturated)</label>
+        <input type="range" id="satSlider" min="0" max="100" value="${Math.round((settings.accentSat ?? 1) * 100)}">
+      </div>
+      <button class="chip wide add-custom-color-btn" id="addCustomColorBtn">+ Add as custom color</button>
+      <p class="color-wheel-help">Saved custom colors show up as swatches above — tweak the wheel again anytime to branch off a new one. A saved color itself can't be edited, only deleted.</p>
     </div>
     <div class="section-label">Program</div>
     <div class="list-item" id="programRow"><div><div class="li-name">${programTitleLabel(programType)}</div><div class="li-meta">${programMetaLabel(programType, programDays)}</div></div><div class="li-right">Change ›</div></div>
@@ -5382,6 +5956,7 @@ function renderSettings(root) {
     <div class="section-label">Preferences</div>
     <div class="list-item"><div><div class="li-name">Auto-start timer on reps</div><div class="li-meta">Starts the rest timer as soon as you enter reps for a set</div></div><button class="uni-toggle ${settings.autoStartTimer ? 'on' : ''}" id="toggleAutoStartTimer">${settings.autoStartTimer ? 'On' : 'Off'}</button></div>
     <div class="list-item"><div><div class="li-name">Auto-carry set data</div><div class="li-meta">Pre-fills weight/reps/RIR/RPE from your last set and exercise history</div></div><button class="uni-toggle ${settings.autoCarry ? 'on' : ''}" id="toggleAutoCarry">${settings.autoCarry ? 'On' : 'Off'}</button></div>
+    <div class="list-item"><div><div class="li-name">Auto-queue next exercise</div><div class="li-meta">Tapping Done jumps straight into the next exercise, in this split's list order, instead of back to the list</div></div><button class="uni-toggle ${settings.autoQueueExercises ? 'on' : ''}" id="toggleAutoQueueExercises">${settings.autoQueueExercises ? 'On' : 'Off'}</button></div>
     <div class="section-label">Rest Timer Default</div>
     <div class="field-block"><input type="number" id="restDefaultInput" value="${settings.restDefault}"></div>
     <div class="section-label">Timer Sound</div>
@@ -5433,14 +6008,138 @@ function renderSettings(root) {
     <button class="btn-secondary btn-danger" id="logoutBtn">Log Out</button>
   `;
   root.querySelector('#backBtn').onclick = () => goBack();
-  root.querySelectorAll('#paletteGrid .palette-swatch').forEach(btn => {
+  root.querySelector('#paletteEditToggle').onclick = () => {
+    paletteEditMode = !paletteEditMode;
+    renderSettings(root);
+  };
+  root.querySelectorAll('#paletteGrid .palette-swatch[data-swatch-id]').forEach(btn => {
     btn.onclick = async () => {
+      if (paletteEditMode) return; // taps in edit mode are for the × badge / drag, not selecting
       settings.accentHue = parseInt(btn.dataset.hue, 10);
+      settings.accentSat = parseFloat(btn.dataset.sat);
+      settings.activeSwatchId = btn.dataset.swatchId;
       await saveJSON('settings', settings);
-      applyAccentHue(settings.accentHue);
+      applyAccentTheme(settings.accentHue, settings.accentSat);
       renderSettings(root);
     };
   });
+  root.querySelectorAll('#paletteGrid .swatch-del-btn').forEach(delBtn => {
+    delBtn.onclick = async (e) => {
+      e.stopPropagation();
+      const id = delBtn.dataset.del;
+      const isDefault = id.startsWith('d:');
+      const ok = await appConfirmDelete(isDefault
+        ? 'Remove this preset from your palette? You can bring it back by clearing app data — it never touches your custom colors.'
+        : 'Delete this custom color? This can\'t be undone.');
+      if (!ok) return;
+      if (isDefault) {
+        settings.deletedDefaultHues = [...new Set([...(settings.deletedDefaultHues || []), parseInt(id.slice(2), 10)])];
+      } else {
+        const cid = id.slice(2);
+        settings.customAccentColors = (settings.customAccentColors || []).filter(c => c.id !== cid);
+      }
+      if (settings.paletteOrder) settings.paletteOrder = settings.paletteOrder.filter(x => x !== id);
+      reconcileActiveAccentColor(buildAccentSwatchList());
+      await saveJSON('settings', settings);
+      renderSettings(root);
+    };
+  });
+  // Drag-to-reorder within the palette grid — the helper itself checks for
+  // the 'editing' class before doing anything, so it's safe to always wire
+  // up regardless of paletteEditMode.
+  makeGridReorderable(root.querySelector('#paletteGrid'), async (newOrder) => {
+    settings.paletteOrder = newOrder;
+    await saveJSON('settings', settings);
+  });
+  // Render the little toggle-button icon with the exact same routine as the
+  // full-size wheel below — canvas output has no seam/banding issues the
+  // way a CSS conic-gradient does at small sizes, and it stays visually
+  // identical to the big wheel.
+  drawColorWheel(root.querySelector('#wheelToggleCanvas'));
+  root.querySelector('#wheelToggleBtn').onclick = () => {
+    colorWheelOpen = !colorWheelOpen;
+    renderSettings(root);
+  };
+  // ----- color wheel: angle = hue, distance from center = saturation ----
+  // (only wired up while the picker is expanded — the elements don't exist
+  // in the DOM otherwise)
+  if (colorWheelOpen) {
+    const wheelWrap = root.querySelector('#colorWheelWrap');
+    const wheelCanvas = root.querySelector('#colorWheelCanvas');
+    const wheelKnob = root.querySelector('#colorWheelKnob');
+    const satSlider = root.querySelector('#satSlider');
+    const setSliderFill = (pct) => { satSlider.style.setProperty('--fill', pct + '%'); };
+    setSliderFill(Math.round((settings.accentSat ?? 1) * 100));
+    drawColorWheel(wheelCanvas);
+    const positionKnob = (hue, satMult) => {
+      const r = wheelCanvas.width / 2;
+      const angleRad = hue * Math.PI / 180;
+      const dist = satMult * r;
+      wheelKnob.style.left = (r + dist * Math.cos(angleRad)) + 'px';
+      wheelKnob.style.top = (r + dist * Math.sin(angleRad)) + 'px';
+    };
+    positionKnob(settings.accentHue ?? 170, settings.accentSat ?? 1);
+    let pendingHue = settings.accentHue ?? 170, pendingSat = settings.accentSat ?? 1;
+    // Both controls write the same pending{Hue,Sat} + call applyAccentTheme
+    // live, and either one committing (drag release / slider release) is what
+    // persists + pushes to Supabase — so wheel and slider always agree, and
+    // the person sees the real theme change as they move either one, before
+    // anything is saved.
+    const readWheelPoint = (clientX, clientY) => {
+      const rect = wheelCanvas.getBoundingClientRect();
+      const r = rect.width / 2;
+      const dx = clientX - (rect.left + r), dy = clientY - (rect.top + r);
+      const dist = Math.min(r, Math.sqrt(dx * dx + dy * dy));
+      pendingHue = Math.round((Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360);
+      pendingSat = Math.round((dist / r) * 100) / 100;
+      positionKnob(pendingHue, pendingSat);
+      satSlider.value = Math.round(pendingSat * 100);
+      setSliderFill(satSlider.value);
+      applyAccentTheme(pendingHue, pendingSat); // live preview while dragging
+    };
+    let wheelDragging = false;
+    wheelWrap.addEventListener('pointerdown', (e) => {
+      wheelDragging = true;
+      wheelWrap.setPointerCapture(e.pointerId);
+      readWheelPoint(e.clientX, e.clientY);
+    });
+    wheelWrap.addEventListener('pointermove', (e) => {
+      if (!wheelDragging) return;
+      readWheelPoint(e.clientX, e.clientY);
+    });
+    const commitTheme = async () => {
+      settings.accentHue = pendingHue;
+      settings.accentSat = pendingSat;
+      settings.activeSwatchId = null; // freeform wheel color — not tied to any saved swatch until "Add" is pressed
+      await saveJSON('settings', settings); // 'settings' is a CLOUD_SYNC_KEYS entry — this pushes to Supabase automatically
+      renderSettings(root);
+    };
+    const finishWheelDrag = () => { if (wheelDragging) { wheelDragging = false; commitTheme(); } };
+    wheelWrap.addEventListener('pointerup', finishWheelDrag);
+    wheelWrap.addEventListener('pointercancel', finishWheelDrag);
+    satSlider.addEventListener('input', () => {
+      pendingHue = settings.accentHue ?? 170;
+      pendingSat = parseInt(satSlider.value, 10) / 100;
+      positionKnob(pendingHue, pendingSat);
+      setSliderFill(satSlider.value);
+      applyAccentTheme(pendingHue, pendingSat); // live preview while sliding
+    });
+    satSlider.addEventListener('change', commitTheme); // fires once on release
+    // Saves whatever color is currently active (wheel + slider, already
+    // committed above) as a new, permanent swatch. It's deliberately a
+    // fresh entry rather than an edit to any existing swatch — the wheel
+    // stays open and still parked on this exact color afterward, so the
+    // natural next move is nudging it a bit and hitting Add again to
+    // branch off a sibling color.
+    root.querySelector('#addCustomColorBtn').onclick = async () => {
+      const newColor = { id: uid(), hue: settings.accentHue, sat: settings.accentSat };
+      settings.customAccentColors = [...(settings.customAccentColors || []), newColor];
+      settings.activeSwatchId = 'c:' + newColor.id; // now a real saved swatch, not a freeform wheel color anymore
+      await saveJSON('settings', settings);
+      showToast('Custom color added');
+      renderSettings(root);
+    };
+  }
   root.querySelector('#programRow').onclick = () => goTo('settings-program');
   const dayList = root.querySelector('#exerciseDayList');
   programDays.forEach(day => {
@@ -5455,6 +6154,12 @@ function renderSettings(root) {
     await saveJSON('settings', settings);
     e.currentTarget.classList.toggle('on', settings.autoStartTimer);
     e.currentTarget.textContent = settings.autoStartTimer ? 'On' : 'Off';
+  };
+  root.querySelector('#toggleAutoQueueExercises').onclick = async (e) => {
+    settings.autoQueueExercises = !settings.autoQueueExercises;
+    await saveJSON('settings', settings);
+    e.currentTarget.classList.toggle('on', settings.autoQueueExercises);
+    e.currentTarget.textContent = settings.autoQueueExercises ? 'On' : 'Off';
   };
   root.querySelector('#toggleAutoCarry').onclick = async (e) => {
     settings.autoCarry = !settings.autoCarry;
@@ -5639,8 +6344,261 @@ function renderSetupRestTimer(root) {
     const val = parseInt(root.querySelector('#restTimerInput').value, 10);
     settings.restDefault = (Number.isFinite(val) && val > 0) ? val : 120;
     await saveJSON('settings', settings);
-    goTo('setup-preferences');
+    goTo('setup-sound');
   };
+}
+function renderSetupSound(root) {
+  root.innerHTML = `
+    <div class="eyebrow">Setup</div>
+    <h1 class="big">Timer sound</h1>
+    <p class="sub">Plays when your rest timer finishes. You can change this anytime in Settings.</p>
+    <div class="chip-grid" style="margin-bottom:9px;">
+      <button class="chip ${settings.alarmSound!=='custom'?'selected':''} ${previewingKey==='default'?'previewing':''}" id="setupSoundDefault">Default <span class="preview-ind">${previewingKey==='default' ? '❚❚' : '▶'}</span></button>
+    </div>
+    <div class="list-item" id="setupUploadSoundRow"><div><div class="li-name">Upload a file</div></div><div class="li-right">›</div></div>
+    <input type="file" id="setupSoundFileInput" accept="audio/*" style="display:none">
+    ${settings.customAlarmName ? `<div class="list-item ${previewingKey==='custom'?'previewing':''}" id="setupCustomSoundRow"><div><div class="li-name">${settings.alarmSound === 'custom' ? '<span class="li-check">✓</span>' : ''}${settings.customAlarmName}</div></div><div class="li-right"><span class="preview-ind">${previewingKey==='custom' ? '❚❚' : '▶'}</span><button class="icon-btn danger no-pop" id="setupRemoveCustomSoundBtn">Remove</button></div></div>` : ''}
+    <button class="btn-primary" id="soundContinueBtn" style="margin-top:8px;">Continue</button>
+  `;
+  root.querySelector('#setupSoundDefault').onclick = async () => {
+    settings.alarmSound = 'default';
+    await saveJSON('settings', settings);
+    toggleSoundPreview('default');
+    renderSetupSound(root);
+  };
+  root.querySelector('#setupUploadSoundRow').onclick = () => root.querySelector('#setupSoundFileInput').click();
+  root.querySelector('#setupSoundFileInput').onchange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { showToast('File too large — max 2MB'); e.target.value = ''; return; }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      settings.customAlarmData = reader.result;
+      settings.customAlarmName = file.name;
+      settings.alarmSound = 'custom';
+      const ok = await saveJSON('settings', settings);
+      if (!ok) { showToast('Could not save — file may be too large'); return; }
+      renderSetupSound(root);
+    };
+    reader.onerror = () => showToast('Could not read file');
+    reader.readAsDataURL(file);
+  };
+  const customSoundRow = root.querySelector('#setupCustomSoundRow');
+  if (customSoundRow) {
+    customSoundRow.onclick = async () => {
+      if (settings.customAlarmData && settings.alarmSound !== 'custom') {
+        settings.alarmSound = 'custom';
+        await saveJSON('settings', settings);
+      }
+      toggleSoundPreview('custom');
+      renderSetupSound(root);
+    };
+    root.querySelector('#setupRemoveCustomSoundBtn').onclick = async (e) => {
+      e.stopPropagation();
+      settings.customAlarmData = null;
+      settings.customAlarmName = null;
+      if (settings.alarmSound === 'custom') settings.alarmSound = 'default';
+      await saveJSON('settings', settings);
+      showToast('Custom sound removed');
+      renderSetupSound(root);
+    };
+  }
+  root.querySelector('#soundContinueBtn').onclick = () => goTo('setup-appearance');
+}
+function renderSetupAppearance(root) {
+  const accentSwatches = buildAccentSwatchList();
+  reconcileActiveAccentColor(accentSwatches);
+  root.innerHTML = `
+    <div class="eyebrow">Setup</div>
+    <h1 class="big">Pick a color</h1>
+    <p class="sub">Sets the app's accent color. You can change this anytime in Settings.</p>
+    <div class="palette-grid" id="setupPaletteGrid">
+      ${accentSwatches.map(s => {
+        const isSelected = settings.activeSwatchId === s.id;
+        return `
+        <button class="palette-swatch ${isSelected ? 'selected' : ''}" data-swatch-id="${s.id}" data-hue="${s.hue}" data-sat="${s.sat}" title="${s.name}" style="background: hsl(${s.hue}, ${Math.round(88 * s.sat)}%, 51%);">
+          ${isSelected ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L9 17L20 6"/></svg>' : ''}
+        </button>`;
+      }).join('')}
+      <button class="palette-swatch wheel-toggle-swatch ${colorWheelOpen ? 'selected' : ''}" id="setupWheelToggleBtn" title="Add a custom color" data-locked="1"><canvas id="setupWheelToggleCanvas" width="96" height="96"></canvas></button>
+    </div>
+    <div id="setupColorWheelSection" style="display:${colorWheelOpen ? '' : 'none'};">
+      <p class="color-wheel-help">Drag anywhere on the wheel — angle picks the color, distance from center fades it toward black &amp; white.</p>
+      <div class="color-wheel-wrap" id="setupColorWheelWrap">
+        <canvas id="setupColorWheelCanvas" width="220" height="220"></canvas>
+        <div class="color-wheel-knob" id="setupColorWheelKnob"></div>
+      </div>
+      <div class="sat-slider-row">
+        <label class="lbl">Color intensity (dull ↔ saturated)</label>
+        <input type="range" id="setupSatSlider" min="0" max="100" value="${Math.round((settings.accentSat ?? 1) * 100)}">
+      </div>
+      <button class="chip wide add-custom-color-btn" id="setupAddCustomColorBtn">+ Add as custom color</button>
+    </div>
+    <button class="btn-primary" id="appearanceContinueBtn" style="margin-top:8px;">Continue</button>
+  `;
+  root.querySelectorAll('#setupPaletteGrid .palette-swatch[data-swatch-id]').forEach(btn => {
+    btn.onclick = async () => {
+      settings.accentHue = parseInt(btn.dataset.hue, 10);
+      settings.accentSat = parseFloat(btn.dataset.sat);
+      settings.activeSwatchId = btn.dataset.swatchId;
+      await saveJSON('settings', settings);
+      applyAccentTheme(settings.accentHue, settings.accentSat);
+      renderSetupAppearance(root);
+    };
+  });
+  drawColorWheel(root.querySelector('#setupWheelToggleCanvas'));
+  root.querySelector('#setupWheelToggleBtn').onclick = () => {
+    colorWheelOpen = !colorWheelOpen;
+    renderSetupAppearance(root);
+  };
+  if (colorWheelOpen) {
+    const wheelWrap = root.querySelector('#setupColorWheelWrap');
+    const wheelCanvas = root.querySelector('#setupColorWheelCanvas');
+    const wheelKnob = root.querySelector('#setupColorWheelKnob');
+    const satSlider = root.querySelector('#setupSatSlider');
+    const setSliderFill = (pct) => { satSlider.style.setProperty('--fill', pct + '%'); };
+    setSliderFill(Math.round((settings.accentSat ?? 1) * 100));
+    drawColorWheel(wheelCanvas);
+    const positionKnob = (hue, satMult) => {
+      const r = wheelCanvas.width / 2;
+      const angleRad = hue * Math.PI / 180;
+      const dist = satMult * r;
+      wheelKnob.style.left = (r + dist * Math.cos(angleRad)) + 'px';
+      wheelKnob.style.top = (r + dist * Math.sin(angleRad)) + 'px';
+    };
+    positionKnob(settings.accentHue ?? 170, settings.accentSat ?? 1);
+    let pendingHue = settings.accentHue ?? 170, pendingSat = settings.accentSat ?? 1;
+    const readWheelPoint = (clientX, clientY) => {
+      const rect = wheelCanvas.getBoundingClientRect();
+      const r = rect.width / 2;
+      const dx = clientX - (rect.left + r), dy = clientY - (rect.top + r);
+      const dist = Math.min(r, Math.sqrt(dx * dx + dy * dy));
+      pendingHue = Math.round((Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360);
+      pendingSat = Math.round((dist / r) * 100) / 100;
+      positionKnob(pendingHue, pendingSat);
+      satSlider.value = Math.round(pendingSat * 100);
+      setSliderFill(satSlider.value);
+      applyAccentTheme(pendingHue, pendingSat);
+    };
+    let wheelDragging = false;
+    wheelWrap.addEventListener('pointerdown', (e) => {
+      wheelDragging = true;
+      wheelWrap.setPointerCapture(e.pointerId);
+      readWheelPoint(e.clientX, e.clientY);
+    });
+    wheelWrap.addEventListener('pointermove', (e) => {
+      if (!wheelDragging) return;
+      readWheelPoint(e.clientX, e.clientY);
+    });
+    const commitTheme = async () => {
+      settings.accentHue = pendingHue;
+      settings.accentSat = pendingSat;
+      settings.activeSwatchId = null;
+      await saveJSON('settings', settings);
+      renderSetupAppearance(root);
+    };
+    const finishWheelDrag = () => { if (wheelDragging) { wheelDragging = false; commitTheme(); } };
+    wheelWrap.addEventListener('pointerup', finishWheelDrag);
+    wheelWrap.addEventListener('pointercancel', finishWheelDrag);
+    satSlider.addEventListener('input', () => {
+      pendingHue = settings.accentHue ?? 170;
+      pendingSat = parseInt(satSlider.value, 10) / 100;
+      positionKnob(pendingHue, pendingSat);
+      setSliderFill(satSlider.value);
+      applyAccentTheme(pendingHue, pendingSat);
+    });
+    satSlider.addEventListener('change', commitTheme);
+    root.querySelector('#setupAddCustomColorBtn').onclick = async () => {
+      const newColor = { id: uid(), hue: settings.accentHue, sat: settings.accentSat };
+      settings.customAccentColors = [...(settings.customAccentColors || []), newColor];
+      settings.activeSwatchId = 'c:' + newColor.id;
+      await saveJSON('settings', settings);
+      showToast('Custom color added');
+      renderSetupAppearance(root);
+    };
+  }
+  root.querySelector('#appearanceContinueBtn').onclick = () => goTo('setup-widgets');
+}
+function renderSetupWidgets(root) {
+  root.innerHTML = `
+    <div class="eyebrow">Setup</div>
+    <h1 class="big">Timer &amp; Notes</h1>
+    <p class="sub">Quick access from any screen. You can change this anytime in Settings.</p>
+    <div class="section-label">Timer</div>
+    <p class="progress-help">Quick access to the rest timer/stopwatch from any screen.</p>
+    <div class="chip-grid" id="setupTimerEnabledGrid">
+      <button class="chip ${settings.timerEnabled!==false?'selected':''}" data-v="on">On</button>
+      <button class="chip ${settings.timerEnabled===false?'selected':''}" data-v="off">Off</button>
+    </div>
+    ${settings.timerEnabled!==false ? `
+    <div class="chip-grid" id="setupTimerDisplayGrid">
+      <button class="chip ${settings.timerDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
+      <button class="chip ${settings.timerDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
+    </div>` : ''}
+    <div class="section-label">Notes</div>
+    <p class="progress-help">Keep a program, cues, or anything else handy from any screen.</p>
+    <div class="chip-grid" id="setupNotesEnabledGrid">
+      <button class="chip ${settings.notesEnabled!==false?'selected':''}" data-v="on">On</button>
+      <button class="chip ${settings.notesEnabled===false?'selected':''}" data-v="off">Off</button>
+    </div>
+    ${settings.notesEnabled!==false ? `
+    <div class="chip-grid" id="setupNotesDisplayGrid">
+      <button class="chip ${settings.notesDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
+      <button class="chip ${settings.notesDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
+    </div>` : ''}
+    ${hotbarWillHaveContent(settings) ? `
+    <div class="section-label">Hotbar position</div>
+    <p class="progress-help">Where the Timer/Notes bar sits on screen — stays fixed while you scroll either way.</p>
+    <div class="chip-grid" id="setupHotbarPosGrid">
+      <button class="chip ${settings.hotbarPosition!=='bottom'?'selected':''}" data-v="top">Top</button>
+      <button class="chip ${settings.hotbarPosition==='bottom'?'selected':''}" data-v="bottom">Bottom</button>
+    </div>` : ''}
+    <button class="btn-primary" id="widgetsContinueBtn" style="margin-top:8px;">Continue</button>
+  `;
+  root.querySelectorAll('#setupTimerEnabledGrid .chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.timerEnabled = (btn.dataset.v === 'on');
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSetupWidgets(root);
+    };
+  });
+  const timerDisplayGrid = root.querySelector('#setupTimerDisplayGrid');
+  if (timerDisplayGrid) timerDisplayGrid.querySelectorAll('.chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.timerDisplay = btn.dataset.v;
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSetupWidgets(root);
+    };
+  });
+  root.querySelectorAll('#setupNotesEnabledGrid .chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.notesEnabled = (btn.dataset.v === 'on');
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSetupWidgets(root);
+    };
+  });
+  const notesDisplayGrid = root.querySelector('#setupNotesDisplayGrid');
+  if (notesDisplayGrid) notesDisplayGrid.querySelectorAll('.chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.notesDisplay = btn.dataset.v;
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSetupWidgets(root);
+    };
+  });
+  const hotbarPosGrid = root.querySelector('#setupHotbarPosGrid');
+  if (hotbarPosGrid) hotbarPosGrid.querySelectorAll('.chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.hotbarPosition = btn.dataset.v;
+      await saveJSON('settings', settings);
+      placeHotbar();
+      hotbarPosGrid.querySelectorAll('.chip').forEach(b => b.classList.toggle('selected', b === btn));
+    };
+  });
+  root.querySelector('#widgetsContinueBtn').onclick = () => goTo('setup-preferences');
 }
 function renderSetupPreferences(root) {
   root.innerHTML = `
@@ -5655,6 +6613,7 @@ function renderSetupPreferences(root) {
     <div class="section-label">Preferences</div>
     <div class="list-item"><div><div class="li-name">Auto-start timer on reps</div><div class="li-meta">Starts the rest timer as soon as you enter reps for a set</div></div><button class="uni-toggle ${settings.autoStartTimer ? 'on' : ''}" id="setupToggleAutoStartTimer">${settings.autoStartTimer ? 'On' : 'Off'}</button></div>
     <div class="list-item"><div><div class="li-name">Auto-carry set data</div><div class="li-meta">Pre-fills weight/reps/RIR/RPE from your last set and exercise history</div></div><button class="uni-toggle ${settings.autoCarry ? 'on' : ''}" id="setupToggleAutoCarry">${settings.autoCarry ? 'On' : 'Off'}</button></div>
+    <div class="list-item"><div><div class="li-name">Auto-queue next exercise</div><div class="li-meta">Tapping Done jumps straight into the next exercise, in this split's list order, instead of back to the list</div></div><button class="uni-toggle ${settings.autoQueueExercises ? 'on' : ''}" id="setupToggleAutoQueueExercises">${settings.autoQueueExercises ? 'On' : 'Off'}</button></div>
     <button class="btn-primary" id="prefsContinueBtn" style="margin-top:8px;">Continue</button>
   `;
   root.querySelector('#setupUnitKg').onclick = () => {
@@ -5674,6 +6633,11 @@ function renderSetupPreferences(root) {
     settings.autoCarry = !settings.autoCarry;
     e.currentTarget.classList.toggle('on', settings.autoCarry);
     e.currentTarget.textContent = settings.autoCarry ? 'On' : 'Off';
+  };
+  root.querySelector('#setupToggleAutoQueueExercises').onclick = (e) => {
+    settings.autoQueueExercises = !settings.autoQueueExercises;
+    e.currentTarget.classList.toggle('on', settings.autoQueueExercises);
+    e.currentTarget.textContent = settings.autoQueueExercises ? 'On' : 'Off';
   };
   root.querySelector('#prefsContinueBtn').onclick = async () => {
     settings.onboardingDone = true;
@@ -5832,7 +6796,7 @@ function rwRenderPanel() {
     const displayEl = rwPanelEl.querySelector('#rwDisplay');
     restBoundEls = restBoundEls.filter(el => el !== displayEl && el.isConnected);
     restBoundEls.push(displayEl);
-    updateRestDisplay();
+    syncRestDisplayText();
     if (idleOrStopped) displayEl.textContent = '--:--';
     rwPanelEl.querySelector('#rwDurMinus').onclick = () => {
       const inp = rwPanelEl.querySelector('#rwDurInput');
@@ -5990,6 +6954,207 @@ function initHotbar() {
   initHotbarReorder();
 }
 
+/* ---------- draggable floating widget buttons ----------
+   Movement mechanism ported as-is from the old single floating rest-timer
+   FAB: while dragging the button tracks the finger directly; on release it
+   either flings with momentum (decaying friction) or, below throw speed,
+   just glides to a stop, then snaps to whichever screen edge it's closer
+   to. Generalized here (hbw* = "hotbar widget") so it can drive any number
+   of independent floating buttons — each with its own saved position —
+   instead of just the one rest-timer FAB it originally shipped for.
+   refreshHotbarLayout() rebuilds the widget buttons from scratch on every
+   relevant settings change, so state lives outside the DOM element (keyed
+   by storageKey) and a single delegated resize listener re-attaches to
+   whatever elements are live at the time, instead of each call adding its
+   own — which would otherwise leak a new listener per rebuild. */
+const hbwState = {};
+function hbwGetState(storageKey) {
+  if (!hbwState[storageKey]) hbwState[storageKey] = { pos: null, renderX: null, renderY: null, glideFrame: null, gliding: false, flingFrame: null };
+  return hbwState[storageKey];
+}
+function hbwClamp(pos) {
+  const w = window.innerWidth, h = window.innerHeight;
+  const size = 52;
+  pos.x = Math.min(Math.max(pos.x, 8), w - size - 8);
+  pos.y = Math.min(Math.max(pos.y, 8), h - size - 8);
+}
+function hbwApplyPos(el, x, y) {
+  if (!el) return;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+}
+function hbwClampAndApply(el, st) {
+  if (!el || !st.pos) return;
+  hbwClamp(st.pos);
+  hbwApplyPos(el, st.pos.x, st.pos.y);
+}
+function hbwStepGlide(el, st) {
+  const lerp = 0.22;
+  st.renderX += (st.pos.x - st.renderX) * lerp;
+  st.renderY += (st.pos.y - st.renderY) * lerp;
+  hbwApplyPos(el, st.renderX, st.renderY);
+  if (st.gliding || Math.abs(st.pos.x - st.renderX) > 0.3 || Math.abs(st.pos.y - st.renderY) > 0.3) {
+    st.glideFrame = requestAnimationFrame(() => hbwStepGlide(el, st));
+  } else {
+    st.renderX = st.pos.x; st.renderY = st.pos.y;
+    hbwApplyPos(el, st.renderX, st.renderY);
+    st.glideFrame = null;
+  }
+}
+function hbwStopGlide(st) {
+  st.gliding = false;
+  if (st.glideFrame) { cancelAnimationFrame(st.glideFrame); st.glideFrame = null; }
+  st.renderX = st.pos.x; st.renderY = st.pos.y;
+}
+function hbwCancelFling(st) {
+  if (st.flingFrame) { cancelAnimationFrame(st.flingFrame); st.flingFrame = null; }
+}
+/* Estimates release velocity from the tail of the drag (last ~100ms of
+   samples) rather than the whole gesture, so a flick-then-hold-still
+   correctly reads as "no throw" instead of averaging in the fast part. */
+function hbwComputeVelocity(samples) {
+  if (samples.length < 2) return { vx: 0, vy: 0 };
+  const last = samples[samples.length - 1];
+  let ref = samples[0];
+  for (let i = samples.length - 2; i >= 0; i--) {
+    if (last.t - samples[i].t <= 100) ref = samples[i]; else break;
+  }
+  const dt = last.t - ref.t;
+  if (dt <= 0) return { vx: 0, vy: 0 };
+  return { vx: (last.x - ref.x) / dt, vy: (last.y - ref.y) / dt };
+}
+/* Snaps to whichever horizontal edge is closer once a drag/fling ends —
+   crossing the midpoint of the screen (relative to which side the drag
+   started on) sends it to the opposite edge, chat-head style. */
+function hbwSnapToEdge(el, st, storageKey, startedLeft, onMove) {
+  if (!el) return;
+  const w = window.innerWidth, h = window.innerHeight;
+  const size = 52;
+  const center = st.pos.x + size / 2;
+  const thirdMark = startedLeft ? w / 3 : (w * 2) / 3;
+  const targetX = (center < thirdMark) ? 8 : (w - size - 8);
+  st.pos.x = targetX;
+  st.pos.y = Math.min(Math.max(st.pos.y, 8), h - size - 8);
+  el.classList.add('hbw-snapping');
+  hbwClampAndApply(el, st);
+  st.renderX = st.pos.x; st.renderY = st.pos.y;
+  if (onMove) onMove();
+  saveJSON(storageKey, { x: st.pos.x, y: st.pos.y });
+  setTimeout(() => { if (el) el.classList.remove('hbw-snapping'); }, 260);
+}
+/* Gives a released drag momentum: it launches at the speed of the last bit
+   of the flick and decelerates like something sliding across a surface —
+   fast at first, tapering to a stop — before snapping to the nearest edge. */
+function hbwStartFling(el, st, storageKey, vx, vy, startedLeft, onMove) {
+  hbwCancelFling(st);
+  let velX = vx * 16 * 0.6, velY = vy * 16 * 0.6;
+  const friction = 0.86;
+  const minVel = 0.4;
+  function step() {
+    st.pos.x += velX; st.pos.y += velY;
+    const beforeX = st.pos.x, beforeY = st.pos.y;
+    hbwClamp(st.pos);
+    if (st.pos.x !== beforeX) velX = 0;
+    if (st.pos.y !== beforeY) velY = 0;
+    st.renderX = st.pos.x; st.renderY = st.pos.y;
+    hbwApplyPos(el, st.renderX, st.renderY);
+    if (onMove) onMove();
+    velX *= friction; velY *= friction;
+    if (Math.abs(velX) > minVel || Math.abs(velY) > minVel) {
+      st.flingFrame = requestAnimationFrame(step);
+    } else {
+      st.flingFrame = null;
+      hbwSnapToEdge(el, st, storageKey, startedLeft, onMove);
+    }
+  }
+  st.flingFrame = requestAnimationFrame(step);
+}
+
+/* One delegated resize listener for every registered widget, rather than
+   one per makeWidgetDraggable() call — refreshHotbarLayout() can rebuild
+   the buttons many times per session, and a listener-per-call would leak. */
+const hbwRegistry = {}; // storageKey -> { id, onMove }
+let hbwResizeBound = false;
+function hbwEnsureResizeListener() {
+  if (hbwResizeBound) return;
+  hbwResizeBound = true;
+  let debounce = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => {
+      Object.keys(hbwRegistry).forEach((storageKey) => {
+        const { id, onMove } = hbwRegistry[storageKey];
+        const el = document.getElementById(id);
+        const st = hbwGetState(storageKey);
+        if (el && st.pos) { hbwClampAndApply(el, st); if (onMove) onMove(); }
+      });
+    }, 200);
+  });
+}
+
+/* Wires up drag-anywhere behavior on a floating widget button. storageKey
+   persists its position (survives reloads and refreshHotbarLayout()
+   rebuilds); defaultPos is used the first time it's ever shown; onMove is
+   called while dragging/settling (used to keep an open panel anchored to
+   the button); onTap fires for a plain tap that wasn't a drag. */
+function makeWidgetDraggable(el, storageKey, defaultPos, onMove, onTap) {
+  const st = hbwGetState(storageKey);
+  const saved = loadJSON(storageKey, null);
+  st.pos = (saved && typeof saved.x === 'number' && typeof saved.y === 'number') ? saved : defaultPos;
+  hbwClampAndApply(el, st);
+  hbwRegistry[storageKey] = { id: el.id, onMove };
+  hbwEnsureResizeListener();
+
+  let dragging = false, moved = false, startX = 0, startY = 0, origX = 0, origY = 0;
+  let moveSamples = [];
+  el.addEventListener('pointerdown', (e) => {
+    dragging = true; moved = false;
+    startX = e.clientX; startY = e.clientY;
+    origX = st.pos.x; origY = st.pos.y;
+    hbwCancelFling(st);
+    moveSamples = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
+    el.setPointerCapture(e.pointerId);
+    el.classList.add('hbw-dragging');
+  });
+  el.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) moved = true;
+    if (moved) {
+      st.pos.x = origX + dx; st.pos.y = origY + dy;
+      hbwClamp(st.pos);
+      // Track the finger directly while dragging — the eased glide is
+      // reserved for after release (fling/edge-snap) so it doesn't fall
+      // behind mid-drag and then jump to catch up.
+      hbwStopGlide(st);
+      hbwApplyPos(el, st.pos.x, st.pos.y);
+      if (onMove) onMove();
+      moveSamples.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+      if (moveSamples.length > 8) moveSamples.shift();
+    }
+  });
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    el.classList.remove('hbw-dragging');
+    if (moved) {
+      hbwStopGlide(st);
+      const startedLeft = (origX + 23) < window.innerWidth / 2;
+      const { vx, vy } = hbwComputeVelocity(moveSamples);
+      if (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05) {
+        hbwStartFling(el, st, storageKey, vx, vy, startedLeft, onMove);
+      } else {
+        hbwSnapToEdge(el, st, storageKey, startedLeft, onMove);
+      }
+    } else {
+      hbwStopGlide(st);
+      if (onTap) onTap();
+    }
+  };
+  el.addEventListener('pointerup', endDrag);
+  el.addEventListener('pointercancel', endDrag);
+}
+
 /* Drag a hotbar button left/right to swap Timer/Notes positions — same
    live pointer-follow approach as the vertical exercise-list drag in
    makeReorderable(), just measured horizontally across exactly two slots.
@@ -6005,7 +7170,11 @@ function initHotbar() {
 function initHotbarReorder() {
   const hotbar = document.getElementById('hotbar');
   if (!hotbar) return;
-  const MOVE_CANCEL_PX = 6;
+  // Was 6px — small enough that ordinary finger jitter during a tap crossed
+  // it, arming a "drag" that never actually swapped anything but still set
+  // hbSuppressClick and ate the tap's click event. 16px plus the dx>dy check
+  // below means only a real, deliberate horizontal drag ever engages.
+  const MOVE_CANCEL_PX = 16;
   let armed = false, dragging = false, pointerId = null;
   let dragBtn = null, otherBtn = null, otherW = 0, baseOffset = 0, curSwapped = false;
 
@@ -6124,15 +7293,35 @@ function refreshHotbarLayout() {
 
   hbTimerBtn = document.getElementById('hbTimerBtn') || document.getElementById('hbTimerWidgetBtn') || null;
   hbNotesBtn = document.getElementById('hbNotesBtn') || document.getElementById('hbNotesWidgetBtn') || null;
-  if (hbTimerBtn) hbTimerBtn.onclick = () => {
-    if (hbSuppressClick) { hbSuppressClick = false; return; }
+  const timerWidgetEl = document.getElementById('hbTimerWidgetBtn');
+  const notesWidgetEl = document.getElementById('hbNotesWidgetBtn');
+  const timerTap = () => {
     ensureAudioCtx();
     if (rwOpen) rwClosePanel(); else rwOpenPanel();
   };
-  if (hbNotesBtn) hbNotesBtn.onclick = () => {
-    if (hbSuppressClick) { hbSuppressClick = false; return; }
+  const notesTap = () => {
     if (notesOpen) closeNotesPanel(); else openNotesPanel();
   };
+  // Widget-mode buttons are drag-anywhere (see makeWidgetDraggable above);
+  // hotbar-mode buttons stay plain taps in their fixed pill slot.
+  if (timerWidgetEl) {
+    makeWidgetDraggable(timerWidgetEl, 'timerWidgetPos', { x: window.innerWidth - 66, y: window.innerHeight - 220 },
+      () => { if (rwOpen) rwPositionPanel(); }, timerTap);
+  } else if (hbTimerBtn) {
+    hbTimerBtn.onclick = () => {
+      if (hbSuppressClick) { hbSuppressClick = false; return; }
+      timerTap();
+    };
+  }
+  if (notesWidgetEl) {
+    makeWidgetDraggable(notesWidgetEl, 'notesWidgetPos', { x: window.innerWidth - 66, y: window.innerHeight - 290 },
+      () => { if (notesOpen) positionNotesPanel(); }, notesTap);
+  } else if (hbNotesBtn) {
+    hbNotesBtn.onclick = () => {
+      if (hbSuppressClick) { hbSuppressClick = false; return; }
+      notesTap();
+    };
+  }
   // If a feature just got turned off (or switched away from its current
   // display mode) while its panel was open, that trigger no longer exists
   // — close the now-orphaned panel instead of leaving it stranded.
@@ -6342,6 +7531,26 @@ function renderNotesPanel() {
 }
 
 /* ---------- boot ---------- */
+// loadJSON is just a localStorage read under the hood (see its definition
+// above), so it's available synchronously here — pull the user's saved
+// settings into the module-level `settings` var *before* initHotbar()'s
+// first placeHotbar() call, instead of leaving it on the hardcoded
+// hotbarPosition:'top' default until boot()'s own `await loadJSON('settings', ...)`
+// finishes several steps into session/cloud-sync work. Without this, the
+// hotbar always renders at 'top' first, then visibly jumps to 'bottom'
+// the moment boot() catches up — even though the real value was sitting
+// in storage the whole time. Same migration boot() applies is repeated
+// here so an old 'top-above'/'top-below' value doesn't briefly render
+// wrong either; boot() re-loads and re-migrates the full settings object
+// again later, which is redundant but harmless.
+settings = loadJSON('settings', settings);
+if (!settings.hotbarPosition || settings.hotbarPosition === 'top-above' || settings.hotbarPosition === 'top-below') settings.hotbarPosition = 'top';
+// refreshHotbarLayout() indexes into hotbarOrder directly (no defensive
+// check), so this migration — normally done later in boot() — has to run
+// here too, or a settings object saved before hotbarOrder existed crashes
+// the very first placeHotbar() call with "Cannot read properties of
+// undefined (reading 'indexOf')".
+if (!Array.isArray(settings.hotbarOrder) || settings.hotbarOrder.length !== 2) settings.hotbarOrder = ['timer', 'notes'];
 initHotbar();
 initRestWidget();
 boot();

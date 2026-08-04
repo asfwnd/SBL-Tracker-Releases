@@ -1,8 +1,8 @@
-const CACHE = 'sbl-tracker-v1';
+const CACHE = 'sbl-tracker-v2'; // bumped: now also caches the icon files the themed-icon regeneration reads from
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(['./', './index.html', './manifest.json']))
+    caches.open(CACHE).then((cache) => cache.addAll(['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png']))
   );
   self.skipWaiting();
 });
