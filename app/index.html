@@ -525,7 +525,7 @@
     box-sizing: border-box; padding: 0 18px; z-index: 220; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
   #hotbar.hb-pos-top { top: calc(env(safe-area-inset-top, 0px) + 18px); }
-  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); }
+  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px); }
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
   .hb-btn { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
@@ -554,9 +554,16 @@
   /* Reserves room so the fixed hotbar never overlaps screen content —
      toggled by placeHotbar() in JS based on settings.hotbarPosition.
      app-hb-none applies when both features are off/widget-only, so the
-     hotbar itself is empty and no space needs to be reserved. */
-  #app.app-hb-top { padding-top: calc(env(safe-area-inset-top, 0px) + 78px); }
-  #app.app-hb-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px); }
+     hotbar itself is empty and no space needs to be reserved.
+     --hotbar-reserved-top/bottom are set by updateHotbarReservedSpace()
+     from the hotbar's ACTUAL measured position on screen (not a guessed
+     constant) — env(safe-area-inset-*) is unreliable across devices/WebViews,
+     so a fixed px guess undershoots on some phones and lets content (e.g.
+     a Delete button at the bottom of a long screen) sit behind the pill.
+     The fallback values here only apply for the one frame before JS first
+     measures and sets the custom property. */
+  #app.app-hb-top { padding-top: var(--hotbar-reserved-top, calc(env(safe-area-inset-top, 0px) + 78px)); }
+  #app.app-hb-bottom { padding-bottom: var(--hotbar-reserved-bottom, calc(env(safe-area-inset-bottom, 0px) + 88px)); }
   #app.app-hb-none { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 
   /* ---------- floating widget buttons (Timer and/or Notes, when set to
@@ -725,7 +732,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.7';
+const APP_VERSION = '1.1.8';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -2558,6 +2565,14 @@ function render() {
   if (isScreenChange) window.scrollTo(0, 0);
   else window.scrollTo(0, prevScrollY);
   lastRenderedScreen = screen;
+  // Re-measure after every render, not just when hotbar settings change —
+  // guarantees the reserved gap is always correct for whichever screen just
+  // mounted (eyebrow header, bottom action buttons, etc.), rather than
+  // relying only on placeHotbar() having been called at the right moment.
+  // Synchronous (not rAF): getBoundingClientRect() already forces a fresh
+  // layout flush, so deferring to the next frame only bought a visible
+  // flash of stale padding before the correct value snapped in.
+  updateHotbarReservedSpace();
 }
 
 /* ---------- hardware back button ----------
@@ -7377,7 +7392,46 @@ function placeHotbar() {
   }
   if (rwOpen) rwPositionPanel();
   if (notesOpen) positionNotesPanel();
+  // Measure synchronously, not on the next frame. getBoundingClientRect()
+  // forces the browser to flush layout immediately, so it already reflects
+  // the class changes just made above — deferring this to
+  // requestAnimationFrame let one frame paint with the old/fallback padding
+  // before snapping to the correct value, which is exactly the visible
+  // "content starts high, then drops down" jump users were seeing.
+  updateHotbarReservedSpace();
 }
+
+/* Reserves exactly as much scroll-content space as the hotbar actually
+   occupies on THIS device, instead of a guessed px constant. env() safe-area
+   values are inconsistently reported across Android WebViews/gesture-nav
+   setups, which is what let scrollable content (e.g. a Delete button at the
+   bottom of a long edit screen) end up rendered behind/under the fixed pill
+   — the pill's z-index also sits above normal content, so an under-reserved
+   gap doesn't just look wrong, it makes that content untappable too.
+   getBoundingClientRect() reads the pill's real on-screen box (which already
+   bakes in whatever safe-area/gesture-bar offset actually applied), so this
+   self-corrects per device instead of needing a bigger and bigger guessed
+   constant every time a new phone reports safe-area differently. */
+function updateHotbarReservedSpace() {
+  const container = document.getElementById('hotbar');
+  const app = document.getElementById('app');
+  if (!container || !app) return;
+  const BREATHING_ROOM = 20; // visible gap beyond the pill itself — content should stop clearly above it, not flush against it
+  const hotbarHasContent = !container.classList.contains('hb-empty') && !container.classList.contains('hb-hidden');
+  if (!hotbarHasContent) {
+    app.style.setProperty('--hotbar-reserved-top', '0px');
+    app.style.setProperty('--hotbar-reserved-bottom', '0px');
+    return;
+  }
+  const rect = container.getBoundingClientRect();
+  if (container.classList.contains('hb-pos-top')) {
+    app.style.setProperty('--hotbar-reserved-top', Math.ceil(rect.bottom + BREATHING_ROOM) + 'px');
+  } else {
+    app.style.setProperty('--hotbar-reserved-bottom', Math.ceil(window.innerHeight - rect.top + BREATHING_ROOM) + 'px');
+  }
+}
+window.addEventListener('resize', () => requestAnimationFrame(updateHotbarReservedSpace));
+window.addEventListener('orientationchange', () => requestAnimationFrame(updateHotbarReservedSpace));
 
 /* The hotbar/widgets (and their panels) only make sense once someone is
    signed in and past auth — hidden during loading/register/login so they
@@ -7395,6 +7449,19 @@ function updateHotbarVisibility() {
     container.classList.remove('hb-hidden');
     widgets.classList.remove('hb-hidden');
   }
+  // Must call placeHotbar(), not just updateHotbarReservedSpace(). The
+  // #app.app-hb-top/app-hb-bottom/app-hb-none class — which the padding CSS
+  // rule is actually keyed on — is only ever set inside placeHotbar(). If
+  // placeHotbar() had last run while the hotbar was still hidden (e.g.
+  // during login, before this function removes hb-hidden), #app stays
+  // stuck on app-hb-none forever: the --hotbar-reserved-top variable gets
+  // computed correctly, but with no app-hb-top class the CSS rule that
+  // reads that variable never applies, so padding-top silently stays 0
+  // and real content (e.g. the gear icon) renders underneath the now-
+  // visible, higher-z-index hotbar pill — present and painted, just
+  // physically covered. Only calling updateHotbarReservedSpace() here
+  // fixed the variable but never fixed the stale class.
+  placeHotbar();
 }
 
 /* ---------- notes panel ----------
