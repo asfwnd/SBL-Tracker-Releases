@@ -470,6 +470,12 @@
   .confirm-btns .yn-btn { padding: 15px 12px; }
   .yn-btn.danger { border-color: var(--border); color: var(--danger); box-shadow: none; }
   .yn-btn.danger:active { box-shadow: 0 0 26px -4px var(--danger-glow); transform: scale(0.965); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }
+  /* Filled/solid variant — used for the "yes, destroy it" side of a two-
+     button (no separate Cancel link) confirm, so the destructive choice
+     reads as visually heavier than the safe one instead of both being the
+     same outlined style. */
+  .yn-btn.solid-danger { border-color: var(--danger); background: var(--danger); color: #fff; box-shadow: 0 6px 22px -8px var(--danger-glow); }
+  .yn-btn.solid-danger:active { box-shadow: 0 0 26px -4px var(--danger-glow); transform: scale(0.965); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }
   .confirm-cancel { width: 100%; background: none; border: none; color: var(--text-dim); font-size: 14px;
     padding: 12px; margin-top: 9px; cursor: pointer; text-align: center; }
   .legal-overlay { position: fixed; inset: 0; background: rgba(4,8,8,0.78); z-index: 320;
@@ -514,17 +520,17 @@
     color: var(--text); font-size: 16px; padding: 14px 14px; margin-bottom: 16px; box-sizing: border-box; }
   .confirm-input:focus { outline: none; border-color: var(--border); }
 
-  /* ---------- top hotbar (timer + notes) ----------
-     Always position:fixed (in BOTH placements) so it stays on screen no
-     matter how far the page is scrolled — see settings.hotbarPosition,
-     'top' or 'bottom'. Solid teal fill matches .btn-primary, the app's
-     other high-emphasis action button. Extra clearance beyond the raw
-     safe-area inset is added on top of env() since Android's gesture-nav
-     bar / status bar aren't always reflected accurately by env() alone. */
+  /* ---------- bottom hotbar (timer + notes) ----------
+     Always position:fixed so it stays on screen no matter how far the
+     page is scrolled. Bottom placement is the only option — fixed just
+     above the home indicator / gesture bar. Solid teal fill matches
+     .btn-primary, the app's other high-emphasis action button. Extra
+     clearance beyond the raw safe-area inset is added on top of env()
+     since Android's gesture-nav bar / status bar aren't always reflected
+     accurately by env() alone. */
   #hotbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px;
     box-sizing: border-box; padding: 0 18px; z-index: 220; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
-  #hotbar.hb-pos-top { top: calc(env(safe-area-inset-top, 0px) + 18px); }
   #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px); }
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
@@ -547,22 +553,28 @@
      edge. Same border color as widget outlines for visual consistency. */
   .hb-btn:not(:first-child) { box-shadow: inset 1px 0 0 var(--border); }
   .hb-btn:active { transform: scale(0.96); transition: transform .14s var(--ease-press); }
-  .hb-btn.hb-running { font-variant-numeric: tabular-nums; }
+  .hb-btn.hb-running { font-variant-numeric: tabular-nums; flex-direction: column; gap: 0; line-height: 1.05; }
+  /* Tiny "Timer"/"Stopwatch" tag under the live countdown — small enough
+     to stay out of the way, but legible enough to settle at a glance
+     which one is actually counting (they can differ from whichever tab
+     is open in the panel). */
+  .hb-mode-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    opacity: 0.72; line-height: 1; margin-top: 2px; white-space: nowrap; }
+  .hb-time { white-space: nowrap; }
   /* A single enabled item fills the whole pill and reads bigger, instead
      of sitting cramped in a half-width slot meant for two. */
   .hb-pill.hb-single .hb-btn { font-size: 20px; }
   /* Reserves room so the fixed hotbar never overlaps screen content —
-     toggled by placeHotbar() in JS based on settings.hotbarPosition.
-     app-hb-none applies when both features are off/widget-only, so the
-     hotbar itself is empty and no space needs to be reserved.
-     --hotbar-reserved-top/bottom are set by updateHotbarReservedSpace()
-     from the hotbar's ACTUAL measured position on screen (not a guessed
-     constant) — env(safe-area-inset-*) is unreliable across devices/WebViews,
-     so a fixed px guess undershoots on some phones and lets content (e.g.
-     a Delete button at the bottom of a long screen) sit behind the pill.
-     The fallback values here only apply for the one frame before JS first
-     measures and sets the custom property. */
-  #app.app-hb-top { padding-top: var(--hotbar-reserved-top, calc(env(safe-area-inset-top, 0px) + 78px)); }
+     toggled by placeHotbar() in JS. app-hb-none applies when both
+     features are off/widget-only, so the hotbar itself is empty and no
+     space needs to be reserved. --hotbar-reserved-bottom is set by
+     updateHotbarReservedSpace() from the hotbar's ACTUAL measured
+     position on screen (not a guessed constant) — env(safe-area-inset-*)
+     is unreliable across devices/WebViews, so a fixed px guess undershoots
+     on some phones and lets content (e.g. a Delete button at the bottom
+     of a long screen) sit behind the pill. The fallback value here only
+     applies for the one frame before JS first measures and sets the
+     custom property. */
   #app.app-hb-bottom { padding-bottom: var(--hotbar-reserved-bottom, calc(env(safe-area-inset-bottom, 0px) + 88px)); }
   #app.app-hb-none { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 
@@ -590,7 +602,9 @@
   .hb-widget-btn.hbw-dragging { cursor: grabbing; box-shadow: 0 10px 28px -6px rgba(0,0,0,0.6); transition: none; }
   .hb-widget-btn.hbw-snapping { transition: left .24s var(--ease-bounce), top .24s var(--ease-bounce); }
   .hb-widget-btn svg { width: 24px; height: 24px; }
-  .hb-widget-btn.hb-running { font-variant-numeric: tabular-nums; font-size: 14.3px; padding: 0 2px; }
+  .hb-widget-btn.hb-running { font-variant-numeric: tabular-nums; font-size: 13px; padding: 0 2px;
+    flex-direction: column; gap: 0; line-height: 1.05; }
+  .hb-widget-btn.hb-running .hb-mode-tag { font-size: 6.8px; margin-top: 1px; }
 
   /* ---------- notes panel (multi-note, tabbed, opens near the hotbar) ---------- */
   .notes-overlay { position: fixed; inset: 0; z-index: 225; background: rgba(4,8,8,0.5);
@@ -732,7 +746,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.8';
+const APP_VERSION = '1.1.9';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -950,7 +964,7 @@ function showAppConfirm(message, opts, cancelable) {
       <div class="confirm-card">
         <div class="confirm-msg">${message}</div>
         <div class="confirm-btns">
-          ${opts.map((o, i) => `<button class="yn-btn ${o.danger ? 'danger' : 'yes'}" data-i="${i}">${o.label}</button>`).join('')}
+          ${opts.map((o, i) => `<button class="yn-btn ${o.cls || (o.danger ? 'danger' : 'yes')}" data-i="${i}">${o.label}</button>`).join('')}
         </div>
         ${cancelable !== false ? `<button class="confirm-cancel" id="confirmCancel">Cancel</button>` : ''}
       </div>`;
@@ -966,6 +980,17 @@ function showAppConfirm(message, opts, cancelable) {
 }
 function appConfirmDelete(message) {
   return showAppConfirm(message, [{ label: 'Delete', value: true, danger: true }], true).then((v) => !!v);
+}
+/* True if switching away from this draft's day would actually lose
+   something — an empty freshly-created draft (no exercises logged, no
+   bodyweight/notes, no media) isn't worth interrupting the user over. */
+function draftHasData(d) {
+  if (!d) return false;
+  if (Array.isArray(d.exercises) && d.exercises.some(ex => Array.isArray(ex.sets) && ex.sets.some(hasSetData))) return true;
+  if (d.bodyweight) return true;
+  if (d.notes && d.notes.trim()) return true;
+  if (d.media && ((d.media.photos && d.media.photos.length) || (d.media.videos && d.media.videos.length))) return true;
+  return false;
 }
 /* App-themed replacement for window.prompt() — same reasoning as
    showAppConfirm above: a native prompt() renders as stock OS chrome, which
@@ -1030,10 +1055,10 @@ const PRIVACY_HTML = `
   <ul>
     <li><strong>Account data</strong> — your username and password, handled via Supabase Auth.</li>
     <li><strong>Workout data</strong> — exercises, sets, reps, weight, RIR/RPE, bodyweight, and notes you enter.</li>
-    <li><strong>Media</strong> — any photos or videos you choose to attach to a workout.</li>
+    <li><strong>Media</strong> — any photos or videos you choose to attach to a workout are stored locally on your device only. We do not collect, upload, or have access to this media; the App keeps a local reference so it can play it back.</li>
   </ul>
   <h3>How it's stored</h3>
-  <p>Your data is stored in a Supabase project used by this App (authentication, database, and file storage for any attached media).</p>
+  <p>Account and workout data is stored in a Supabase project used by this App (authentication and database). Attached media (photos/videos) never leaves your device — it's stored locally and is not part of Supabase storage.</p>
   <h3>How it's used</h3>
   <p>Your data is used only to provide the App's core functionality — tracking and showing your own workouts back to you. <strong>It is not sold, rented, or shared with advertisers or other third parties.</strong></p>
   <h3>Third parties</h3>
@@ -1935,7 +1960,7 @@ let account = null, loggedIn = false;
 let programType = null, programDays = [];
 let allExSortMode = 'az'; // 'az' | 'recent' | 'sets' | 'volume'
 let exercisesByDay = {};
-let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
+let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
 
 /* ---------- accent color palette (Settings > Appearance) ----------
    Only the hue shifts; saturation/lightness stay put, so every preset keeps
@@ -2309,16 +2334,11 @@ async function continueBootAfterAuth() {
   checkForAppUpdate();
   await pullCloudAppState(); // must finish before the settings load below —
                               // this is what lets a device that's never had
-                              // local settings pick up the real ones (e.g.
-                              // hotbarPosition) instead of the defaults
+                              // local settings pick up the real ones from
+                              // the cloud instead of the defaults
   // Settings are fully resolved (including anything the cloud pull above
-  // just landed) *before* the hotbar is revealed a few lines down. Doing it
-  // in the other order — reveal, then load/migrate settings afterward — is
-  // what used to make the hotbar visibly jump position right after login:
-  // on a device with no local settings yet, it would render at the
-  // hardcoded default ('top') the instant it appeared, then jump to wherever
-  // the account's real cloud-synced position was once that load caught up.
-  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, hotbarPosition: 'top', timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
+  // just landed) *before* the hotbar is revealed a few lines down.
+  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
   if (settings.accentHue === undefined) settings.accentHue = 170;
   if (settings.accentSat === undefined) settings.accentSat = 1;
   if (settings.customAccentColors === undefined) settings.customAccentColors = [];
@@ -2341,9 +2361,7 @@ async function continueBootAfterAuth() {
   if (settings.autoQueueExercises === undefined) settings.autoQueueExercises = false;
   if (settings.autoCarry === undefined) settings.autoCarry = true;
   if (settings.onboardingDone === undefined) settings.onboardingDone = true;
-  // Migrates the earlier three-way setting (top-above/top-below/bottom) down
-  // to the current two-way one (top/bottom).
-  if (!settings.hotbarPosition || settings.hotbarPosition === 'top-above' || settings.hotbarPosition === 'top-below') settings.hotbarPosition = 'top';
+  delete settings.hotbarPosition; // hotbar is bottom-only now — drop any legacy saved value
   if (settings.timerEnabled === undefined) settings.timerEnabled = true;
   if (settings.notesEnabled === undefined) settings.notesEnabled = true;
   if (settings.timerDisplay === undefined) settings.timerDisplay = 'hotbar';
@@ -3295,6 +3313,14 @@ function renderTrackSelect(root) {
     b.innerHTML = `<span class="sb-name">${day}</span><span class="sb-arrow">›</span>`;
     b.onclick = async () => {
       if (!draft || draft.day !== day) {
+        if (draft && draftHasData(draft)) {
+          const ok = await showAppConfirm(
+            `Switching to <strong>${day}</strong> workout will wipe all currently tracked data for <strong>${draft.day}</strong>. Continue?`,
+            [{ label: 'Yes', value: true, cls: 'solid-danger' }, { label: 'No', value: false, cls: 'yes' }],
+            false
+          );
+          if (!ok) return;
+        }
         draft = { day, startTime: Date.now(), exercises: [], media: { photos: [], videos: [] }, bodyweight: '', notes: '' };
         await saveJSON('draft', draft);
       }
@@ -4451,6 +4477,12 @@ function stopRestTimer() {
   cancelScheduledBackgroundAlarm();
   updateRestDisplay();
   updateHotbarTimerLabel();
+  // A full panel rebuild here (rather than leaving it to the tick) only
+  // matters for the one case that has no button click to hang it off of:
+  // the countdown running out on its own via fireRestAlarm(). Every other
+  // caller (Reset button, starting a new timer) already re-renders itself
+  // right after calling this, so this is a harmless extra render there.
+  if (rwOpen) rwRenderPanel();
 }
 /* ---------- stopwatch (second mode of the floating widget) ---------- */
 function currentStopwatchMs() {
@@ -6012,13 +6044,6 @@ function renderSettings(root) {
       <button class="chip ${settings.notesDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
       <button class="chip ${settings.notesDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
     </div>` : ''}
-    ${hotbarWillHaveContent(settings) ? `
-    <div class="section-label">Hotbar position</div>
-    <p class="progress-help">Where the Timer/Notes bar sits on screen — stays fixed while you scroll either way.</p>
-    <div class="chip-grid" id="hotbarPosGrid">
-      <button class="chip ${settings.hotbarPosition!=='bottom'?'selected':''}" data-v="top">Top</button>
-      <button class="chip ${settings.hotbarPosition==='bottom'?'selected':''}" data-v="bottom">Bottom</button>
-    </div>` : ''}
     <div class="section-label">Legal</div>
     <div class="list-item" id="termsRow"><div class="li-name">Terms &amp; Conditions</div><div class="li-right">›</div></div>
     <div class="list-item" id="privacyRow"><div class="li-name">Privacy Policy</div><div class="li-right">›</div></div>
@@ -6245,14 +6270,6 @@ function renderSettings(root) {
     showToast('Converted your data to lb');
     render();
   };
-  root.querySelectorAll('#hotbarPosGrid .chip').forEach(btn => {
-    btn.onclick = async () => {
-      settings.hotbarPosition = btn.dataset.v;
-      await saveJSON('settings', settings);
-      placeHotbar();
-      root.querySelectorAll('#hotbarPosGrid .chip').forEach(b => b.classList.toggle('selected', b === btn));
-    };
-  });
   root.querySelectorAll('#timerEnabledGrid .chip').forEach(btn => {
     btn.onclick = async () => {
       settings.timerEnabled = (btn.dataset.v === 'on');
@@ -6565,13 +6582,6 @@ function renderSetupWidgets(root) {
       <button class="chip ${settings.notesDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
       <button class="chip ${settings.notesDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
     </div>` : ''}
-    ${hotbarWillHaveContent(settings) ? `
-    <div class="section-label">Hotbar position</div>
-    <p class="progress-help">Where the Timer/Notes bar sits on screen — stays fixed while you scroll either way.</p>
-    <div class="chip-grid" id="setupHotbarPosGrid">
-      <button class="chip ${settings.hotbarPosition!=='bottom'?'selected':''}" data-v="top">Top</button>
-      <button class="chip ${settings.hotbarPosition==='bottom'?'selected':''}" data-v="bottom">Bottom</button>
-    </div>` : ''}
     <button class="btn-primary" id="widgetsContinueBtn" style="margin-top:8px;">Continue</button>
   `;
   root.querySelectorAll('#setupTimerEnabledGrid .chip').forEach(btn => {
@@ -6606,15 +6616,6 @@ function renderSetupWidgets(root) {
       await saveJSON('settings', settings);
       refreshHotbarLayout();
       renderSetupWidgets(root);
-    };
-  });
-  const hotbarPosGrid = root.querySelector('#setupHotbarPosGrid');
-  if (hotbarPosGrid) hotbarPosGrid.querySelectorAll('.chip').forEach(btn => {
-    btn.onclick = async () => {
-      settings.hotbarPosition = btn.dataset.v;
-      await saveJSON('settings', settings);
-      placeHotbar();
-      hotbarPosGrid.querySelectorAll('.chip').forEach(b => b.classList.toggle('selected', b === btn));
     };
   });
   root.querySelector('#widgetsContinueBtn').onclick = () => goTo('setup-preferences');
@@ -6745,16 +6746,26 @@ function renderSettingsBackup(root) {
    top of the file. The timer/stopwatch state itself (restEndTime,
    swStartTimestamp, etc.) is unchanged and keeps ticking across every
    screen exactly like before. */
-function rwFabLabel() {
+/* Like rwFabLabel below, but also reports WHICH one is actually running/
+   paused (not just which tab is selected in the panel — those can differ,
+   e.g. the panel showing the idle Timer tab while the stopwatch is the
+   thing actually ticking in the background). Used to paint a tiny
+   "Timer"/"Stopwatch" tag next to the live countdown so it's never
+   ambiguous which one you're looking at. */
+function rwFabState() {
   if (restEndTime != null || restPaused) {
     const m = Math.max(0, Math.floor(restRemaining/60));
     const s = Math.max(0, restRemaining%60);
-    return `${m}:${s.toString().padStart(2,'0')}`;
+    return { text: `${m}:${s.toString().padStart(2,'0')}`, kind: 'timer' };
   }
   if (swStartTimestamp != null || swElapsedMs > 0) {
-    return formatStopwatch(currentStopwatchMs());
+    return { text: formatStopwatch(currentStopwatchMs()), kind: 'stopwatch' };
   }
   return null;
+}
+function rwFabLabel() {
+  const state = rwFabState();
+  return state ? state.text : null;
 }
 
 function rwRenderPanel() {
@@ -7275,8 +7286,8 @@ function initHotbarReorder() {
 /* Rebuilds the hotbar pill (0/1/2 items — a single item fills the whole
    pill and centers, matching "big, centered" for a lone feature) and the
    floating-widget stack, then re-wires their click handlers. Call this
-   whenever timerEnabled/notesEnabled/timerDisplay/notesDisplay/
-   hotbarPosition changes. */
+   whenever timerEnabled/notesEnabled/timerDisplay/notesDisplay
+   changes. */
 function refreshHotbarLayout() {
   const hotbar = document.getElementById('hotbar');
   const widgets = document.getElementById('hbWidgets');
@@ -7353,41 +7364,57 @@ function refreshHotbarLayout() {
 
 function updateHotbarTimerLabel() {
   if (hbTimerBtn) {
-    const label = rwFabLabel();
-    // The widget button is a small circle with no room for "Timer" text
-    // when idle — it shows an icon instead, swapping to the live
-    // countdown/stopwatch text only while something is actually running.
-    if (hbTimerBtn.id === 'hbTimerWidgetBtn') {
-      hbTimerBtn.innerHTML = label || HB_TIMER_ICON_SVG;
+    const state = rwFabState();
+    const isWidget = hbTimerBtn.id === 'hbTimerWidgetBtn';
+    if (state) {
+      // Running or paused — show the live time plus a tiny uppercase tag
+      // ("Timer"/"Stopwatch") so which one is active is never ambiguous,
+      // regardless of which tab happens to be open in the panel.
+      const modeLabel = state.kind === 'stopwatch' ? 'Stopwatch' : 'Timer';
+      hbTimerBtn.innerHTML = `<span class="hb-time">${state.text}</span><span class="hb-mode-tag">${modeLabel}</span>`;
+    } else if (isWidget) {
+      hbTimerBtn.innerHTML = HB_TIMER_ICON_SVG;
     } else {
-      hbTimerBtn.textContent = label || (rwMode === 'stopwatch' ? 'Stopwatch' : 'Timer');
+      hbTimerBtn.textContent = rwMode === 'stopwatch' ? 'Stopwatch' : 'Timer';
     }
-    hbTimerBtn.classList.toggle('hb-running', !!label);
+    hbTimerBtn.classList.toggle('hb-running', !!state);
   }
-  if (rwOpen) rwRenderPanel();
+  // Deliberately NOT calling rwRenderPanel() here. This function runs on
+  // every 250ms tick of whichever clock is active (via updateRestDisplay/
+  // updateStopwatchDisplay below) — a full panel rebuild on that cadence
+  // was blowing away in-progress interaction inside the open panel: typing
+  // into the rest-duration field got reset every quarter-second (the input
+  // re-renders back to the last committed value), and a Pause/Reset tap
+  // could land on a button that got replaced out from under the touch
+  // mid-tap. That happened whether the panel was showing the clock that
+  // was actually ticking OR the other one — either way this function fired
+  // on every tick and unconditionally rebuilt whatever tab was open.
+  // The live countdown/stopwatch text still updates every tick via
+  // syncRestDisplayText()/updateStopwatchDisplay() directly patching the
+  // bound elements' textContent, so nothing goes stale — the fix is just
+  // to stop the wholesale DOM replacement. Call sites that actually change
+  // state (start/pause/resume/reset, switching Timer/Stopwatch tabs, the
+  // countdown completing on its own) already call rwRenderPanel() where
+  // that state change happens.
 }
 
-/* Two hotbar placements only: 'top' (fixed just below the status bar /
-   notch, above every screen's title) or 'bottom' (fixed just above the
-   home indicator / gesture bar). #app gets matching reserved padding so
-   content never sits underneath it. The floating-widget stack is always
-   bottom-right, but is nudged up above the hotbar if the hotbar is also
-   in 'bottom' mode and currently showing something, so the two never
-   overlap. Called on boot, whenever a relevant setting changes, and
-   after login. */
+/* Bottom-only hotbar placement: fixed just above the home indicator /
+   gesture bar. #app gets matching reserved padding so content never sits
+   underneath it. The floating-widget stack is always bottom-right, and is
+   nudged up above the hotbar when it's currently showing something, so
+   the two never overlap. Called on boot, whenever a relevant setting
+   changes, and after login. */
 function placeHotbar() {
   const container = document.getElementById('hotbar');
   const widgets = document.getElementById('hbWidgets');
   const app = document.getElementById('app');
   if (!container || !app) return;
-  const pos = (settings.hotbarPosition === 'bottom') ? 'bottom' : 'top';
   const hotbarHasContent = !container.classList.contains('hb-empty') && !container.classList.contains('hb-hidden');
-  container.classList.remove('hb-pos-top', 'hb-pos-bottom');
-  container.classList.add('hb-pos-' + pos);
-  app.classList.remove('app-hb-top', 'app-hb-bottom', 'app-hb-none');
-  app.classList.add('app-hb-' + (hotbarHasContent ? pos : 'none'));
+  container.classList.add('hb-pos-bottom');
+  app.classList.remove('app-hb-bottom', 'app-hb-none');
+  app.classList.add(hotbarHasContent ? 'app-hb-bottom' : 'app-hb-none');
   if (widgets) {
-    const extra = (pos === 'bottom' && hotbarHasContent) ? 62 : 0;
+    const extra = hotbarHasContent ? 62 : 0;
     widgets.style.setProperty('--hb-widget-extra', extra + 'px');
   }
   if (rwOpen) rwPositionPanel();
@@ -7419,16 +7446,11 @@ function updateHotbarReservedSpace() {
   const BREATHING_ROOM = 20; // visible gap beyond the pill itself — content should stop clearly above it, not flush against it
   const hotbarHasContent = !container.classList.contains('hb-empty') && !container.classList.contains('hb-hidden');
   if (!hotbarHasContent) {
-    app.style.setProperty('--hotbar-reserved-top', '0px');
     app.style.setProperty('--hotbar-reserved-bottom', '0px');
     return;
   }
   const rect = container.getBoundingClientRect();
-  if (container.classList.contains('hb-pos-top')) {
-    app.style.setProperty('--hotbar-reserved-top', Math.ceil(rect.bottom + BREATHING_ROOM) + 'px');
-  } else {
-    app.style.setProperty('--hotbar-reserved-bottom', Math.ceil(window.innerHeight - rect.top + BREATHING_ROOM) + 'px');
-  }
+  app.style.setProperty('--hotbar-reserved-bottom', Math.ceil(window.innerHeight - rect.top + BREATHING_ROOM) + 'px');
 }
 window.addEventListener('resize', () => requestAnimationFrame(updateHotbarReservedSpace));
 window.addEventListener('orientationchange', () => requestAnimationFrame(updateHotbarReservedSpace));
@@ -7450,17 +7472,17 @@ function updateHotbarVisibility() {
     widgets.classList.remove('hb-hidden');
   }
   // Must call placeHotbar(), not just updateHotbarReservedSpace(). The
-  // #app.app-hb-top/app-hb-bottom/app-hb-none class — which the padding CSS
-  // rule is actually keyed on — is only ever set inside placeHotbar(). If
+  // #app.app-hb-bottom/app-hb-none class — which the padding CSS rule is
+  // actually keyed on — is only ever set inside placeHotbar(). If
   // placeHotbar() had last run while the hotbar was still hidden (e.g.
   // during login, before this function removes hb-hidden), #app stays
-  // stuck on app-hb-none forever: the --hotbar-reserved-top variable gets
-  // computed correctly, but with no app-hb-top class the CSS rule that
-  // reads that variable never applies, so padding-top silently stays 0
-  // and real content (e.g. the gear icon) renders underneath the now-
-  // visible, higher-z-index hotbar pill — present and painted, just
-  // physically covered. Only calling updateHotbarReservedSpace() here
-  // fixed the variable but never fixed the stale class.
+  // stuck on app-hb-none forever: the --hotbar-reserved-bottom variable
+  // gets computed correctly, but with no app-hb-bottom class the CSS rule
+  // that reads that variable never applies, so padding-bottom silently
+  // stays 0 and real content renders underneath the now-visible, higher-
+  // z-index hotbar pill — present and painted, just physically covered.
+  // Only calling updateHotbarReservedSpace() here fixed the variable but
+  // never fixed the stale class.
   placeHotbar();
 }
 
@@ -7645,17 +7667,10 @@ function renderNotesPanel() {
 // loadJSON is just a localStorage read under the hood (see its definition
 // above), so it's available synchronously here — pull the user's saved
 // settings into the module-level `settings` var *before* initHotbar()'s
-// first placeHotbar() call, instead of leaving it on the hardcoded
-// hotbarPosition:'top' default until boot()'s own `await loadJSON('settings', ...)`
-// finishes several steps into session/cloud-sync work. Without this, the
-// hotbar always renders at 'top' first, then visibly jumps to 'bottom'
-// the moment boot() catches up — even though the real value was sitting
-// in storage the whole time. Same migration boot() applies is repeated
-// here so an old 'top-above'/'top-below' value doesn't briefly render
-// wrong either; boot() re-loads and re-migrates the full settings object
-// again later, which is redundant but harmless.
+// first placeHotbar() call. Hotbar is bottom-only, so there's no position
+// to migrate anymore.
 settings = loadJSON('settings', settings);
-if (!settings.hotbarPosition || settings.hotbarPosition === 'top-above' || settings.hotbarPosition === 'top-below') settings.hotbarPosition = 'top';
+delete settings.hotbarPosition; // drop any legacy saved value
 // refreshHotbarLayout() indexes into hotbarOrder directly (no defensive
 // check), so this migration — normally done later in boot() — has to run
 // here too, or a settings object saved before hotbarOrder existed crashes

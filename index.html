@@ -218,7 +218,7 @@
 
   /* anchor targets should land below the sticky bar — actual height set via JS
      into --nav-h, since the bar can be one or two rows depending on width */
-  #overview, #principles, #smart, #download {
+  #overview, #smart, #download {
     scroll-margin-top: var(--nav-h, 64px);
   }
 
@@ -345,8 +345,6 @@
   .reveal-stagger.in > *:nth-child(5) { transition-delay: .30s; }
   .reveal-stagger.in > *:nth-child(6) { transition-delay: .37s; }
 
-  /* PRINCIPLES */
-  .principles { padding: 80px 0; text-align: center; }
   .section-label {
     font-size: 12.5px; color: var(--text-dim); text-transform: uppercase;
     letter-spacing: 0.14em; margin-bottom: 10px;
@@ -356,29 +354,6 @@
     line-height: 1.15; margin: 0 auto 44px; max-width: 620px;
     letter-spacing: -0.01em;
   }
-
-  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: left; }
-  .card {
-    background: linear-gradient(var(--panel), var(--panel)) padding-box,
-                linear-gradient(150deg, rgba(20,240,204,0.30), rgba(20,240,204,0) 50%, rgba(20,240,204,0.12) 100%) border-box;
-    border: 1px solid transparent;
-    border-radius: 16px; padding: 28px 24px;
-    box-shadow: 0 0 40px -26px var(--teal-glow);
-    transition: transform .35s var(--spring), box-shadow .35s ease;
-  }
-  .card:hover { transform: translateY(-6px); box-shadow: 0 0 56px -18px var(--teal-glow); }
-  .card .stat-box-icon {
-    width: 38px; height: 38px; border-radius: 12px;
-    background: rgba(20,240,204,0.14);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 16px;
-    box-shadow: 0 0 18px -6px var(--teal-glow);
-    transition: transform .4s var(--spring);
-  }
-  .card:hover .stat-box-icon { transform: scale(1.12) rotate(-6deg); }
-  .card .stat-box-icon svg { width: 18px; height: 18px; color: var(--teal); }
-  .card h3 { font-size: 16.5px; font-weight: 700; margin-bottom: 8px; }
-  .card p { color: var(--text-dim); font-size: 14px; }
 
   /* SMART FEATURES */
   .smart { padding: 80px 0; text-align: center; }
@@ -415,6 +390,19 @@
   .download { padding: 96px 0; text-align: center; position: relative; }
   .download .section-title { margin: 0 auto 16px; }
   .download p { color: var(--text-dim); max-width: 420px; margin: 0 auto 36px; font-size: 15px; }
+  .download .cta-row { margin-bottom: 36px; }
+
+  .dl-instructions {
+    max-width: 460px; margin: 0 auto; text-align: left;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .dl-instructions p {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 18px;
+    margin: 0; max-width: none; color: var(--text-dim);
+    font-size: 13.5px; line-height: 1.5;
+  }
+  .dl-instructions strong { color: var(--text); }
 
   footer {
     padding: 28px 0;
@@ -455,10 +443,6 @@
         <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11.5L12 4l9 7.5M5 10v10h5v-6h4v6h5V10"/></svg></span>
         <span class="xmb-label">Overview</span>
       </a>
-      <a class="xmb-item" data-target="principles" href="#principles">
-        <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></span>
-        <span class="xmb-label">Why</span>
-      </a>
       <a class="xmb-item" data-target="smart" href="#smart">
         <span class="xmb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
         <span class="xmb-label">Features</span>
@@ -477,98 +461,80 @@
 
 <header class="hero" id="overview">
   <div class="wrap">
-    <div class="eyebrow">Designed for serious lifters</div>
-    <h1>Log faster.<br><span class="accent">Train harder.</span></h1>
-    <p class="sub">A minimalist tracker for lifters who already know what they're doing. No feed, no streaks, no chatbot — just the numbers that move the needle.</p>
+    <h1>The workout tracker <span class="accent">that does it all</span></h1>
+    <p class="sub">Cloud sync, auto timers, PR tracking, offline logging — built for lifters who want data, not noise.</p>
 
     <div class="cta-row">
       <a class="btn-primary" href="#download">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
-        Download for Android
+        Get for Android
       </a>
       <a class="btn-primary" href="https://sbltracker.pages.dev/app/" target="_blank" rel="noopener">
-        Open Web App
+        Open in Browser
       </a>
+      <p class="meta-note">iOS: open in Safari, tap Share, then "Add to Home Screen".</p>
     </div>
   </div>
 </header>
 
-<section class="principles" id="principles">
-  <div class="wrap">
-    <div class="section-label reveal">Every second counts</div>
-    <h2 class="section-title reveal">Built for people who train seriously.</h2>
-    <div class="grid3 reveal-stagger">
-      <div class="card">
-        <div class="stat-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
-        <h3>Fast entry</h3>
-        <p>Weight, reps, RIR. Log a set faster than you can open Instagram.</p>
-      </div>
-      <div class="card">
-        <div class="stat-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M18 8l-5 5-4-4-4 4"/></svg></div>
-        <h3>Real numbers</h3>
-        <p>1RM and PR tracking that runs in the background — no manual math, no guessing.</p>
-      </div>
-      <div class="card">
-        <div class="stat-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <h3>Zero noise</h3>
-        <p>No social feed, no badges, no "great job!" popups. The app gets out of your way.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="smart" id="smart">
   <div class="wrap">
-    <div class="section-label reveal">Minimal by design</div>
-    <h2 class="section-title reveal">Smart defaults, not smart-alec features.</h2>
+    <h2 class="section-title reveal">Shipped with Usable Features, Not AI Slop.</h2>
     <div class="grid2 reveal-stagger">
       <div class="feat-card" data-tilt>
         <div class="feat-num">01</div>
         <div class="feat-body">
-          <h3>Rest timer starts itself</h3>
-          <p>Enter a set's reps and the rest timer fires automatically. No tapping a separate start button between sets.</p>
+          <h3>PR & performance tracking, built in</h3>
+          <p>Every logged set feeds a live 1RM estimate and overall performance tracker. PRs surface the moment they happen.</p>
         </div>
       </div>
       <div class="feat-card" data-tilt>
         <div class="feat-num">02</div>
         <div class="feat-body">
-          <h3>Offline by default</h3>
-          <p>No signal needed mid-workout. Every set logs to the phone instantly and syncs to the cloud on its own the next time you're online.</p>
+          <h3>Synced across devices</h3>
+          <p>All workout data lives in the cloud. Switch from phone to tablet to laptop and everything's already there.</p>
         </div>
       </div>
       <div class="feat-card" data-tilt>
         <div class="feat-num">03</div>
         <div class="feat-body">
-          <h3>Carries your last session</h3>
-          <p>Weight and reps prefill from your previous session — per exercise, and per set. Toggle it off any time it's in the way.</p>
+          <h3>Offline-first</h3>
+          <p>No signal needed mid-workout. Every set logs instantly and backs up to the cloud the next time you're connected.</p>
         </div>
       </div>
       <div class="feat-card" data-tilt>
         <div class="feat-num">04</div>
         <div class="feat-body">
-          <h3>1RM, estimated as you go</h3>
-          <p>Every logged set feeds an e1RM estimate for that lift, updated live so PRs surface the moment they happen.</p>
+          <h3>Hotbar for notes, timer that starts itself</h3>
+          <p>A dedicated hotbar keeps your program and key cues one tap away. Log a set's reps and the rest timer fires on its own.</p>
         </div>
       </div>
       <div class="feat-card" data-tilt>
         <div class="feat-num">05</div>
         <div class="feat-body">
-          <h3>Media, tied to the set</h3>
-          <p>Attach a photo or clip to the exact set it belongs to — form checks and progress shots stay linked to the numbers.</p>
+          <h3>Auto queue, auto carry</h3>
+          <p>Sets queue up and carry forward from your last session on their own — built to keep you off your phone, not on it.</p>
         </div>
       </div>
       <div class="feat-card" data-tilt>
         <div class="feat-num">06</div>
         <div class="feat-body">
-          <h3>Review from anywhere</h3>
-          <p>Pull up any past workout on any device with just your username — no install, no local backup file required.</p>
+          <h3>Media, tied to the set</h3>
+          <p>Attach a photo or clip to the exact set it belongs to. Form checks and progress shots stay sorted and easy to find.</p>
         </div>
       </div>
-      <div class="feat-card" data-tilt style="grid-column: 1 / -1;">
+      <div class="feat-card" data-tilt>
         <div class="feat-num">07</div>
         <div class="feat-body">
           <h3>Updates itself</h3>
           <p>The app checks for new versions and installs them automatically — no chasing download links for every release.</p>
+        </div>
+      </div>
+      <div class="feat-card" data-tilt>
+        <div class="feat-num">08</div>
+        <div class="feat-body">
+          <h3>No fluff</h3>
+          <p>Built for maximum productivity — every feature earns its place, nothing else makes the cut.</p>
         </div>
       </div>
     </div>
@@ -577,13 +543,15 @@
 
 <section class="download" id="download">
   <div class="wrap">
-    <div class="section-label reveal">Start tracking now</div>
-    <h2 class="section-title reveal">One file. No store, no fluff.</h2>
-    <p class="reveal">Direct APK download. Android will warn about an unknown source the first install — that's expected for an app outside the Play Store.</p>
-    <a class="btn-primary reveal" href="#" id="downloadLink" style="display:inline-flex;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
-      Download SBL Tracker
-    </a>
+    <h2 class="section-title reveal">One File. Built-In Auto Update. Maximum Peace of Mind.</h2>
+    <p class="reveal">Grab the APK for Android and you're set — it keeps itself up to date from there.</p>
+
+    <div class="cta-row reveal" style="opacity:1; animation:none;">
+      <a class="btn-primary" href="#" id="downloadLink" style="display:inline-flex;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+        Download APK
+      </a>
+    </div>
   </div>
 </section>
 
@@ -660,7 +628,7 @@
 
   // XMB-style section rail: click to jump, scroll to track
   const xmbItems = Array.from(document.querySelectorAll('.xmb-item'));
-  const sectionIds = ['overview', 'principles', 'smart', 'download'];
+  const sectionIds = ['overview', 'smart', 'download'];
   const sections = sectionIds
     .map(id => document.getElementById(id))
     .filter(Boolean);
@@ -688,7 +656,7 @@
   function setActive(id) {
     xmbItems.forEach(it => it.classList.toggle('active', it.dataset.target === id));
     if (navCta) {
-      navCta.classList.toggle('visible', id === 'principles' || id === 'smart');
+      navCta.classList.toggle('visible', id === 'smart');
     }
   }
 
