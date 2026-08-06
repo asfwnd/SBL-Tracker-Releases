@@ -309,11 +309,11 @@
   .set-row input::-webkit-outer-spin-button, .set-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .set-row.uni input { padding: 11px 1px; font-size: 13.5px; }
   .set-cell-trend { position: relative; }
-  .trend-arrow { position: absolute; top: -6px; right: -4px; width: 15px; height: 15px; border-radius: 50%;
+  .trend-arrow { position: absolute; top: 50%; left: -8px; width: 15px; height: 15px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center; font-size: 9px; line-height: 1;
-    background: var(--panel); box-shadow: 0 0 0 1px var(--border); opacity: 0; transform: scale(0.6);
+    background: var(--panel); box-shadow: 0 0 0 1px var(--border); opacity: 0; transform: translateY(-50%) scale(0.6);
     transition: opacity .15s var(--ease-press), transform .15s var(--ease-press); pointer-events: none; }
-  .trend-arrow.show { opacity: 1; transform: scale(1); }
+  .trend-arrow.show { opacity: 1; transform: translateY(-50%) scale(1); }
   .trend-arrow.up { color: var(--teal); box-shadow: 0 0 0 1px var(--teal), 0 0 8px -3px var(--teal-glow); }
   .trend-arrow.down { color: var(--danger); box-shadow: 0 0 0 1px var(--danger), 0 0 8px -3px var(--danger-glow); }
   .col-labels { display: grid; grid-template-columns: 32px minmax(0,1fr) minmax(0,1fr) minmax(0,0.85fr) minmax(0,0.85fr) 34px; gap: 5px; margin-bottom: 6px; }
@@ -554,10 +554,16 @@
   .hb-btn:not(:first-child) { box-shadow: inset 1px 0 0 var(--border); }
   .hb-btn:active { transform: scale(0.96); transition: transform .14s var(--ease-press); }
   .hb-btn.hb-running { font-variant-numeric: tabular-nums; flex-direction: column; gap: 0; line-height: 1.05; }
-  /* Tiny "Timer"/"Stopwatch" tag under the live countdown — small enough
-     to stay out of the way, but legible enough to settle at a glance
-     which one is actually counting (they can differ from whichever tab
-     is open in the panel). */
+  /* Both clocks active at once — two slots side by side instead of one
+     stacked value, so a countdown and a stopwatch can share the same
+     pill without either hiding the other. Same type size as the single
+     case — just two of them instead of one centered. */
+  .hb-btn.hb-running.hb-dual { flex-direction: row; gap: 22px; }
+  .hb-slot { display: flex; flex-direction: column; align-items: center; line-height: 1.05; }
+  /* "Timer"/"Stopwatch" tag under the live countdown — small and out of
+     the way, distinct from the time digits above it (that "make them the
+     same size" ask turned out to mean shrinking the digits down to match
+     this, not blowing this up to match the digits — reverted). */
   .hb-mode-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
     opacity: 0.72; line-height: 1; margin-top: 2px; white-space: nowrap; }
   .hb-time { white-space: nowrap; }
@@ -650,6 +656,12 @@
   .rw-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .rw-panel-title { font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); font-weight: 700; }
   .rw-panel-close { background: none; border: none; color: var(--text-dim); font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 4px; }
+  /* Both sections (Rest Timer, Stopwatch) used to always render together
+     here — reverted back to a tab toggle per user preference: only one
+     control set shown at a time, selected via these two buttons. Both
+     clocks still run fully independently in the background regardless of
+     which tab is showing (see rwFabStates()/the dual hotbar display) —
+     this only changes which one's controls are visible in the panel. */
   .rw-mode-toggle { display: flex; gap: 4px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 11px; padding: 3px; margin-bottom: 14px; }
   .rw-mode-btn { flex: 1; background: none; border: none; color: var(--text-dim); font-size: 12px; font-weight: 700; padding: 7px 6px; border-radius: 8px; cursor: pointer; }
   .rw-mode-btn.active { background: var(--teal); color: var(--teal-ink); }
@@ -746,7 +758,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.1.9';
+const APP_VERSION = '1.2.0';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -2358,6 +2370,7 @@ async function continueBootAfterAuth() {
   if (settings.customAlarmData === undefined) settings.customAlarmData = null;
   if (settings.customAlarmName === undefined) settings.customAlarmName = null;
   if (settings.autoStartTimer === undefined) settings.autoStartTimer = true;
+  if (settings.autoStartTarget === undefined) settings.autoStartTarget = 'timer';
   if (settings.autoQueueExercises === undefined) settings.autoQueueExercises = false;
   if (settings.autoCarry === undefined) settings.autoCarry = true;
   if (settings.onboardingDone === undefined) settings.onboardingDone = true;
@@ -4256,17 +4269,23 @@ function renderSets(root, ex) {
     const row = document.createElement('div');
     row.className = 'set-row' + (ex.unilateral ? ' uni' : '');
     const repsInputs = ex.unilateral
-      ? `<div class="set-cell-trend"><input class="mono rl" type="number" placeholder="0" value="${set.repsR}"><span class="trend-arrow" data-trend="rl"></span></div>
-         <div class="set-cell-trend"><input class="mono rr2" type="number" placeholder="0" value="${set.repsL}"><span class="trend-arrow" data-trend="rr2"></span></div>`
-      : `<div class="set-cell-trend"><input class="mono r" type="number" placeholder="0" value="${set.reps}"><span class="trend-arrow" data-trend="r"></span></div>`;
+      ? `<input class="mono rl" type="number" placeholder="0" value="${set.repsR}">
+         <input class="mono rr2" type="number" placeholder="0" value="${set.repsL}">`
+      : `<input class="mono r" type="number" placeholder="0" value="${set.reps}">`;
     const checked = setLogSelectMode && setLogSelected.has(i);
-    const numCell = `<div class="set-num mono">${i+1}</div>`;
+    // One trend arrow per row, on the set number — used to sit duplicated
+    // on top of both the weight AND reps fields, but both copies always
+    // showed the identical verdict anyway (see estSetTrend below), so it
+    // was just the same information twice. One arrow on the set number
+    // reads as "this set, overall" instead of implying weight and reps
+    // are being judged separately.
+    const numCell = `<div class="set-num mono set-cell-trend">${i+1}<span class="trend-arrow" data-trend="set"></span></div>`;
     const actionCell = setLogSelectMode
       ? `<button class="set-select-circle ${checked ? 'checked' : ''}" data-select-set title="Select this set"></button>`
       : `<button class="set-media-btn ${set.media.length ? 'has-media' : ''}" data-set-media title="Attach photo or video">${ICON_CAMERA_SVG}${set.media.length ? '<span class="dot"></span>' : ''}</button>`;
     row.innerHTML = `
       ${numCell}
-      <div class="set-cell-trend"><input class="mono w" type="number" step="0.5" placeholder="0" value="${set.weight}"><span class="trend-arrow" data-trend="w"></span></div>
+      <input class="mono w" type="number" step="0.5" placeholder="0" value="${set.weight}">
       ${repsInputs}
       <input class="mono rr" type="number" placeholder="—" value="${set.rir}">
       <input class="mono rp" type="number" step="0.5" placeholder="—" value="${set.rpe}">
@@ -4277,12 +4296,8 @@ function renderSets(root, ex) {
     // there instead of needing to hold-select or backspace it out first.
     row.querySelectorAll('input[type="number"]').forEach(inp => { inp.onfocus = (e) => e.target.select(); });
     const baseline = set.baseline || {};
-    const wArrow = row.querySelector('[data-trend="w"]');
-    const rlArrow = ex.unilateral ? row.querySelector('[data-trend="rl"]') : null;
-    const rr2Arrow = ex.unilateral ? row.querySelector('[data-trend="rr2"]') : null;
-    const rArrow = ex.unilateral ? null : row.querySelector('[data-trend="r"]');
-    const rowArrows = ex.unilateral ? [wArrow, rlArrow, rr2Arrow] : [wArrow, rArrow];
-    const refreshTrend = () => applySetTrend(rowArrows, estSetTrend(set, baseline));
+    const setArrow = row.querySelector('[data-trend="set"]');
+    const refreshTrend = () => applySetTrend([setArrow], estSetTrend(set, baseline));
     refreshTrend();
     row.querySelector('.w').oninput = (e) => {
       set.weight = e.target.value; ex.lastTouched = Date.now(); persistDraftDebounced();
@@ -4393,11 +4408,12 @@ function persistDraftDebounced() {
    instead of drifting. */
 function autoStartRestOrStopwatch(set) {
   if (!settings.autoStartTimer) return;
-  if (rwMode === 'stopwatch') {
-    if (!swStartTimestamp) startStopwatch();
-  } else {
-    startRestTimer(set.rest || settings.restDefault);
-  }
+  const target = settings.autoStartTarget || 'timer';
+  if (target === 'timer' || target === 'both') startRestTimer(set.rest || settings.restDefault);
+  // Stopwatch only starts if it isn't already running — it's meant to
+  // accumulate for the whole session, not restart on every set the way
+  // the countdown intentionally re-arms each time.
+  if (target === 'stopwatch' || target === 'both') { if (!swStartTimestamp) startStopwatch(); }
 }
 function startRestTimer(seconds) {
   stopRestTimer();
@@ -6006,6 +6022,11 @@ function renderSettings(root) {
     <div id="exerciseDayList"></div>
     <div class="section-label">Preferences</div>
     <div class="list-item"><div><div class="li-name">Auto-start timer on reps</div><div class="li-meta">Starts the rest timer as soon as you enter reps for a set</div></div><button class="uni-toggle ${settings.autoStartTimer ? 'on' : ''}" id="toggleAutoStartTimer">${settings.autoStartTimer ? 'On' : 'Off'}</button></div>
+    <div class="chip-grid" id="autoStartTargetGrid" style="margin-bottom:14px;">
+      <button class="chip ${(settings.autoStartTarget||'timer')==='timer'?'selected':''}" data-v="timer">Timer</button>
+      <button class="chip ${(settings.autoStartTarget||'timer')==='stopwatch'?'selected':''}" data-v="stopwatch">Stopwatch</button>
+      <button class="chip ${(settings.autoStartTarget||'timer')==='both'?'selected':''}" data-v="both">Both</button>
+    </div>
     <div class="list-item"><div><div class="li-name">Auto-carry set data</div><div class="li-meta">Pre-fills weight/reps/RIR/RPE from your last set and exercise history</div></div><button class="uni-toggle ${settings.autoCarry ? 'on' : ''}" id="toggleAutoCarry">${settings.autoCarry ? 'On' : 'Off'}</button></div>
     <div class="list-item"><div><div class="li-name">Auto-queue next exercise</div><div class="li-meta">Tapping Done jumps straight into the next exercise, in this split's list order, instead of back to the list</div></div><button class="uni-toggle ${settings.autoQueueExercises ? 'on' : ''}" id="toggleAutoQueueExercises">${settings.autoQueueExercises ? 'On' : 'Off'}</button></div>
     <div class="section-label">Rest Timer Default</div>
@@ -6199,6 +6220,13 @@ function renderSettings(root) {
     e.currentTarget.classList.toggle('on', settings.autoStartTimer);
     e.currentTarget.textContent = settings.autoStartTimer ? 'On' : 'Off';
   };
+  root.querySelectorAll('#autoStartTargetGrid .chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.autoStartTarget = btn.dataset.v;
+      await saveJSON('settings', settings);
+      renderSettings(root);
+    };
+  });
   root.querySelector('#toggleAutoQueueExercises').onclick = async (e) => {
     settings.autoQueueExercises = !settings.autoQueueExercises;
     await saveJSON('settings', settings);
@@ -6746,26 +6774,21 @@ function renderSettingsBackup(root) {
    top of the file. The timer/stopwatch state itself (restEndTime,
    swStartTimestamp, etc.) is unchanged and keeps ticking across every
    screen exactly like before. */
-/* Like rwFabLabel below, but also reports WHICH one is actually running/
-   paused (not just which tab is selected in the panel — those can differ,
-   e.g. the panel showing the idle Timer tab while the stopwatch is the
-   thing actually ticking in the background). Used to paint a tiny
-   "Timer"/"Stopwatch" tag next to the live countdown so it's never
-   ambiguous which one you're looking at. */
-function rwFabState() {
+/* Like the old rwFabLabel, but reports every clock that's actually
+   running/paused right now (not just which tab is selected in the panel —
+   those can differ), so the hotbar can show both a countdown AND a
+   stopwatch at once instead of only ever picking one. */
+function rwFabStates() {
+  const states = [];
   if (restEndTime != null || restPaused) {
     const m = Math.max(0, Math.floor(restRemaining/60));
     const s = Math.max(0, restRemaining%60);
-    return { text: `${m}:${s.toString().padStart(2,'0')}`, kind: 'timer' };
+    states.push({ text: `${m}:${s.toString().padStart(2,'0')}`, kind: 'timer' });
   }
   if (swStartTimestamp != null || swElapsedMs > 0) {
-    return { text: formatStopwatch(currentStopwatchMs()), kind: 'stopwatch' };
+    states.push({ text: formatStopwatch(currentStopwatchMs()), kind: 'stopwatch' });
   }
-  return null;
-}
-function rwFabLabel() {
-  const state = rwFabState();
-  return state ? state.text : null;
+  return states;
 }
 
 function rwRenderPanel() {
@@ -7325,8 +7348,20 @@ function refreshHotbarLayout() {
   hbNotesBtn = document.getElementById('hbNotesBtn') || document.getElementById('hbNotesWidgetBtn') || null;
   const timerWidgetEl = document.getElementById('hbTimerWidgetBtn');
   const notesWidgetEl = document.getElementById('hbNotesWidgetBtn');
-  const timerTap = () => {
+  const timerTap = (e) => {
     ensureAudioCtx();
+    // When both are running, the pill shows two slots (Timer / SW). Tap
+    // one and the panel opens straight to that tab, instead of whichever
+    // tab happened to be selected last. Tapping the same slot again while
+    // it's already showing closes the panel, same as a normal toggle tap.
+    const slot = e && e.target && e.target.closest ? e.target.closest('.hb-slot') : null;
+    const wantMode = slot ? slot.dataset.kind : null;
+    if (wantMode) {
+      if (rwOpen && rwMode === wantMode) { rwClosePanel(); return; }
+      if (rwMode !== wantMode) { rwMode = wantMode; saveJSON('rwMode', rwMode); }
+      if (!rwOpen) rwOpenPanel(); else { rwRenderPanel(); rwPositionPanel(); updateHotbarTimerLabel(); }
+      return;
+    }
     if (rwOpen) rwClosePanel(); else rwOpenPanel();
   };
   const notesTap = () => {
@@ -7338,9 +7373,9 @@ function refreshHotbarLayout() {
     makeWidgetDraggable(timerWidgetEl, 'timerWidgetPos', { x: window.innerWidth - 66, y: window.innerHeight - 220 },
       () => { if (rwOpen) rwPositionPanel(); }, timerTap);
   } else if (hbTimerBtn) {
-    hbTimerBtn.onclick = () => {
+    hbTimerBtn.onclick = (e) => {
       if (hbSuppressClick) { hbSuppressClick = false; return; }
-      timerTap();
+      timerTap(e);
     };
   }
   if (notesWidgetEl) {
@@ -7364,20 +7399,59 @@ function refreshHotbarLayout() {
 
 function updateHotbarTimerLabel() {
   if (hbTimerBtn) {
-    const state = rwFabState();
+    const states = rwFabStates();
     const isWidget = hbTimerBtn.id === 'hbTimerWidgetBtn';
-    if (state) {
-      // Running or paused — show the live time plus a tiny uppercase tag
-      // ("Timer"/"Stopwatch") so which one is active is never ambiguous,
-      // regardless of which tab happens to be open in the panel.
-      const modeLabel = state.kind === 'stopwatch' ? 'Stopwatch' : 'Timer';
-      hbTimerBtn.innerHTML = `<span class="hb-time">${state.text}</span><span class="hb-mode-tag">${modeLabel}</span>`;
+    // "Shape" = which layout is showing (dual slots / a single value for
+    // one specific kind / idle icon / idle text). This runs on every
+    // 250ms tick, and only the numbers actually change tick to tick — the
+    // shape itself only changes on a real state transition (something
+    // starts/stops). Rebuilding the DOM every tick regardless was exactly
+    // the earlier "panel eats your tap" bug, just showing up here now:
+    // the very .hb-slot elements a finger is trying to tap were getting
+    // torn down and recreated ~4x/second, so a touch could land right as
+    // its target vanished and never register. Same fix as before — only
+    // replace the DOM on an actual shape change; on an unchanged shape,
+    // just patch the existing nodes' text.
+    let shape, primary = null;
+    if (states.length === 2 && !isWidget) {
+      shape = 'dual';
+    } else if (states.length > 0) {
+      primary = states.find(s => s.kind === 'timer') || states[0];
+      shape = 'single:' + primary.kind;
     } else if (isWidget) {
-      hbTimerBtn.innerHTML = HB_TIMER_ICON_SVG;
+      shape = 'idle:icon';
     } else {
-      hbTimerBtn.textContent = rwMode === 'stopwatch' ? 'Stopwatch' : 'Timer';
+      shape = 'idle:text';
     }
-    hbTimerBtn.classList.toggle('hb-running', !!state);
+    if (hbTimerBtn.dataset.hbShape !== shape) {
+      hbTimerBtn.dataset.hbShape = shape;
+      if (shape === 'dual') {
+        // Both running/paused at once — two compact slots side by side
+        // instead of the single stacked time+tag, so neither one gets
+        // hidden behind the other.
+        hbTimerBtn.innerHTML = states.map(s => `<span class="hb-slot" data-kind="${s.kind}"><span class="hb-time">${s.text}</span><span class="hb-mode-tag">${s.kind === 'stopwatch' ? 'SW' : 'Timer'}</span></span>`).join('');
+      } else if (shape.startsWith('single:')) {
+        // Single value (or the small widget circle, which has no room for
+        // two — it shows the countdown, since it's the one with a
+        // deadline, and the hotbar/panel carry the full picture when both
+        // are active).
+        const modeLabel = primary.kind === 'stopwatch' ? 'Stopwatch' : 'Timer';
+        hbTimerBtn.innerHTML = `<span class="hb-time">${primary.text}</span><span class="hb-mode-tag">${modeLabel}</span>`;
+      } else if (shape === 'idle:icon') {
+        hbTimerBtn.innerHTML = HB_TIMER_ICON_SVG;
+      } else {
+        hbTimerBtn.textContent = rwMode === 'stopwatch' ? 'Stopwatch' : 'Timer';
+      }
+    } else if (shape === 'dual') {
+      const timeEls = hbTimerBtn.querySelectorAll('.hb-time');
+      if (timeEls[0]) timeEls[0].textContent = states[0].text;
+      if (timeEls[1]) timeEls[1].textContent = states[1].text;
+    } else if (shape.startsWith('single:')) {
+      const timeEl = hbTimerBtn.querySelector('.hb-time');
+      if (timeEl) timeEl.textContent = primary.text;
+    }
+    hbTimerBtn.classList.toggle('hb-running', states.length > 0);
+    hbTimerBtn.classList.toggle('hb-dual', shape === 'dual');
   }
   // Deliberately NOT calling rwRenderPanel() here. This function runs on
   // every 250ms tick of whichever clock is active (via updateRestDisplay/
