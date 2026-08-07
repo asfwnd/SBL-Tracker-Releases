@@ -758,7 +758,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.2.1';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -935,6 +935,96 @@ async function pullCloudAppState() {
     }
   } catch (e) { logClientError('pullCloudAppState', e); }
 }
+
+/* ---------- personal exercise catalog ----------
+   Every exercise a user has ever typed that wasn't already in
+   EXERCISE_LIBRARY gets persisted here (public.exercises, one row per
+   user per normalized name — server-side trigger computes name_key,
+   unique index on (user_id, name_key) enforces the dedupe). This is what
+   lets a brand-new exercise typed on one device show up as a suggestion
+   on every other device and session from then on, instead of only living
+   inside the single day list it was typed into. Same
+   pull-cache-then-background-refresh / offline-queue-and-retry shape as
+   pullCloudAppState()/pushCloudAppState() above, and the exact same
+   pattern is what ensureRealtimeSync() taps into for cross-device push. */
+async function pullCustomExercises() {
+  if (!account || !account.id) return;
+  try {
+    // Table now holds the whole catalog: global/builtin rows (readable by
+    // everyone via the "Everyone can read global exercises" policy) plus
+    // this account's own personal rows. EXERCISE_LIBRARY/_FLAT stays in
+    // the file only as an offline-first-launch fallback — see its comment.
+    const { data, error } = await supabase
+      .from('exercises')
+      .select('name,name_key,category,unilateral,source,is_global,usage_count')
+      .or(`is_global.eq.true,user_id.eq.${account.id}`);
+    if (error) throw error;
+    // Anything still in the retry queue hasn't reached the server yet, so
+    // a fresh pull won't contain it — merge it back in instead of letting
+    // it vanish from the in-memory/cached list until the retry succeeds.
+    const pending = await loadJSON('pendingExerciseInserts', []);
+    const merged = data || [];
+    const seenKeys = new Set(merged.map(e => e.name_key));
+    pending.forEach(p => { if (!seenKeys.has(p.name_key)) { merged.push(p); seenKeys.add(p.name_key); } });
+    customExercises = merged;
+    await saveJSON('customExercises', customExercises);
+  } catch (e) { logClientError('pullCustomExercises', e); }
+}
+async function pushCustomExercise(entry) {
+  if (!account || !account.id) return;
+  try {
+    const { error } = await supabase
+      .from('exercises')
+      .upsert(
+        { user_id: account.id, name: entry.name, unilateral: !!entry.unilateral, category: entry.category || null },
+        { onConflict: 'user_id,name_key' }
+      );
+    if (error) throw error;
+    const pending = await loadJSON('pendingExerciseInserts', []);
+    const next = pending.filter(p => p.name_key !== entry.name_key);
+    if (next.length !== pending.length) await saveJSON('pendingExerciseInserts', next);
+  } catch (e) {
+    logClientError('pushCustomExercise', e);
+    const pending = await loadJSON('pendingExerciseInserts', []);
+    if (!pending.some(p => p.name_key === entry.name_key)) {
+      pending.push(entry);
+      await saveJSON('pendingExerciseInserts', pending);
+    }
+  }
+}
+// Retry any exercise inserts that failed earlier (offline, transient
+// error) — called on boot and on reconnect, same as syncPendingAppState().
+async function syncPendingExerciseInserts() {
+  if (!account) return;
+  const pending = await loadJSON('pendingExerciseInserts', []);
+  for (const entry of pending) await pushCustomExercise(entry);
+}
+/* Call this the moment a name is committed somewhere (added to a split,
+   typed into Edit Exercises) if it's genuinely new to this user — i.e.
+   not already in the builtin library or the synced catalog. Optimistic:
+   updates the in-memory list + local cache immediately so it's
+   suggestible right away, then syncs to Supabase in the background
+   (queued for retry if offline). Safe to call unconditionally on every
+   add; it no-ops if the name is already known.
+   `category`: callers pass categoriesForDay(day)[0] when the day maps to
+   exactly one muscle group (fully correct — e.g. a Chest day), or the
+   day's first listed category as a best-guess default when it maps to
+   several (e.g. a Back day covers both Lats and Back). Not true
+   name-based classification — just the most relevant guess available
+   from context, immediately correct enough to file it under, and never
+   left unset like Phase 1 did. */
+function captureNewExerciseIfUnknown(name, unilateral, category) {
+  const key = nameKey(name);
+  if (!key) return;
+  const known = EXERCISE_LIBRARY_FLAT.some(item => nameKey(item.name) === key) ||
+    customExercises.some(item => item.name_key === key);
+  if (known) return;
+  const entry = { name, name_key: key, category: category || null, unilateral: !!unilateral, source: 'user', is_global: false, usage_count: 0 };
+  customExercises.push(entry);
+  saveJSON('customExercises', customExercises);
+  pushCustomExercise(entry);
+}
+
 function listKeys(prefix) {
   const keys = [];
   try {
@@ -1345,6 +1435,19 @@ function getExerciseSuggestions(query) {
     const k = nameKey(item.name);
     if (!seen.has(k)) { seen.add(k); combined.push(item); }
   });
+  // Synced from Supabase (captureNewExerciseIfUnknown) — this is what
+  // makes a custom name typed on one device show up as a suggestion on
+  // every other device/session, not just inside the day it was added to.
+  customExercises.forEach(item => {
+    const k = item.name_key || nameKey(item.name);
+    if (!seen.has(k)) {
+      seen.add(k);
+      combined.push({ name: item.name, category: (item.is_global && item.category) ? item.category : 'Your Exercises' });
+    }
+  });
+  // Fallback for anything typed before this feature existed, or added
+  // through a path that predates captureNewExerciseIfUnknown — scans
+  // local exercisesByDay/history directly instead of the synced catalog.
   collectKnownExercisesFull().forEach(item => {
     const k = nameKey(item.name);
     if (!seen.has(k)) { seen.add(k); combined.push({ name: item.name, category: 'Your Exercises' }); }
@@ -2231,6 +2334,12 @@ function drawColorWheel(canvas) {
 // (e.g. hand grippers, sold in lb) live in a different unit than the rest of
 // the app without touching the global toggle. See exerciseUnit()/convertExerciseUnit().
 let exerciseUnits = {};
+// This account's personal exercise catalog, synced with public.exercises
+// (see pullCustomExercises/pushCustomExercise/captureNewExerciseIfUnknown
+// above). Loaded from local cache instantly on boot, refreshed from
+// Supabase in the background. { name, name_key, category, unilateral,
+// source, is_global, usage_count }[]
+let customExercises = [];
 let screen = 'loading';
 let currentDay = null;
 // True for the duration of a session started via "Track planned workout" —
@@ -2341,6 +2450,8 @@ async function continueBootAfterAuth() {
   syncPendingWorkouts();
   syncPendingDeletes();
   syncPendingAppState();
+  pullCustomExercises();
+  syncPendingExerciseInserts();
   ensureOnlineSyncListener();
   ensureRealtimeSync();
   checkForAppUpdate();
@@ -2377,11 +2488,16 @@ async function continueBootAfterAuth() {
   delete settings.hotbarPosition; // hotbar is bottom-only now — drop any legacy saved value
   if (settings.timerEnabled === undefined) settings.timerEnabled = true;
   if (settings.notesEnabled === undefined) settings.notesEnabled = true;
-  if (settings.timerDisplay === undefined) settings.timerDisplay = 'hotbar';
-  if (settings.notesDisplay === undefined) settings.notesDisplay = 'hotbar';
+  // Floating-widget mode no longer exists — Timer/Notes only ever live on
+  // the hotbar now. Force this unconditionally (not just when undefined)
+  // so a device/account that had previously picked "Floating widget" gets
+  // migrated back to the hotbar instead of keeping a now-unsupported value.
+  settings.timerDisplay = 'hotbar';
+  settings.notesDisplay = 'hotbar';
   if (!Array.isArray(settings.hotbarOrder) || settings.hotbarOrder.length !== 2) settings.hotbarOrder = ['timer', 'notes'];
   exerciseUnits = await loadJSON('exerciseUnits', {});
   notes = await loadJSON('notes', []);
+  customExercises = await loadJSON('customExercises', []);
   if (!activeNoteId && notes.length) activeNoteId = notes[0].id;
   loggedIn = true;
   refreshHotbarLayout();
@@ -2911,7 +3027,18 @@ function renderExPickList(root, day) {
   const cats = categoriesForDay(day);
   const seen = new Set();
   const pool = [];
-  EXERCISE_LIBRARY_FLAT.filter(item => cats.includes(item.category)).forEach(item => {
+  // The static EXERCISE_LIBRARY_FLAT is now just an offline-first-launch
+  // fallback — customExercises (synced from Supabase) carries the real,
+  // possibly-grown catalog: every global/builtin row always has a
+  // category, and personal rows do too once tagged via
+  // categoriesForDay()[0] at capture time. Untagged personal rows
+  // (category null — e.g. backfilled from history with no split context)
+  // are correctly left out of this day-filtered view; they still surface
+  // in the general autocomplete's "Your Exercises" bucket regardless.
+  const catalogWithCategory = customExercises.length
+    ? [...EXERCISE_LIBRARY_FLAT, ...customExercises.filter(item => item.category).map(item => ({ name: item.name, category: item.category }))]
+    : EXERCISE_LIBRARY_FLAT;
+  catalogWithCategory.filter(item => cats.includes(item.category)).forEach(item => {
     const k = nameKey(item.name);
     if (!seen.has(k)) { seen.add(k); pool.push(item); }
   });
@@ -2985,6 +3112,7 @@ function renderExPickList(root, day) {
     const val = setupSearchQuery.trim();
     if (!val) return;
     setupTemp.unshift({ name: val, unilateral: false });
+    captureNewExerciseIfUnknown(val, false, cats[0]);
     setupSearchQuery = '';
     root.querySelector('#exPickSearch').value = '';
     renderExPickList(root, day);
@@ -3673,6 +3801,7 @@ function renderExerciseEdit(root) {
           const oldName = list[idx].name;
           list[idx].name = v;
           syncDraftRename(oldName, v);
+          captureNewExerciseIfUnknown(v, list[idx].unilateral, categoriesForDay(editingDay)[0]);
         }
         persistEditList();
         nameDiv.innerHTML = `${list[idx].name}`;
@@ -3754,6 +3883,7 @@ function renderExerciseEdit(root) {
     const entry = { name: val, unilateral: newUniToggle.classList.contains('on') };
     list.push(entry);
     persistEditList();
+    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(editingDay)[0]);
     const item = buildItem(entry);
     item.classList.add('item-entering');
     editList.appendChild(item);
@@ -4799,6 +4929,7 @@ function syncOnResumeIfDue() {
   lastResumeSyncAt = now;
   pullCloudWorkouts();
   pullCloudAppState();
+  pullCustomExercises();
 }
 
 /* ---------- realtime cross-device sync ----------
@@ -4817,6 +4948,7 @@ function scheduleRealtimePull(kind) {
   clearTimeout(realtimeDebounceTimer);
   realtimeDebounceTimer = setTimeout(() => {
     if (kind === 'appState') pullCloudAppState();
+    else if (kind === 'exercises') pullCustomExercises();
     else pullCloudWorkouts();
   }, 400);
 }
@@ -4830,6 +4962,7 @@ function ensureRealtimeSync() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'workout_sets', filter: `user_id=eq.${uid}` }, () => scheduleRealtimePull('workouts'))
     .on('postgres_changes', { event: '*', schema: 'public', table: 'deleted_workouts', filter: `user_id=eq.${uid}` }, () => scheduleRealtimePull('workouts'))
     .on('postgres_changes', { event: '*', schema: 'public', table: 'app_state', filter: `user_id=eq.${uid}` }, () => scheduleRealtimePull('appState'))
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'exercises', filter: `user_id=eq.${uid}` }, () => scheduleRealtimePull('exercises'))
     .subscribe();
 }
 function teardownRealtimeSync() {
@@ -4895,6 +5028,13 @@ function numOrNull(v) {
 // rolls back cleanly, and a normal sync always leaves a fully consistent
 // workout+sets pair, never a partial one.
 const syncingWorkoutIds = new Set();
+// IDs just written to localStorage by a backup restore. A tombstone hit on
+// one of these means "this workout was deleted at some point before the
+// backup was taken (or since)", not "another device deleted it just now" —
+// the two cases share the same P0002 error but need different handling,
+// otherwise every restored workout that was ever deleted gets silently
+// wiped straight back out during the post-restore sync pass.
+const restoredLogIds = new Set();
 async function syncWorkoutToCloud(log) {
   if (!account) return; // local-only mode — nothing to sync to yet
   if (syncingWorkoutIds.has(log.id)) return; // already syncing, let that one finish
@@ -4942,13 +5082,23 @@ async function syncWorkoutToCloud(log) {
     if (stillPending.length !== pending.length) await saveJSON('pendingSync', stillPending);
   } catch (e) {
     if (e && (e.code === 'P0002' || (e.message || '').includes('workout_tombstoned'))) {
+      const pending = await loadJSON('pendingSync', []);
+      const stillPending = pending.filter(id => id !== log.id);
+      if (stillPending.length !== pending.length) await saveJSON('pendingSync', stillPending);
+      if (restoredLogIds.has(log.id)) {
+        // This ID came from a backup restore, not live use. The tombstone
+        // means it was deleted (on any device) at some point before this
+        // restore — the local copy the user just restored is a stale
+        // resurrection of already-deleted data, not new work to protect.
+        // Leave it in localStorage as local-only (not synced, not deleted)
+        // instead of wiping it silently and flashing a toast per workout.
+        restoredLogIds.delete(log.id);
+        return;
+      }
       // Deleted from another device while this one still had it cached/pending.
       // Retrying would just fail identically forever — accept the deletion.
       deleteKey('log:' + log.id);
       deleteKey('cloudMark:' + log.id);
-      const pending = await loadJSON('pendingSync', []);
-      const stillPending = pending.filter(id => id !== log.id);
-      if (stillPending.length !== pending.length) await saveJSON('pendingSync', stillPending);
       historyEntries = historyEntries.filter(e2 => e2.id !== log.id);
       showToast('That workout was deleted on another device');
       render();
@@ -5007,17 +5157,18 @@ function ensureOnlineSyncListener() {
 // the whole push, not a fixed delay, since a slow reconnect (e.g. one bar
 // of signal at the gym) can take a while to actually finish uploading.
 async function runBackOnlineSync() {
-  const [pendingWorkouts, pendingDeletes, pendingAppState] = await Promise.all([
+  const [pendingWorkouts, pendingDeletes, pendingAppState, pendingExercises] = await Promise.all([
     loadJSON('pendingSync', []),
     loadJSON('pendingDelete', []),
-    loadJSON('pendingAppState', {})
+    loadJSON('pendingAppState', {}),
+    loadJSON('pendingExerciseInserts', [])
   ]);
-  const hasPending = pendingWorkouts.length > 0 || pendingDeletes.length > 0 || Object.keys(pendingAppState).length > 0;
+  const hasPending = pendingWorkouts.length > 0 || pendingDeletes.length > 0 || Object.keys(pendingAppState).length > 0 || pendingExercises.length > 0;
   if (!hasPending) return;
   backOnlineBannerActive = true;
   if (screen === 'home') render();
   try {
-    await Promise.all([syncPendingWorkouts(), syncPendingDeletes(), syncPendingAppState()]);
+    await Promise.all([syncPendingWorkouts(), syncPendingDeletes(), syncPendingAppState(), syncPendingExerciseInserts()]);
   } finally {
     backOnlineBannerActive = false;
     if (screen === 'home') render();
@@ -6049,22 +6200,12 @@ function renderSettings(root) {
       <button class="chip ${settings.timerEnabled!==false?'selected':''}" data-v="on">On</button>
       <button class="chip ${settings.timerEnabled===false?'selected':''}" data-v="off">Off</button>
     </div>
-    ${settings.timerEnabled!==false ? `
-    <div class="chip-grid" id="timerDisplayGrid">
-      <button class="chip ${settings.timerDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
-      <button class="chip ${settings.timerDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
-    </div>` : ''}
     <div class="section-label">Notes</div>
     <p class="progress-help">Keep a program, cues, or anything else handy from any screen.</p>
     <div class="chip-grid" id="notesEnabledGrid">
       <button class="chip ${settings.notesEnabled!==false?'selected':''}" data-v="on">On</button>
       <button class="chip ${settings.notesEnabled===false?'selected':''}" data-v="off">Off</button>
     </div>
-    ${settings.notesEnabled!==false ? `
-    <div class="chip-grid" id="notesDisplayGrid">
-      <button class="chip ${settings.notesDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
-      <button class="chip ${settings.notesDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
-    </div>` : ''}
     <div class="section-label">Legal</div>
     <div class="list-item" id="termsRow"><div class="li-name">Terms &amp; Conditions</div><div class="li-right">›</div></div>
     <div class="list-item" id="privacyRow"><div class="li-name">Privacy Policy</div><div class="li-right">›</div></div>
@@ -6306,27 +6447,9 @@ function renderSettings(root) {
       renderSettings(root); // re-render just this screen's content in place, no full-app rebuild/animation
     };
   });
-  const timerDisplayGrid = root.querySelector('#timerDisplayGrid');
-  if (timerDisplayGrid) timerDisplayGrid.querySelectorAll('.chip').forEach(btn => {
-    btn.onclick = async () => {
-      settings.timerDisplay = btn.dataset.v;
-      await saveJSON('settings', settings);
-      refreshHotbarLayout();
-      renderSettings(root);
-    };
-  });
   root.querySelectorAll('#notesEnabledGrid .chip').forEach(btn => {
     btn.onclick = async () => {
       settings.notesEnabled = (btn.dataset.v === 'on');
-      await saveJSON('settings', settings);
-      refreshHotbarLayout();
-      renderSettings(root);
-    };
-  });
-  const notesDisplayGrid = root.querySelector('#notesDisplayGrid');
-  if (notesDisplayGrid) notesDisplayGrid.querySelectorAll('.chip').forEach(btn => {
-    btn.onclick = async () => {
-      settings.notesDisplay = btn.dataset.v;
       await saveJSON('settings', settings);
       refreshHotbarLayout();
       renderSettings(root);
@@ -6594,22 +6717,12 @@ function renderSetupWidgets(root) {
       <button class="chip ${settings.timerEnabled!==false?'selected':''}" data-v="on">On</button>
       <button class="chip ${settings.timerEnabled===false?'selected':''}" data-v="off">Off</button>
     </div>
-    ${settings.timerEnabled!==false ? `
-    <div class="chip-grid" id="setupTimerDisplayGrid">
-      <button class="chip ${settings.timerDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
-      <button class="chip ${settings.timerDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
-    </div>` : ''}
     <div class="section-label">Notes</div>
     <p class="progress-help">Keep a program, cues, or anything else handy from any screen.</p>
     <div class="chip-grid" id="setupNotesEnabledGrid">
       <button class="chip ${settings.notesEnabled!==false?'selected':''}" data-v="on">On</button>
       <button class="chip ${settings.notesEnabled===false?'selected':''}" data-v="off">Off</button>
     </div>
-    ${settings.notesEnabled!==false ? `
-    <div class="chip-grid" id="setupNotesDisplayGrid">
-      <button class="chip ${settings.notesDisplay!=='widget'?'selected':''}" data-v="hotbar">In hotbar</button>
-      <button class="chip ${settings.notesDisplay==='widget'?'selected':''}" data-v="widget">Floating widget</button>
-    </div>` : ''}
     <button class="btn-primary" id="widgetsContinueBtn" style="margin-top:8px;">Continue</button>
   `;
   root.querySelectorAll('#setupTimerEnabledGrid .chip').forEach(btn => {
@@ -6620,27 +6733,9 @@ function renderSetupWidgets(root) {
       renderSetupWidgets(root);
     };
   });
-  const timerDisplayGrid = root.querySelector('#setupTimerDisplayGrid');
-  if (timerDisplayGrid) timerDisplayGrid.querySelectorAll('.chip').forEach(btn => {
-    btn.onclick = async () => {
-      settings.timerDisplay = btn.dataset.v;
-      await saveJSON('settings', settings);
-      refreshHotbarLayout();
-      renderSetupWidgets(root);
-    };
-  });
   root.querySelectorAll('#setupNotesEnabledGrid .chip').forEach(btn => {
     btn.onclick = async () => {
       settings.notesEnabled = (btn.dataset.v === 'on');
-      await saveJSON('settings', settings);
-      refreshHotbarLayout();
-      renderSetupWidgets(root);
-    };
-  });
-  const notesDisplayGrid = root.querySelector('#setupNotesDisplayGrid');
-  if (notesDisplayGrid) notesDisplayGrid.querySelectorAll('.chip').forEach(btn => {
-    btn.onclick = async () => {
-      settings.notesDisplay = btn.dataset.v;
       await saveJSON('settings', settings);
       refreshHotbarLayout();
       renderSetupWidgets(root);
@@ -6707,7 +6802,27 @@ function renderSettingsBackup(root) {
   root.querySelector('#exportBtn').onclick = () => {
     const keys = listKeys('');
     const dump = {};
-    for (const k of keys) { const v = localStorage.getItem(k); if (v !== null) dump[k] = v; }
+    for (const k of keys) {
+      // Never export the live Supabase session — access_token/refresh_token
+      // in here would let anyone holding this file act as this account.
+      // Doesn't matter for restoring on your own device either: the device
+      // already has its own current session, an old one from the backup
+      // would only be stale and redundant.
+      if (/^sb-.*-auth-token$/.test(k)) continue;
+      // cloudMark:* is this device's private "last known synced version"
+      // bookkeeping. Meaningless (or actively misleading, if stale) on any
+      // other account or device — the app re-derives it on next sync.
+      if (k.startsWith('cloudMark:')) continue;
+      const v = localStorage.getItem(k);
+      if (v !== null) dump[k] = v;
+    }
+    // Portable marker: whose account this came from, so an import on a
+    // DIFFERENT account/device can tell it's a cross-account share (and
+    // must always assign fresh IDs — this app's account never re-syncs
+    // someone else's workout IDs), vs restoring your own backup (only
+    // legacy/foreign-format IDs need regenerating). Not the same as the
+    // 'lastAccountId' storage key — that one is never touched by import.
+    if (account) dump.exportedFromAccountId = JSON.stringify(account.id);
     const blob = new Blob([JSON.stringify(dump)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -6724,6 +6839,56 @@ function renderSettingsBackup(root) {
     reader.onload = async (ev) => {
       try {
         const dump = JSON.parse(ev.target.result);
+
+        // Defensive, regardless of where this file came from: never let an
+        // imported file inject a foreign session token, someone else's
+        // sync bookkeeping, or overwrite this device's own account-tracking
+        // key. A well-formed export (see exportBtn above) won't contain
+        // the first two anyway, but a hand-built or older-format file might.
+        for (const k of Object.keys(dump)) {
+          if (/^sb-.*-auth-token$/.test(k) || k.startsWith('cloudMark:')) delete dump[k];
+        }
+        delete dump.lastAccountId;
+
+        // A marker set by this app's own export (see exportBtn) records
+        // whose account the file came from. If it's present and doesn't
+        // match who's logged in right now, this is someone else's data
+        // being handed to a different account — every workout ID must be
+        // reassigned, full stop, since this account has no history with
+        // those IDs and reusing them risks colliding with whatever the
+        // receiving account already has. No marker (older export, or a
+        // hand-built file) falls back to the narrower legacy-format check
+        // below, since we can't tell ownership either way.
+        let exportedFromAccountId = null;
+        if (typeof dump.exportedFromAccountId === 'string') {
+          try { exportedFromAccountId = JSON.parse(dump.exportedFromAccountId); } catch (e) {}
+        }
+        delete dump.exportedFromAccountId;
+        const crossAccountImport = exportedFromAccountId != null && (!account || exportedFromAccountId !== account.id);
+
+        // Workouts from a foreign/legacy export, OR from any confirmed
+        // cross-account import, can carry IDs this app never generates —
+        // uid() is always dash-free (timestamp base36 + random suffix), so
+        // anything with a dash is not ours. Foreign-format IDs (and, on a
+        // cross-account import, ALL IDs — even native-format ones, since
+        // they belong to someone else's history, not this account's) are
+        // the ones most likely to collide with an already-deleted
+        // (tombstoned) row, or with a different row entirely under this
+        // account — which would otherwise permanently block them from ever
+        // syncing, or worse, silently merge into the wrong workout.
+        // Reassign native-format IDs so they always land as brand-new rows.
+        for (const k of Object.keys(dump)) {
+          if (!k.startsWith('log:')) continue;
+          const oldId = k.slice(4);
+          if (!crossAccountImport && !oldId.includes('-')) continue;
+          try {
+            const obj = JSON.parse(dump[k]);
+            const newId = uid();
+            obj.id = newId;
+            dump['log:' + newId] = JSON.stringify(obj);
+            delete dump[k];
+          } catch (e) {}
+        }
 
         // Before writing the new dump, find any EXISTING local logs that
         // share a date+day with something we're about to import, and drop
@@ -6748,18 +6913,73 @@ function renderSettingsBackup(root) {
           }
         }
 
+        // The file's own pendingSync (if present) can still reference the
+        // pre-regeneration IDs above — drop it here, it gets rebuilt below
+        // from the corrected log: keys, so nothing dangling gets queued.
+        delete dump.pendingSync;
+
         for (const k of Object.keys(dump)) { localStorage.setItem(k, dump[k]); }
+
+        // Any exercise name in the import that isn't already known
+        // (builtin or synced catalog) gets captured exactly like a
+        // freshly-typed one would be — so restoring/migrating a backup
+        // grows the catalog the same way normal use would have, instead
+        // of silently leaving those names uncaptured until re-typed.
+        try {
+          const seenImportKeys = new Set();
+          const captureFromList = (list, day) => {
+            (list || []).forEach(item => {
+              if (!item || !item.name) return;
+              const k = nameKey(item.name);
+              if (!k || seenImportKeys.has(k)) return;
+              seenImportKeys.add(k);
+              captureNewExerciseIfUnknown(item.name, item.unilateral, categoriesForDay(day)[0]);
+            });
+          };
+          if (dump.exercisesByDay) {
+            try {
+              const byDay = JSON.parse(dump.exercisesByDay);
+              Object.entries(byDay || {}).forEach(([day, list]) => captureFromList(list, day));
+            } catch (e) {}
+          }
+          for (const k of Object.keys(dump)) {
+            if (!k.startsWith('log:')) continue;
+            try {
+              const log = JSON.parse(dump[k]);
+              captureFromList(log.exercises, log.day);
+            } catch (e) {}
+          }
+        } catch (e) { logClientError('importExerciseCapture', e); }
         // Force every restored workout to re-sync, regardless of what the
         // source device's pendingSync/cloudMark state said — those are
         // meaningless once this data lands under (possibly) a different
         // account or a stale sync state. See comment above.
-        const restoredLogIds = Object.keys(dump).filter(k => k.startsWith('log:')).map(k => k.slice(4));
-        if (restoredLogIds.length) {
+        const restoredIds = Object.keys(dump).filter(k => k.startsWith('log:')).map(k => k.slice(4));
+        restoredIds.forEach(id => restoredLogIds.add(id));
+        if (restoredIds.length) {
           const pending = await loadJSON('pendingSync', []);
-          const merged = Array.from(new Set([...pending, ...restoredLogIds]));
+          const merged = Array.from(new Set([...pending, ...restoredIds]));
           await saveJSON('pendingSync', merged);
         }
-        showToast('Restored — reloading');
+        // Push to Supabase right now, in parallel, instead of waiting for
+        // the reload-triggered boot() to work through pendingSync one at a
+        // time. Only makes sense if we're actually logged in and online —
+        // otherwise these just sit in pendingSync and go up via the normal
+        // 'online' listener / next-boot retry, same as any offline-logged
+        // workout.
+        if (restoredIds.length && account && navigator.onLine) {
+          Promise.all(
+            restoredIds.map(id => {
+              const log = loadJSON('log:' + id, null);
+              return log ? syncWorkoutToCloud(log) : Promise.resolve();
+            })
+          ).catch(() => {});
+        }
+        showToast(
+          crossAccountImport
+            ? (account && navigator.onLine ? 'Imported to your account — syncing' : 'Imported — will sync when online')
+            : (account && navigator.onLine ? 'Restored — syncing' : 'Restored — will sync when online')
+        );
         setTimeout(() => boot(), 800);
       } catch (err) { showToast('Invalid backup file'); }
     };
@@ -6983,229 +7203,24 @@ function initRestWidget() {
 }
 
 /* ---------- top hotbar (timer + notes) ----------
-   Each of Timer/Notes can independently be off, shown in the hotbar, or
-   shown as its own small floating widget button (settings.timerEnabled/
-   timerDisplay and notesEnabled/notesDisplay). hbTimerBtn/hbNotesBtn
-   always point at whichever element currently triggers that feature
-   (hotbar half or widget button) so rwPositionPanel()/positionNotesPanel()
-   don't need to care which mode is active. refreshHotbarLayout() rebuilds
-   both the hotbar pill and the widget stack any time a relevant setting
-   changes. Both containers are position:fixed so neither scrolls away. */
+   Each of Timer/Notes can independently be off or on — when on, it lives
+   on the hotbar pill only (settings.timerEnabled/notesEnabled). There is
+   no floating-widget mode. hbTimerBtn/hbNotesBtn always point at the
+   hotbar element that triggers that feature. refreshHotbarLayout()
+   rebuilds the hotbar pill any time a relevant setting changes. The
+   hotbar container is position:fixed so it never scrolls away. */
 /* Whether the hotbar pill itself will show anything at all, given a
    settings object — used to hide the "Hotbar position" setting entirely
-   when both Timer and Notes are off or set to "Floating widget", since a
-   position setting for an empty/invisible bar makes no sense. */
+   when both Timer and Notes are off, since a position setting for an
+   empty/invisible bar makes no sense. */
 function hotbarWillHaveContent(s) {
-  const timerOnBar = s.timerEnabled !== false && s.timerDisplay !== 'widget';
-  const notesOnBar = s.notesEnabled !== false && s.notesDisplay !== 'widget';
-  return timerOnBar || notesOnBar;
+  return s.timerEnabled !== false || s.notesEnabled !== false;
 }
 
 function initHotbar() {
   refreshHotbarLayout();
   updateHotbarVisibility();
   initHotbarReorder();
-}
-
-/* ---------- draggable floating widget buttons ----------
-   Movement mechanism ported as-is from the old single floating rest-timer
-   FAB: while dragging the button tracks the finger directly; on release it
-   either flings with momentum (decaying friction) or, below throw speed,
-   just glides to a stop, then snaps to whichever screen edge it's closer
-   to. Generalized here (hbw* = "hotbar widget") so it can drive any number
-   of independent floating buttons — each with its own saved position —
-   instead of just the one rest-timer FAB it originally shipped for.
-   refreshHotbarLayout() rebuilds the widget buttons from scratch on every
-   relevant settings change, so state lives outside the DOM element (keyed
-   by storageKey) and a single delegated resize listener re-attaches to
-   whatever elements are live at the time, instead of each call adding its
-   own — which would otherwise leak a new listener per rebuild. */
-const hbwState = {};
-function hbwGetState(storageKey) {
-  if (!hbwState[storageKey]) hbwState[storageKey] = { pos: null, renderX: null, renderY: null, glideFrame: null, gliding: false, flingFrame: null };
-  return hbwState[storageKey];
-}
-function hbwClamp(pos) {
-  const w = window.innerWidth, h = window.innerHeight;
-  const size = 52;
-  pos.x = Math.min(Math.max(pos.x, 8), w - size - 8);
-  pos.y = Math.min(Math.max(pos.y, 8), h - size - 8);
-}
-function hbwApplyPos(el, x, y) {
-  if (!el) return;
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-}
-function hbwClampAndApply(el, st) {
-  if (!el || !st.pos) return;
-  hbwClamp(st.pos);
-  hbwApplyPos(el, st.pos.x, st.pos.y);
-}
-function hbwStepGlide(el, st) {
-  const lerp = 0.22;
-  st.renderX += (st.pos.x - st.renderX) * lerp;
-  st.renderY += (st.pos.y - st.renderY) * lerp;
-  hbwApplyPos(el, st.renderX, st.renderY);
-  if (st.gliding || Math.abs(st.pos.x - st.renderX) > 0.3 || Math.abs(st.pos.y - st.renderY) > 0.3) {
-    st.glideFrame = requestAnimationFrame(() => hbwStepGlide(el, st));
-  } else {
-    st.renderX = st.pos.x; st.renderY = st.pos.y;
-    hbwApplyPos(el, st.renderX, st.renderY);
-    st.glideFrame = null;
-  }
-}
-function hbwStopGlide(st) {
-  st.gliding = false;
-  if (st.glideFrame) { cancelAnimationFrame(st.glideFrame); st.glideFrame = null; }
-  st.renderX = st.pos.x; st.renderY = st.pos.y;
-}
-function hbwCancelFling(st) {
-  if (st.flingFrame) { cancelAnimationFrame(st.flingFrame); st.flingFrame = null; }
-}
-/* Estimates release velocity from the tail of the drag (last ~100ms of
-   samples) rather than the whole gesture, so a flick-then-hold-still
-   correctly reads as "no throw" instead of averaging in the fast part. */
-function hbwComputeVelocity(samples) {
-  if (samples.length < 2) return { vx: 0, vy: 0 };
-  const last = samples[samples.length - 1];
-  let ref = samples[0];
-  for (let i = samples.length - 2; i >= 0; i--) {
-    if (last.t - samples[i].t <= 100) ref = samples[i]; else break;
-  }
-  const dt = last.t - ref.t;
-  if (dt <= 0) return { vx: 0, vy: 0 };
-  return { vx: (last.x - ref.x) / dt, vy: (last.y - ref.y) / dt };
-}
-/* Snaps to whichever horizontal edge is closer once a drag/fling ends —
-   crossing the midpoint of the screen (relative to which side the drag
-   started on) sends it to the opposite edge, chat-head style. */
-function hbwSnapToEdge(el, st, storageKey, startedLeft, onMove) {
-  if (!el) return;
-  const w = window.innerWidth, h = window.innerHeight;
-  const size = 52;
-  const center = st.pos.x + size / 2;
-  const thirdMark = startedLeft ? w / 3 : (w * 2) / 3;
-  const targetX = (center < thirdMark) ? 8 : (w - size - 8);
-  st.pos.x = targetX;
-  st.pos.y = Math.min(Math.max(st.pos.y, 8), h - size - 8);
-  el.classList.add('hbw-snapping');
-  hbwClampAndApply(el, st);
-  st.renderX = st.pos.x; st.renderY = st.pos.y;
-  if (onMove) onMove();
-  saveJSON(storageKey, { x: st.pos.x, y: st.pos.y });
-  setTimeout(() => { if (el) el.classList.remove('hbw-snapping'); }, 260);
-}
-/* Gives a released drag momentum: it launches at the speed of the last bit
-   of the flick and decelerates like something sliding across a surface —
-   fast at first, tapering to a stop — before snapping to the nearest edge. */
-function hbwStartFling(el, st, storageKey, vx, vy, startedLeft, onMove) {
-  hbwCancelFling(st);
-  let velX = vx * 16 * 0.6, velY = vy * 16 * 0.6;
-  const friction = 0.86;
-  const minVel = 0.4;
-  function step() {
-    st.pos.x += velX; st.pos.y += velY;
-    const beforeX = st.pos.x, beforeY = st.pos.y;
-    hbwClamp(st.pos);
-    if (st.pos.x !== beforeX) velX = 0;
-    if (st.pos.y !== beforeY) velY = 0;
-    st.renderX = st.pos.x; st.renderY = st.pos.y;
-    hbwApplyPos(el, st.renderX, st.renderY);
-    if (onMove) onMove();
-    velX *= friction; velY *= friction;
-    if (Math.abs(velX) > minVel || Math.abs(velY) > minVel) {
-      st.flingFrame = requestAnimationFrame(step);
-    } else {
-      st.flingFrame = null;
-      hbwSnapToEdge(el, st, storageKey, startedLeft, onMove);
-    }
-  }
-  st.flingFrame = requestAnimationFrame(step);
-}
-
-/* One delegated resize listener for every registered widget, rather than
-   one per makeWidgetDraggable() call — refreshHotbarLayout() can rebuild
-   the buttons many times per session, and a listener-per-call would leak. */
-const hbwRegistry = {}; // storageKey -> { id, onMove }
-let hbwResizeBound = false;
-function hbwEnsureResizeListener() {
-  if (hbwResizeBound) return;
-  hbwResizeBound = true;
-  let debounce = null;
-  window.addEventListener('resize', () => {
-    clearTimeout(debounce);
-    debounce = setTimeout(() => {
-      Object.keys(hbwRegistry).forEach((storageKey) => {
-        const { id, onMove } = hbwRegistry[storageKey];
-        const el = document.getElementById(id);
-        const st = hbwGetState(storageKey);
-        if (el && st.pos) { hbwClampAndApply(el, st); if (onMove) onMove(); }
-      });
-    }, 200);
-  });
-}
-
-/* Wires up drag-anywhere behavior on a floating widget button. storageKey
-   persists its position (survives reloads and refreshHotbarLayout()
-   rebuilds); defaultPos is used the first time it's ever shown; onMove is
-   called while dragging/settling (used to keep an open panel anchored to
-   the button); onTap fires for a plain tap that wasn't a drag. */
-function makeWidgetDraggable(el, storageKey, defaultPos, onMove, onTap) {
-  const st = hbwGetState(storageKey);
-  const saved = loadJSON(storageKey, null);
-  st.pos = (saved && typeof saved.x === 'number' && typeof saved.y === 'number') ? saved : defaultPos;
-  hbwClampAndApply(el, st);
-  hbwRegistry[storageKey] = { id: el.id, onMove };
-  hbwEnsureResizeListener();
-
-  let dragging = false, moved = false, startX = 0, startY = 0, origX = 0, origY = 0;
-  let moveSamples = [];
-  el.addEventListener('pointerdown', (e) => {
-    dragging = true; moved = false;
-    startX = e.clientX; startY = e.clientY;
-    origX = st.pos.x; origY = st.pos.y;
-    hbwCancelFling(st);
-    moveSamples = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
-    el.setPointerCapture(e.pointerId);
-    el.classList.add('hbw-dragging');
-  });
-  el.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - startX, dy = e.clientY - startY;
-    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) moved = true;
-    if (moved) {
-      st.pos.x = origX + dx; st.pos.y = origY + dy;
-      hbwClamp(st.pos);
-      // Track the finger directly while dragging — the eased glide is
-      // reserved for after release (fling/edge-snap) so it doesn't fall
-      // behind mid-drag and then jump to catch up.
-      hbwStopGlide(st);
-      hbwApplyPos(el, st.pos.x, st.pos.y);
-      if (onMove) onMove();
-      moveSamples.push({ x: e.clientX, y: e.clientY, t: performance.now() });
-      if (moveSamples.length > 8) moveSamples.shift();
-    }
-  });
-  const endDrag = () => {
-    if (!dragging) return;
-    dragging = false;
-    el.classList.remove('hbw-dragging');
-    if (moved) {
-      hbwStopGlide(st);
-      const startedLeft = (origX + 23) < window.innerWidth / 2;
-      const { vx, vy } = hbwComputeVelocity(moveSamples);
-      if (Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05) {
-        hbwStartFling(el, st, storageKey, vx, vy, startedLeft, onMove);
-      } else {
-        hbwSnapToEdge(el, st, storageKey, startedLeft, onMove);
-      }
-    } else {
-      hbwStopGlide(st);
-      if (onTap) onTap();
-    }
-  };
-  el.addEventListener('pointerup', endDrag);
-  el.addEventListener('pointercancel', endDrag);
 }
 
 /* Drag a hotbar button left/right to swap Timer/Notes positions — same
@@ -7307,20 +7322,15 @@ function initHotbarReorder() {
 }
 
 /* Rebuilds the hotbar pill (0/1/2 items — a single item fills the whole
-   pill and centers, matching "big, centered" for a lone feature) and the
-   floating-widget stack, then re-wires their click handlers. Call this
-   whenever timerEnabled/notesEnabled/timerDisplay/notesDisplay
-   changes. */
+   pill and centers, matching "big, centered" for a lone feature), then
+   re-wires its click handlers. Timer and Notes only ever live on the
+   hotbar now — there is no floating-widget mode. Call this whenever
+   timerEnabled/notesEnabled changes. */
 function refreshHotbarLayout() {
   const hotbar = document.getElementById('hotbar');
-  const widgets = document.getElementById('hbWidgets');
-  if (!hotbar || !widgets) return;
-  const timerOn = settings.timerEnabled !== false;
-  const notesOn = settings.notesEnabled !== false;
-  const timerOnBar = timerOn && settings.timerDisplay !== 'widget';
-  const notesOnBar = notesOn && settings.notesDisplay !== 'widget';
-  const timerWidget = timerOn && settings.timerDisplay === 'widget';
-  const notesWidget = notesOn && settings.notesDisplay === 'widget';
+  if (!hotbar) return;
+  const timerOnBar = settings.timerEnabled !== false;
+  const notesOnBar = settings.notesEnabled !== false;
 
   const barSlots = [
     { key: 'timer', on: timerOnBar, html: `<button class="hb-btn" id="hbTimerBtn" data-hb-key="timer" aria-label="Timer">Timer</button>` },
@@ -7339,15 +7349,8 @@ function refreshHotbarLayout() {
       </div>`;
   }
 
-  let widgetsHtml = '';
-  if (timerWidget) widgetsHtml += `<button class="hb-widget-btn" id="hbTimerWidgetBtn" aria-label="Timer">${HB_TIMER_ICON_SVG}</button>`;
-  if (notesWidget) widgetsHtml += `<button class="hb-widget-btn" id="hbNotesWidgetBtn" aria-label="Notes">${HB_NOTES_ICON_SVG}</button>`;
-  widgets.innerHTML = widgetsHtml;
-
-  hbTimerBtn = document.getElementById('hbTimerBtn') || document.getElementById('hbTimerWidgetBtn') || null;
-  hbNotesBtn = document.getElementById('hbNotesBtn') || document.getElementById('hbNotesWidgetBtn') || null;
-  const timerWidgetEl = document.getElementById('hbTimerWidgetBtn');
-  const notesWidgetEl = document.getElementById('hbNotesWidgetBtn');
+  hbTimerBtn = document.getElementById('hbTimerBtn');
+  hbNotesBtn = document.getElementById('hbNotesBtn');
   const timerTap = (e) => {
     ensureAudioCtx();
     // When both are running, the pill shows two slots (Timer / SW). Tap
@@ -7367,31 +7370,23 @@ function refreshHotbarLayout() {
   const notesTap = () => {
     if (notesOpen) closeNotesPanel(); else openNotesPanel();
   };
-  // Widget-mode buttons are drag-anywhere (see makeWidgetDraggable above);
-  // hotbar-mode buttons stay plain taps in their fixed pill slot.
-  if (timerWidgetEl) {
-    makeWidgetDraggable(timerWidgetEl, 'timerWidgetPos', { x: window.innerWidth - 66, y: window.innerHeight - 220 },
-      () => { if (rwOpen) rwPositionPanel(); }, timerTap);
-  } else if (hbTimerBtn) {
+  if (hbTimerBtn) {
     hbTimerBtn.onclick = (e) => {
       if (hbSuppressClick) { hbSuppressClick = false; return; }
       timerTap(e);
     };
   }
-  if (notesWidgetEl) {
-    makeWidgetDraggable(notesWidgetEl, 'notesWidgetPos', { x: window.innerWidth - 66, y: window.innerHeight - 290 },
-      () => { if (notesOpen) positionNotesPanel(); }, notesTap);
-  } else if (hbNotesBtn) {
+  if (hbNotesBtn) {
     hbNotesBtn.onclick = () => {
       if (hbSuppressClick) { hbSuppressClick = false; return; }
       notesTap();
     };
   }
-  // If a feature just got turned off (or switched away from its current
-  // display mode) while its panel was open, that trigger no longer exists
-  // — close the now-orphaned panel instead of leaving it stranded.
-  if (rwOpen && !document.getElementById('hbTimerBtn') && !document.getElementById('hbTimerWidgetBtn')) rwClosePanel();
-  if (notesOpen && !document.getElementById('hbNotesBtn') && !document.getElementById('hbNotesWidgetBtn')) closeNotesPanel();
+  // If a feature just got turned off while its panel was open, that
+  // trigger no longer exists — close the now-orphaned panel instead of
+  // leaving it stranded.
+  if (rwOpen && !hbTimerBtn) rwClosePanel();
+  if (notesOpen && !hbNotesBtn) closeNotesPanel();
 
   placeHotbar();
   updateHotbarTimerLabel();
@@ -7400,26 +7395,23 @@ function refreshHotbarLayout() {
 function updateHotbarTimerLabel() {
   if (hbTimerBtn) {
     const states = rwFabStates();
-    const isWidget = hbTimerBtn.id === 'hbTimerWidgetBtn';
     // "Shape" = which layout is showing (dual slots / a single value for
-    // one specific kind / idle icon / idle text). This runs on every
-    // 250ms tick, and only the numbers actually change tick to tick — the
-    // shape itself only changes on a real state transition (something
-    // starts/stops). Rebuilding the DOM every tick regardless was exactly
-    // the earlier "panel eats your tap" bug, just showing up here now:
-    // the very .hb-slot elements a finger is trying to tap were getting
-    // torn down and recreated ~4x/second, so a touch could land right as
-    // its target vanished and never register. Same fix as before — only
-    // replace the DOM on an actual shape change; on an unchanged shape,
-    // just patch the existing nodes' text.
+    // one specific kind / idle text). This runs on every 250ms tick, and
+    // only the numbers actually change tick to tick — the shape itself
+    // only changes on a real state transition (something starts/stops).
+    // Rebuilding the DOM every tick regardless was exactly the earlier
+    // "panel eats your tap" bug, just showing up here now: the very
+    // .hb-slot elements a finger is trying to tap were getting torn down
+    // and recreated ~4x/second, so a touch could land right as its target
+    // vanished and never register. Same fix as before — only replace the
+    // DOM on an actual shape change; on an unchanged shape, just patch the
+    // existing nodes' text.
     let shape, primary = null;
-    if (states.length === 2 && !isWidget) {
+    if (states.length === 2) {
       shape = 'dual';
     } else if (states.length > 0) {
       primary = states.find(s => s.kind === 'timer') || states[0];
       shape = 'single:' + primary.kind;
-    } else if (isWidget) {
-      shape = 'idle:icon';
     } else {
       shape = 'idle:text';
     }
@@ -7437,8 +7429,6 @@ function updateHotbarTimerLabel() {
         // are active).
         const modeLabel = primary.kind === 'stopwatch' ? 'Stopwatch' : 'Timer';
         hbTimerBtn.innerHTML = `<span class="hb-time">${primary.text}</span><span class="hb-mode-tag">${modeLabel}</span>`;
-      } else if (shape === 'idle:icon') {
-        hbTimerBtn.innerHTML = HB_TIMER_ICON_SVG;
       } else {
         hbTimerBtn.textContent = rwMode === 'stopwatch' ? 'Stopwatch' : 'Timer';
       }
@@ -7474,23 +7464,16 @@ function updateHotbarTimerLabel() {
 
 /* Bottom-only hotbar placement: fixed just above the home indicator /
    gesture bar. #app gets matching reserved padding so content never sits
-   underneath it. The floating-widget stack is always bottom-right, and is
-   nudged up above the hotbar when it's currently showing something, so
-   the two never overlap. Called on boot, whenever a relevant setting
-   changes, and after login. */
+   underneath it. Called on boot, whenever a relevant setting changes, and
+   after login. */
 function placeHotbar() {
   const container = document.getElementById('hotbar');
-  const widgets = document.getElementById('hbWidgets');
   const app = document.getElementById('app');
   if (!container || !app) return;
   const hotbarHasContent = !container.classList.contains('hb-empty') && !container.classList.contains('hb-hidden');
   container.classList.add('hb-pos-bottom');
   app.classList.remove('app-hb-bottom', 'app-hb-none');
   app.classList.add(hotbarHasContent ? 'app-hb-bottom' : 'app-hb-none');
-  if (widgets) {
-    const extra = hotbarHasContent ? 62 : 0;
-    widgets.style.setProperty('--hb-widget-extra', extra + 'px');
-  }
   if (rwOpen) rwPositionPanel();
   if (notesOpen) positionNotesPanel();
   // Measure synchronously, not on the next frame. getBoundingClientRect()
