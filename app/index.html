@@ -11,17 +11,6 @@
        teal accent AND the near-black background tint together (see settings'
        accentHue + applyAccentHue()). 170 reproduces the original teal exactly. */
     --hue: 170;
-    /* Cached copy of env(safe-area-inset-bottom), written once by
-       cacheSafeAreaInsets() (boot + resize/orientationchange) instead of
-       read live via env() in the hotbar's bottom rule. On Android WebView,
-       env(safe-area-inset-*) gets re-resolved on every layout pass, and a
-       full #app innerHTML wipe/rebuild (e.g. navigating to Settings) is
-       exactly the kind of layout churn that makes it transiently resolve to
-       0 before snapping back to its real value a frame later — visually
-       that's the hotbar dropping to bottom:21px and then jumping back up.
-       Reading a cached JS-measured value instead makes the hotbar's
-       position immune to that transient mis-resolution. */
-    --safe-bottom-cached: 0px;
     /* --sat-mult scales every saturation figure below (1 = full color, 0 =
        grayscale/B&W). The color wheel writes both vars together via
        applyAccentTheme(); the fixed swatches just set --hue and leave
@@ -539,21 +528,10 @@
      clearance beyond the raw safe-area inset is added on top of env()
      since Android's gesture-nav bar / status bar aren't always reflected
      accurately by env() alone. */
-  /* transform/will-change/contain force #hotbar onto its own isolated GPU
-     compositing layer, independent of #app. Without this, a heavy #app
-     reflow (settings/edit-log/exercise-edit rebuild their entire subtree
-     via innerHTML='' + reinsert — the biggest DOM churns in the app) can
-     make Android WebView momentarily lose track of #hotbar's fixed-layer
-     position while it's busy repainting #app, which is what showed up as
-     the pill sinking below the nav bar and drifting right for a few
-     seconds before snapping back once #app's paint settles. contain:
-     layout style tells the browser #hotbar's box/position doesn't depend
-     on anything outside it, so it never needs to wait on #app at all. */
   #hotbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px;
-    box-sizing: border-box; padding: 0 18px; z-index: 220;
-    transform: translateZ(0); will-change: transform; contain: layout style; }
+    box-sizing: border-box; padding: 0 18px; z-index: 220; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
-  #hotbar.hb-pos-bottom { bottom: calc(var(--safe-bottom-cached, env(safe-area-inset-bottom, 0px)) + 11px); }
+  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px); }
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
   .hb-btn { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
@@ -781,7 +759,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.4';
+const APP_VERSION = '1.2.5';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -2416,7 +2394,6 @@ let navStack = [];
 
 /* ---------- boot ---------- */
 async function boot() {
-  cacheSafeAreaInsets();
   // Tells the updater plugin this bundle loaded and is working — skipping
   // this causes it to assume the update failed and roll back to the
   // previous version on next launch. No-ops harmlessly if the plugin
@@ -3541,7 +3518,25 @@ function renderExerciseList(root) {
   (draft.exercises || []).forEach(ex => {
     if (exerciseHasLoggedData(ex)) touchedAt.set(ex.name, ex.lastTouched || 0);
   });
-  const sortedList = [...list].sort((a, b) => {
+  // Deleting (or renaming out from under) an exercise in Edit Exercises only
+  // ever touches exercisesByDay — the logged sets stay put in draft.exercises
+  // untouched (see syncDraftRename/syncDraftUnilateral, and the plain
+  // list.splice() delete handler in renderExerciseEdit which doesn't touch
+  // draft at all) and still get included when the workout is finished. But
+  // this screen used to build its list from exercisesByDay alone, so an
+  // exercise removed from today's list — even with sets already logged
+  // against it this session — would vanish here and become impossible to
+  // reopen/edit/view until the workout was finished. Splice any such
+  // already-tracked-but-no-longer-listed exercises back in so the data
+  // stays reachable for the rest of the session.
+  const listNameKeys = new Set(list.map(item => nameKey(item.name)));
+  const orphanedTracked = (draft.exercises || []).filter(ex =>
+    exerciseHasLoggedData(ex) && !listNameKeys.has(nameKey(ex.name))
+  );
+  const displayList = orphanedTracked.length
+    ? [...list, ...orphanedTracked.map(ex => ({ name: ex.name, unilateral: ex.unilateral }))]
+    : list;
+  const sortedList = [...displayList].sort((a, b) => {
     const aTouched = touchedAt.has(a.name), bTouched = touchedAt.has(b.name);
     if (aTouched && bTouched) return touchedAt.get(b.name) - touchedAt.get(a.name);
     if (aTouched) return -1;
@@ -5265,7 +5260,20 @@ async function pullCloudWorkouts() {
       historyEntries = historyEntries.filter(e => e.id !== t.id);
       pulledAny = true;
     }
-    if (pulledAny) { await loadHistory(); await recomputeBestLiftsFromHistory(); render(); }
+    // Only re-render if we're actually sitting on a screen this data feeds —
+    // same guard style as the other background-sync call sites above
+    // (`if (screen === 'home') render();`). This used to call render()
+    // unconditionally, which meant a workout syncing in from another device
+    // could force a full #app rebuild out from under whatever screen the
+    // person happened to be on — e.g. mid-type in Settings or Edit
+    // Exercises — for no benefit, since those screens don't show workout
+    // history anyway.
+    const WORKOUT_DATA_SCREENS = ['home', 'logs', 'workout-detail', 'exercise-history', 'progress'];
+    if (pulledAny) {
+      await loadHistory();
+      await recomputeBestLiftsFromHistory();
+      if (WORKOUT_DATA_SCREENS.includes(screen)) render();
+    }
   } catch (e) {
     logClientError('pullCloudWorkouts', e);
   }
@@ -7490,20 +7498,6 @@ function updateHotbarTimerLabel() {
    gesture bar. #app gets matching reserved padding so content never sits
    underneath it. Called on boot, whenever a relevant setting changes, and
    after login. */
-/* Measures env(safe-area-inset-bottom) once via a throwaway probe element
-   and writes it to --safe-bottom-cached, instead of letting the hotbar's
-   CSS read env() live. Only called on boot and on resize/orientationchange
-   (see listeners below) — never during a normal screen render — so a
-   mid-render layout wipe can't feed the hotbar a transient bad reading. */
-function cacheSafeAreaInsets() {
-  const probe = document.createElement('div');
-  probe.style.cssText = 'position:fixed; bottom:0; left:-9999px; height:0; padding-bottom:env(safe-area-inset-bottom, 0px); pointer-events:none; visibility:hidden;';
-  document.body.appendChild(probe);
-  const px = getComputedStyle(probe).paddingBottom || '0px';
-  document.body.removeChild(probe);
-  document.documentElement.style.setProperty('--safe-bottom-cached', px);
-}
-
 function placeHotbar() {
   const container = document.getElementById('hotbar');
   const app = document.getElementById('app');
@@ -7547,8 +7541,8 @@ function updateHotbarReservedSpace() {
   const rect = container.getBoundingClientRect();
   app.style.setProperty('--hotbar-reserved-bottom', Math.ceil(window.innerHeight - rect.top + BREATHING_ROOM) + 'px');
 }
-window.addEventListener('resize', () => requestAnimationFrame(() => { cacheSafeAreaInsets(); updateHotbarReservedSpace(); }));
-window.addEventListener('orientationchange', () => requestAnimationFrame(() => { cacheSafeAreaInsets(); updateHotbarReservedSpace(); }));
+window.addEventListener('resize', () => requestAnimationFrame(updateHotbarReservedSpace));
+window.addEventListener('orientationchange', () => requestAnimationFrame(updateHotbarReservedSpace));
 
 /* The hotbar/widgets (and their panels) only make sense once someone is
    signed in and past auth — hidden during loading/register/login so they
@@ -7774,29 +7768,6 @@ delete settings.hotbarPosition; // drop any legacy saved value
 if (!Array.isArray(settings.hotbarOrder) || settings.hotbarOrder.length !== 2) settings.hotbarOrder = ['timer', 'notes'];
 initHotbar();
 initRestWidget();
-/* ---------- TEMP DIAGNOSTIC — hotbar position readout ----------
-   Remove this whole block once the sink bug is diagnosed. Shows #hotbar's
-   live computed style + real on-screen box, refreshed 5x/sec, so the exact
-   moment/values of the glitch can be read directly off the phone screen
-   instead of guessed at. Pinch-safe top-left corner, out of the hotbar's way. */
-(function () {
-  const hud = document.createElement('div');
-  hud.style.cssText = 'position:fixed; top:6px; left:6px; z-index:99999; background:rgba(0,0,0,0.85); color:#0f0; font:10px/1.4 monospace; padding:6px 8px; border-radius:6px; max-width:92vw; white-space:pre; pointer-events:none;';
-  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(hud));
-  window.addEventListener('load', () => document.body.appendChild(hud));
-  setInterval(() => {
-    const el = document.getElementById('hotbar');
-    if (!el) { hud.textContent = 'no #hotbar'; return; }
-    const cs = getComputedStyle(el);
-    const r = el.getBoundingClientRect();
-    hud.textContent =
-      'pos:' + cs.position + '  transform:' + cs.transform + '\n' +
-      'bottom:' + cs.bottom + '  left:' + cs.left + '  right:' + cs.right + '\n' +
-      'rect: top=' + r.top.toFixed(0) + ' left=' + r.left.toFixed(0) + ' right=' + r.right.toFixed(0) + ' bottom=' + r.bottom.toFixed(0) + ' w=' + r.width.toFixed(0) + '\n' +
-      'winH:' + window.innerHeight + '  class:' + el.className;
-  }, 200);
-})();
-
 boot();
 // Instant press feedback for icon buttons — CSS :active can lag on touch
 // devices (browsers wait a beat to rule out a scroll gesture), so we flip

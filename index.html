@@ -360,7 +360,9 @@
 
   /* HOW IT WORKS */
   .how { padding: 32px 0 36px; text-align: center; }
-  /* All screen sizes: vertical scrolling auto-drives the horizontal steps reveal */
+  /* Desktop/tablet: vertical scrolling auto-drives the horizontal steps reveal.
+     Disabled below 860px — see mobile override — because 100vh-based scroll
+     math drifts as the mobile browser's address bar shows/hides. */
   .steps-track { position: relative; height: 150vh; }
   .steps-pin {
     position: sticky; top: var(--nav-h, 64px); height: calc(100vh - var(--nav-h, 64px));
@@ -376,6 +378,24 @@
     justify-content: flex-start; scroll-behavior: auto;
   }
   .steps-row::-webkit-scrollbar { display: none; }
+  /* MOBILE/TABLET: plain swipeable row, no scroll-hijacking, no huge pinned track */
+  @media (max-width: 860px) {
+    .steps-track { height: auto !important; }
+    .steps-pin {
+      position: static !important; height: auto !important;
+      padding: 4px 0 8px; overflow: visible;
+    }
+    .steps-row {
+      scroll-snap-type: x proximity;
+      padding: 6px 20px 20px;
+    }
+    .step {
+      scroll-snap-align: center;
+      opacity: 1 !important;
+      flex: 0 0 260px !important; width: 260px !important; min-width: 260px !important; max-width: 260px !important;
+    }
+    .step-arrow { display: none; }
+  }
   .step {
     box-sizing: border-box;
     flex: 0 0 180px;
@@ -972,7 +992,8 @@
   const stepsTrack = document.getElementById('stepsTrack');
   const stepsRow = document.getElementById('stepsRow');
   const stepsPin = stepsRow ? stepsRow.closest('.steps-pin') : null;
-  if (stepsTrack && stepsRow && stepsPin) {
+  const stepsIsMobile = window.matchMedia('(max-width: 860px)').matches;
+  if (stepsTrack && stepsRow && stepsPin && !stepsIsMobile) {
     const stepEls = Array.from(stepsRow.querySelectorAll('.step'));
     const stepChildren = Array.from(stepsRow.children); // steps + arrows
     const numSteps = stepEls.length;
