@@ -539,8 +539,19 @@
      clearance beyond the raw safe-area inset is added on top of env()
      since Android's gesture-nav bar / status bar aren't always reflected
      accurately by env() alone. */
+  /* transform/will-change/contain force #hotbar onto its own isolated GPU
+     compositing layer, independent of #app. Without this, a heavy #app
+     reflow (settings/edit-log/exercise-edit rebuild their entire subtree
+     via innerHTML='' + reinsert — the biggest DOM churns in the app) can
+     make Android WebView momentarily lose track of #hotbar's fixed-layer
+     position while it's busy repainting #app, which is what showed up as
+     the pill sinking below the nav bar and drifting right for a few
+     seconds before snapping back once #app's paint settles. contain:
+     layout style tells the browser #hotbar's box/position doesn't depend
+     on anything outside it, so it never needs to wait on #app at all. */
   #hotbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px;
-    box-sizing: border-box; padding: 0 18px; z-index: 220; }
+    box-sizing: border-box; padding: 0 18px; z-index: 220;
+    transform: translateZ(0); will-change: transform; contain: layout style; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
   #hotbar.hb-pos-bottom { bottom: calc(var(--safe-bottom-cached, env(safe-area-inset-bottom, 0px)) + 11px); }
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
@@ -602,6 +613,7 @@
      'bottom' mode and currently showing something, so they never overlap. */
   #hbWidgets { position: fixed; right: 18px; z-index: 219; display: flex; flex-direction: column-reverse; gap: 12px;
     align-items: flex-end; --hb-widget-extra: 0px;
+    transform: translateZ(0); will-change: transform; contain: layout style;
     bottom: calc(var(--safe-bottom-cached, env(safe-area-inset-bottom, 0px)) + 26px + var(--hb-widget-extra)); }
   #hbWidgets.hb-hidden { display: none !important; }
   #hbWidgets:empty { display: none; }
@@ -769,7 +781,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.2';
+const APP_VERSION = '1.2.3';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
