@@ -50,7 +50,7 @@
   .screen.anim-default { animation: fadeIn 0.56s var(--ease-glide); }
   .screen.anim-slide-back { animation: slideBack 0.62s var(--ease-glide); }
   .screen.anim-slide-forward { animation: slideForward 0.62s var(--ease-glide); }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(22px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideBack { from { opacity: 0; transform: translateX(-9%); } to { opacity: 1; transform: translateX(0); } }
   @keyframes slideForward { from { opacity: 0; transform: translateX(9%); } to { opacity: 1; transform: translateX(0); } }
 
@@ -192,7 +192,7 @@
   .resume-wrap { position: relative; }
   .resume-dismiss-btn {
     position: absolute; top: -7px; right: -7px; width: 24px; height: 24px; border-radius: 50%;
-    background: var(--panel-2); border: 1.5px solid var(--border); color: var(--text-dim);
+    background: var(--danger); border: 1.5px solid var(--danger); color: #fff;
     display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; z-index: 2;
   }
   .resume-dismiss-btn svg { width: 12px; height: 12px; }
@@ -779,7 +779,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.7';
+const APP_VERSION = '1.2.8';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -3184,7 +3184,7 @@ function renderHome(root) {
     </div>
     <div class="time-readout mono" id="homeTime">${greeting}, ${account ? account.username : ''}</div>
     <div class="date-readout mono">${fmtDate(new Date().toISOString())}</div>
-    ${draft ? `<div class="resume-wrap">
+    ${draft && draftHasData(draft) ? `<div class="resume-wrap">
       <button class="btn-primary" id="resumeBtn">Resume ${draft.day} workout</button>
       <button class="resume-dismiss-btn" id="resumeDismissBtn" title="Discard workout">
         <svg viewBox="0 0 24 24" fill="none"><path d="M5 5L19 19M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -3218,20 +3218,24 @@ function renderHome(root) {
   root.querySelector('#btnStart').onclick = () => goTo('track-select');
   root.querySelector('#btnLogs').onclick = async () => { await loadHistory(); goTo('logs'); };
   root.querySelector('#allExercisesLink').onclick = async () => { await loadHistory(); goTo('all-exercises'); };
-  if (draft) root.querySelector('#resumeDismissBtn').onclick = async (e) => {
+  if (draft && draftHasData(draft)) root.querySelector('#resumeDismissBtn').onclick = async (e) => {
     e.stopPropagation();
-    if (draftHasData(draft)) {
-      const ok = await appConfirmDelete("Discard this workout? All tracked sets and reps will be lost. This can't be undone.");
-      if (!ok) return;
-    }
+    const ok = await appConfirmDelete("Discard this workout? All tracked sets and reps will be lost. This can't be undone.");
+    if (!ok) return;
     if (_draftSaveTimer) { clearTimeout(_draftSaveTimer); _draftSaveTimer = null; }
     draft = null;
     await deleteKey('draft');
     stopRestTimer();
     resetStopwatch();
-    render();
+    // Remove just the resume card instead of calling render() — a full
+    // render() wipes and rebuilds the whole #app tree (and replays the
+    // screen's fade-in animation), which flashes the entire home screen
+    // for what's really a one-element change.
+    const wrapEl = root.querySelector('.resume-wrap');
+    if (wrapEl) wrapEl.remove();
+    updateHotbarReservedSpace();
   };
-  if (draft) root.querySelector('#resumeBtn').onclick = () => {
+  if (draft && draftHasData(draft)) root.querySelector('#resumeBtn').onclick = () => {
     currentDay = draft.day;
     // Land on the exercise list, not straight back inside whichever exercise
     // was last being logged — the blinking dot / tick on that exercise's row
@@ -5068,6 +5072,15 @@ function resyncOnForeground() {
   syncOnResumeIfDue();
   updateStopwatchDisplay();
   refreshHotbarLayout();
+  // refreshHotbarLayout() just tore down and rebuilt the hotbar's DOM, so
+  // its actual on-screen size/position and the --hotbar-reserved-bottom
+  // space #app reserves for it are now both stale — left alone they'd only
+  // get corrected whenever a resize/orientationchange event happened to
+  // fire next. Foregrounding is exactly when the viewport is still
+  // settling (keyboard closing, a native camera/gallery picker dismissing),
+  // so that gap is what read as "hotbar goes huge/misplaced for a moment,
+  // then fixes itself." Re-measuring immediately here closes it.
+  placeHotbar();
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) resyncOnForeground(); });
 try {
@@ -6550,6 +6563,7 @@ function renderSettings(root) {
       settings.timerEnabled = (btn.dataset.v === 'on');
       await saveJSON('settings', settings);
       refreshHotbarLayout();
+      placeHotbar();
       renderSettings(root); // re-render just this screen's content in place, no full-app rebuild/animation
     };
   });
@@ -6558,6 +6572,7 @@ function renderSettings(root) {
       settings.notesEnabled = (btn.dataset.v === 'on');
       await saveJSON('settings', settings);
       refreshHotbarLayout();
+      placeHotbar();
       renderSettings(root);
     };
   });
@@ -6566,6 +6581,7 @@ function renderSettings(root) {
       settings.angleFinderEnabled = (btn.dataset.v === 'on');
       await saveJSON('settings', settings);
       refreshHotbarLayout();
+      placeHotbar();
       renderSettings(root);
     };
   });
@@ -6850,6 +6866,7 @@ function renderSetupWidgets(root) {
       settings.timerEnabled = (btn.dataset.v === 'on');
       await saveJSON('settings', settings);
       refreshHotbarLayout();
+      placeHotbar();
       renderSetupWidgets(root);
     };
   });
@@ -6858,6 +6875,7 @@ function renderSetupWidgets(root) {
       settings.notesEnabled = (btn.dataset.v === 'on');
       await saveJSON('settings', settings);
       refreshHotbarLayout();
+      placeHotbar();
       renderSetupWidgets(root);
     };
   });
@@ -6866,6 +6884,7 @@ function renderSetupWidgets(root) {
       settings.angleFinderEnabled = (btn.dataset.v === 'on');
       await saveJSON('settings', settings);
       refreshHotbarLayout();
+      placeHotbar();
       renderSetupWidgets(root);
     };
   });
