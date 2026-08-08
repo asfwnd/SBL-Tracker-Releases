@@ -359,14 +359,17 @@
   section[id] > .wrap-wide > .section-title { text-align: center; }
 
   /* HOW IT WORKS */
-  .how { padding: 76px 0 84px; text-align: center; border-top: 1px solid var(--border); }
+  .how { padding: 32px 0 36px; text-align: center; }
   /* All screen sizes: vertical scrolling auto-drives the horizontal steps reveal */
-  .steps-track { position: relative; height: 230vh; }
+  .steps-track { position: relative; height: 150vh; }
   .steps-pin {
-    position: sticky; top: 0; height: 100vh;
+    position: sticky; top: var(--nav-h, 64px); height: calc(100vh - var(--nav-h, 64px));
     display: flex; flex-direction: column; justify-content: center;
     overflow: hidden;
   }
+  .steps-pin .section-label,
+  .steps-pin .section-title { flex-shrink: 0; }
+  .steps-pin .section-title { margin-bottom: 28px; }
   .steps-row {
     display: flex; gap: 14px; overflow-x: auto; padding: 6px 4px 20px; margin-top: 8px;
     scroll-snap-type: none; scrollbar-width: none; -ms-overflow-style: none;
@@ -433,10 +436,11 @@
   .step-arrow svg { width: 16px; height: 16px; }
 
   /* FEATURES (grouped, alternating) */
-  .features { padding: 90px 0 40px; }
+  .features { padding: 38px 0 40px; }
   .features > .wrap-wide > .section-label,
   .features > .wrap-wide > .section-title { text-align: center; }
-  .fgroup { display: flex; align-items: center; gap: 64px; padding: 56px 0; border-top: 1px solid var(--border); }
+  .fgroup { display: flex; align-items: center; gap: 64px; padding: 126px 0; }
+  .fgroup:last-of-type { padding-bottom: 40px; }
   .fgroup:first-of-type { border-top: none; }
   .fgroup.reverse { flex-direction: row-reverse; }
   .fgroup-media { flex: 0 0 300px; display: flex; justify-content: center; }
@@ -459,7 +463,7 @@
   .benefit p { font-size: 13.5px; color: var(--text-dim); }
 
   /* COMPARISON */
-  .compare { padding: 80px 0; text-align: center; border-top: 1px solid var(--border); }
+  .compare { padding: 120px 0; text-align: center; }
   .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; margin-top: 8px; }
   .compare-col { border-radius: 18px; padding: 30px 26px; border: 1.75px solid var(--border); background: var(--panel); }
   .compare-col.highlight {
@@ -477,7 +481,7 @@
   .compare-col.highlight .compare-item svg { color: var(--teal); }
 
   /* TRUST STRIP */
-  .trust { padding: 70px 0; text-align: center; border-top: 1px solid var(--border); }
+  .trust { padding: 105px 0; text-align: center; }
   .trust-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; margin-top: 8px; }
   .trust-item { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 0 1 150px; }
   .trust-icon {
@@ -490,14 +494,14 @@
   .trust-item p { font-size: 12px; color: var(--text-dim); max-width: 150px; }
 
   /* DOWNLOAD */
-  .download { padding: 100px 0; text-align: center; position: relative; border-top: 1px solid var(--border); }
+  .download { padding: 100px 0; text-align: center; position: relative; }
   .download .section-title { margin: 0 auto 14px; }
   .download p.lede { color: var(--text-dim); max-width: 420px; margin: 0 auto 36px; font-size: 15px; }
   .download .cta-row { margin-bottom: 20px; align-items: center; }
   .download .trust-inline { justify-content: center; margin-top: 8px; opacity: 1; animation: none; }
 
   /* FAQ */
-  .faq { padding: 80px 0 100px; border-top: 1px solid var(--border); }
+  .faq { padding: 80px 0 100px; }
   .faq-list { max-width: 640px; margin: 0 auto; text-align: left; display: flex; flex-direction: column; gap: 10px; }
   .faq-item { border: 1px solid var(--border); border-radius: 14px; background: var(--panel); overflow: hidden; }
   .faq-item summary {
@@ -612,10 +616,10 @@
 
 <section class="how" id="how">
   <div class="wrap-wide">
-    <div class="section-label reveal">How it works</div>
-    <h2 class="section-title reveal">Six steps. Zero friction.</h2>
     <div class="steps-track" id="stepsTrack">
       <div class="steps-pin">
+        <div class="section-label reveal">How it works</div>
+        <h2 class="section-title reveal">Six steps. Zero friction.</h2>
         <div class="steps-row" id="stepsRow">
           <div class="step"><div class="step-num">01</div><h3>Start workout</h3><p>Pick a session. Straight into the workout screen.</p></div>
           <div class="step-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>

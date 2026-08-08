@@ -11,6 +11,17 @@
        teal accent AND the near-black background tint together (see settings'
        accentHue + applyAccentHue()). 170 reproduces the original teal exactly. */
     --hue: 170;
+    /* Cached copy of env(safe-area-inset-bottom), written once by
+       cacheSafeAreaInsets() (boot + resize/orientationchange) instead of
+       read live via env() in the hotbar's bottom rule. On Android WebView,
+       env(safe-area-inset-*) gets re-resolved on every layout pass, and a
+       full #app innerHTML wipe/rebuild (e.g. navigating to Settings) is
+       exactly the kind of layout churn that makes it transiently resolve to
+       0 before snapping back to its real value a frame later — visually
+       that's the hotbar dropping to bottom:21px and then jumping back up.
+       Reading a cached JS-measured value instead makes the hotbar's
+       position immune to that transient mis-resolution. */
+    --safe-bottom-cached: 0px;
     /* --sat-mult scales every saturation figure below (1 = full color, 0 =
        grayscale/B&W). The color wheel writes both vars together via
        applyAccentTheme(); the fixed swatches just set --hue and leave
@@ -531,7 +542,7 @@
   #hotbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px;
     box-sizing: border-box; padding: 0 18px; z-index: 220; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
-  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px); }
+  #hotbar.hb-pos-bottom { bottom: calc(var(--safe-bottom-cached, env(safe-area-inset-bottom, 0px)) + 11px); }
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
   .hb-btn { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
@@ -591,7 +602,7 @@
      'bottom' mode and currently showing something, so they never overlap. */
   #hbWidgets { position: fixed; right: 18px; z-index: 219; display: flex; flex-direction: column-reverse; gap: 12px;
     align-items: flex-end; --hb-widget-extra: 0px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 26px + var(--hb-widget-extra)); }
+    bottom: calc(var(--safe-bottom-cached, env(safe-area-inset-bottom, 0px)) + 26px + var(--hb-widget-extra)); }
   #hbWidgets.hb-hidden { display: none !important; }
   #hbWidgets:empty { display: none; }
   /* position: fixed + explicit left/top (set in JS by makeWidgetDraggable)
@@ -758,7 +769,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.1';
+const APP_VERSION = '1.2.2';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -2393,6 +2404,7 @@ let navStack = [];
 
 /* ---------- boot ---------- */
 async function boot() {
+  cacheSafeAreaInsets();
   // Tells the updater plugin this bundle loaded and is working — skipping
   // this causes it to assume the update failed and roll back to the
   // previous version on next launch. No-ops harmlessly if the plugin
@@ -7466,6 +7478,20 @@ function updateHotbarTimerLabel() {
    gesture bar. #app gets matching reserved padding so content never sits
    underneath it. Called on boot, whenever a relevant setting changes, and
    after login. */
+/* Measures env(safe-area-inset-bottom) once via a throwaway probe element
+   and writes it to --safe-bottom-cached, instead of letting the hotbar's
+   CSS read env() live. Only called on boot and on resize/orientationchange
+   (see listeners below) — never during a normal screen render — so a
+   mid-render layout wipe can't feed the hotbar a transient bad reading. */
+function cacheSafeAreaInsets() {
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed; bottom:0; left:-9999px; height:0; padding-bottom:env(safe-area-inset-bottom, 0px); pointer-events:none; visibility:hidden;';
+  document.body.appendChild(probe);
+  const px = getComputedStyle(probe).paddingBottom || '0px';
+  document.body.removeChild(probe);
+  document.documentElement.style.setProperty('--safe-bottom-cached', px);
+}
+
 function placeHotbar() {
   const container = document.getElementById('hotbar');
   const app = document.getElementById('app');
@@ -7509,8 +7535,8 @@ function updateHotbarReservedSpace() {
   const rect = container.getBoundingClientRect();
   app.style.setProperty('--hotbar-reserved-bottom', Math.ceil(window.innerHeight - rect.top + BREATHING_ROOM) + 'px');
 }
-window.addEventListener('resize', () => requestAnimationFrame(updateHotbarReservedSpace));
-window.addEventListener('orientationchange', () => requestAnimationFrame(updateHotbarReservedSpace));
+window.addEventListener('resize', () => requestAnimationFrame(() => { cacheSafeAreaInsets(); updateHotbarReservedSpace(); }));
+window.addEventListener('orientationchange', () => requestAnimationFrame(() => { cacheSafeAreaInsets(); updateHotbarReservedSpace(); }));
 
 /* The hotbar/widgets (and their panels) only make sense once someone is
    signed in and past auth — hidden during loading/register/login so they
