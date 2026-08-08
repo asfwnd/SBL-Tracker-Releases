@@ -531,7 +531,7 @@
   #hotbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px;
     box-sizing: border-box; padding: 0 18px; z-index: 220; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
-  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px); }
+  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px + var(--hb-chrome-bottom, 0px)); }
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
   .hb-btn { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
@@ -759,7 +759,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.5';
+const APP_VERSION = '1.2.6';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -2720,6 +2720,14 @@ function render() {
   // Synchronous (not rAF): getBoundingClientRect() already forces a fresh
   // layout flush, so deferring to the next frame only bought a visible
   // flash of stale padding before the correct value snapped in.
+  // Same reasoning applies to the chrome-offset var: scrollTo() above is
+  // exactly what triggers the mobile nav-bar show/hide animation (this is
+  // desktop-only-safe; a scrollTo on desktop doesn't move any browser
+  // chrome), and waiting on the async visualViewport event to catch up
+  // is what let this specific navigation-triggered case slip through —
+  // recomputing it synchronously here, same as the reserved-space measure
+  // right below, closes that gap.
+  updateHotbarChromeOffset();
   updateHotbarReservedSpace();
 }
 
@@ -7498,12 +7506,38 @@ function updateHotbarTimerLabel() {
    gesture bar. #app gets matching reserved padding so content never sits
    underneath it. Called on boot, whenever a relevant setting changes, and
    after login. */
+/* env(safe-area-inset-bottom) is measured against the *layout* viewport,
+   which on Android does NOT track the gesture-nav bar / 3-button bar
+   auto-hiding and reappearing — window.innerHeight changes when that
+   happens, but the CSS safe-area value doesn't update in step, so a
+   pure-CSS `bottom: env(...)` briefly points at the wrong spot every time
+   the bar toggles (that's the "hotbar disappears then snaps back" bug).
+   visualViewport DOES track it live (same reason positionNotesPanel()
+   below already uses it for the keyboard), so this measures the real gap
+   between the layout viewport's bottom and the visual viewport's bottom
+   — i.e. exactly how much bar/chrome is currently covering the bottom
+   edge — and feeds it into the CSS as an extra offset on top of the
+   normal safe-area inset. Skipped while a text input is focused so this
+   doesn't fight the keyboard-avoidance logic elsewhere (that's handled
+   separately, and its shrink looks identical to the nav-bar case from
+   visualViewport's perspective). */
+function updateHotbarChromeOffset() {
+  const container = document.getElementById('hotbar');
+  const vv = window.visualViewport;
+  if (!container || !vv) return;
+  const tag = document.activeElement && document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+  const chromeBottom = window.innerHeight - (vv.height + vv.offsetTop);
+  container.style.setProperty('--hb-chrome-bottom', Math.max(0, Math.round(chromeBottom)) + 'px');
+}
+
 function placeHotbar() {
   const container = document.getElementById('hotbar');
   const app = document.getElementById('app');
   if (!container || !app) return;
   const hotbarHasContent = !container.classList.contains('hb-empty') && !container.classList.contains('hb-hidden');
   container.classList.add('hb-pos-bottom');
+  updateHotbarChromeOffset();
   app.classList.remove('app-hb-bottom', 'app-hb-none');
   app.classList.add(hotbarHasContent ? 'app-hb-bottom' : 'app-hb-none');
   if (rwOpen) rwPositionPanel();
@@ -7543,6 +7577,14 @@ function updateHotbarReservedSpace() {
 }
 window.addEventListener('resize', () => requestAnimationFrame(updateHotbarReservedSpace));
 window.addEventListener('orientationchange', () => requestAnimationFrame(updateHotbarReservedSpace));
+// The actual fix for the nav-bar toggle jump: visualViewport fires its own
+// resize (and scroll, when the address/nav bar reveal shifts offsetTop)
+// independently of — and earlier/more reliably than — window's resize on
+// Android, so this is what keeps the hotbar's position honest in real time.
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => { updateHotbarChromeOffset(); requestAnimationFrame(updateHotbarReservedSpace); });
+  window.visualViewport.addEventListener('scroll', () => { updateHotbarChromeOffset(); requestAnimationFrame(updateHotbarReservedSpace); });
+}
 
 /* The hotbar/widgets (and their panels) only make sense once someone is
    signed in and past auth — hidden during loading/register/login so they
