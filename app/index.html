@@ -539,7 +539,7 @@
   #hotbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px;
     box-sizing: border-box; padding: 0 18px; z-index: 220; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
-  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px); }
+  #hotbar.hb-pos-bottom { bottom: calc(var(--safe-bottom-cached, env(safe-area-inset-bottom, 0px)) + 21px); }
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
   .hb-btn { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
@@ -779,7 +779,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.8';
+const APP_VERSION = '1.2.9';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -7868,6 +7868,30 @@ function updateHotbarTimerLabel() {
   // that state change happens.
 }
 
+/* Reads the browser's live safe-area-inset-bottom into a stable, JS-owned
+   custom property (--safe-bottom-cached) instead of letting #hotbar's own
+   position rule reference env() directly. On Android WebViews that live
+   value has been observed to transiently glitch — briefly reporting a
+   smaller inset — during events that have nothing to do with the actual
+   viewport changing (the hotbar's DOM being rebuilt on foreground/resume,
+   a Settings toggle, etc). Wired straight to env(), the hotbar would sink
+   toward the screen edge for that instant and then snap back up once the
+   real value resolved. Only calling this from genuine resize/orientation
+   events (not from every re-render) means the cached value — and the
+   hotbar's position — simply can't be disturbed by anything else. */
+function cacheSafeAreaBottom() {
+  let probe = document.getElementById('__safeAreaProbe');
+  if (!probe) {
+    probe = document.createElement('div');
+    probe.id = '__safeAreaProbe';
+    probe.style.cssText = 'position:fixed; left:0; bottom:0; width:0; height:0; padding-bottom:env(safe-area-inset-bottom); pointer-events:none; visibility:hidden;';
+    document.body.appendChild(probe);
+  }
+  const val = parseFloat(getComputedStyle(probe).paddingBottom) || 0;
+  document.documentElement.style.setProperty('--safe-bottom-cached', val + 'px');
+}
+cacheSafeAreaBottom();
+
 /* Bottom-only hotbar placement: fixed just above the home indicator /
    gesture bar. #app gets matching reserved padding so content never sits
    underneath it. Called on boot, whenever a relevant setting changes, and
@@ -7915,8 +7939,8 @@ function updateHotbarReservedSpace() {
   const rect = container.getBoundingClientRect();
   app.style.setProperty('--hotbar-reserved-bottom', Math.ceil(window.innerHeight - rect.top + BREATHING_ROOM) + 'px');
 }
-window.addEventListener('resize', () => requestAnimationFrame(updateHotbarReservedSpace));
-window.addEventListener('orientationchange', () => requestAnimationFrame(updateHotbarReservedSpace));
+window.addEventListener('resize', () => requestAnimationFrame(() => { cacheSafeAreaBottom(); updateHotbarReservedSpace(); }));
+window.addEventListener('orientationchange', () => requestAnimationFrame(() => { cacheSafeAreaBottom(); updateHotbarReservedSpace(); }));
 
 /* The hotbar/widgets (and their panels) only make sense once someone is
    signed in and past auth — hidden during loading/register/login so they
