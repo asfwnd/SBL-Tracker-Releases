@@ -51,8 +51,8 @@
   .screen.anim-slide-back { animation: slideBack 0.62s var(--ease-glide); }
   .screen.anim-slide-forward { animation: slideForward 0.62s var(--ease-glide); }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(22px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  @keyframes slideBack { from { opacity: 0; transform: translateX(-9%) scale(0.97); } to { opacity: 1; transform: translateX(0) scale(1); } }
-  @keyframes slideForward { from { opacity: 0; transform: translateX(9%) scale(0.97); } to { opacity: 1; transform: translateX(0) scale(1); } }
+  @keyframes slideBack { from { opacity: 0; transform: translateX(-9%); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes slideForward { from { opacity: 0; transform: translateX(9%); } to { opacity: 1; transform: translateX(0); } }
 
   button { touch-action: manipulation; transition: transform .48s var(--ease-bounce), opacity .38s var(--ease-glide), box-shadow .42s var(--ease-glide), border-color .38s var(--ease-glide), background-color .38s var(--ease-glide); }
   button:active { transform: scale(0.895); transition: transform .14s var(--ease-press), opacity .14s var(--ease-press), box-shadow .14s var(--ease-press), border-color .14s var(--ease-press), background-color .14s var(--ease-press); }
@@ -189,6 +189,14 @@
   }
   .btn-primary:active { transform: translateY(1.5px) scale(0.94); transition: transform .14s var(--ease-press); }
   .btn-primary.ghost { background: none; border: 1.75px solid var(--border); color: var(--teal); box-shadow: none; }
+  .resume-wrap { position: relative; }
+  .resume-dismiss-btn {
+    position: absolute; top: -7px; right: -7px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--panel-2); border: 1.5px solid var(--border); color: var(--text-dim);
+    display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; z-index: 2;
+  }
+  .resume-dismiss-btn svg { width: 12px; height: 12px; }
+  .resume-dismiss-btn:active { transform: scale(0.82); transition: transform .14s var(--ease-press); }
   .btn-secondary {
     width: 100%; background: none; border: 1.75px solid var(--border); color: var(--text-dim);
     padding: 14px; border-radius: 13px; font-size: 15px; cursor: pointer; margin-top: 10px;
@@ -268,7 +276,7 @@
   .list-item.compact { padding: 9px 14px; margin-bottom: 7px; }
   .list-item.compact .li-name { font-size: 15px; }
 
-  .row-inline { display: flex; gap: 8px; align-items: stretch; }
+  .row-inline { display: flex; gap: 8px; align-items: stretch; margin-bottom: 18px; }
   .icon-btn { display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 8px 13px; font-size: 15px; cursor: pointer; flex-shrink: 0; }
   .icon-btn svg { width: 18px; height: 18px; }
   .icon-btn[data-act="rename"] { color: var(--teal); padding: 9.1px 14.8px; position: relative; top: 0.5px; }
@@ -531,7 +539,7 @@
   #hotbar { position: fixed; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 480px;
     box-sizing: border-box; padding: 0 18px; z-index: 220; }
   #hotbar.hb-hidden, #hotbar.hb-empty { display: none !important; }
-  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px + var(--hb-chrome-bottom, 0px)); }
+  #hotbar.hb-pos-bottom { bottom: calc(env(safe-area-inset-bottom, 0px) + 21px); }
   .hb-pill { display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 46px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }
   .hb-btn { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
@@ -675,6 +683,18 @@
   .rw-btn { flex: 1; padding: 11px 8px; border-radius: 11px; border: none; font-weight: 700; font-size: 13.5px; cursor: pointer; }
   .rw-btn-primary { background: var(--teal); color: var(--teal-ink); }
   .rw-btn-ghost { background: var(--btn-bg); border: none; color: var(--text-dim); }
+  .angle-sub { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 14px; line-height: 1.4; }
+  .angle-mode-label { font-size: 10.5px; text-align: center; color: var(--text-dim); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+  .angle-bubble-wrap { position: relative; width: 100px; height: 100px; margin: 0 auto 16px; }
+  .angle-bubble-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--border); background: var(--input-bg); }
+  .angle-bubble-cross { position: absolute; inset: 0; }
+  .angle-bubble-cross::before, .angle-bubble-cross::after { content: ''; position: absolute; background: var(--border); }
+  .angle-bubble-cross::before { left: 50%; top: 8px; bottom: 8px; width: 1px; transform: translateX(-50%); }
+  .angle-bubble-cross::after { top: 50%; left: 8px; right: 8px; height: 1px; transform: translateY(-50%); }
+  .angle-bubble-dot { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--teal); box-shadow: 0 0 10px -2px var(--teal-glow); transform: translate(-50%, -50%);
+    transition: background 0.15s, box-shadow 0.15s; }
+  .angle-bubble-dot.off-level { background: var(--amber); box-shadow: 0 0 10px -2px var(--amber); }
   .media-thumb-wrap { position: relative; display: inline-block; }
   .media-thumb-del { position: absolute; top: -7px; right: -7px; width: 24px; height: 24px; border-radius: 50%;
     background: var(--danger); color: #fff; border: 2px solid var(--bg); display: flex; align-items: center;
@@ -759,7 +779,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.6';
+const APP_VERSION = '1.2.7';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -891,7 +911,7 @@ function logClientError(context, err) {
   } catch (e) {}
 }
 
-const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings', 'notes'];
+const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings', 'notes', 'allExSortMode'];
 
 async function pushCloudAppState(key, val) {
   if (!account || !account.id) return;
@@ -2074,9 +2094,13 @@ function ensureMediaShape(mediaObj) {
 let account = null, loggedIn = false;
 
 let programType = null, programDays = [];
-let allExSortMode = 'az'; // 'az' | 'recent' | 'sets' | 'volume'
+// Persisted (locally + synced via app_state/CLOUD_SYNC_KEYS, same as
+// settings) so the Progress History sort choice survives an app restart
+// and follows the account across devices instead of resetting to A-Z
+// every time.
+let allExSortMode = loadJSON('allExSortMode', 'az'); // 'az' | 'recent' | 'sets' | 'volume'
 let exercisesByDay = {};
-let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
+let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
 
 /* ---------- accent color palette (Settings > Appearance) ----------
    Only the hue shifts; saturation/lightness stay put, so every preset keeps
@@ -2377,7 +2401,7 @@ let restEndTime = null, restAlarmFired = false, audioCtx = null;
 let restPaused = false, restDuration = 120;
 let rwOpen = false;
 let rwPanelEl = null;
-let hbTimerBtn = null, hbNotesBtn = null;
+let hbTimerBtn = null, hbNotesBtn = null, hbAngleBtn = null;
 let hbSuppressClick = false;
 let hbPressTimer = null, hbPressStartX = 0, hbPressStartY = 0;
 let notes = [], activeNoteId = null;
@@ -2462,7 +2486,7 @@ async function continueBootAfterAuth() {
                               // the cloud instead of the defaults
   // Settings are fully resolved (including anything the cloud pull above
   // just landed) *before* the hotbar is revealed a few lines down.
-  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, timerEnabled: true, notesEnabled: true, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
+  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
   if (settings.accentHue === undefined) settings.accentHue = 170;
   if (settings.accentSat === undefined) settings.accentSat = 1;
   if (settings.customAccentColors === undefined) settings.customAccentColors = [];
@@ -2489,13 +2513,18 @@ async function continueBootAfterAuth() {
   delete settings.hotbarPosition; // hotbar is bottom-only now — drop any legacy saved value
   if (settings.timerEnabled === undefined) settings.timerEnabled = true;
   if (settings.notesEnabled === undefined) settings.notesEnabled = true;
+  if (settings.angleFinderEnabled === undefined) settings.angleFinderEnabled = false;
   // Floating-widget mode no longer exists — Timer/Notes only ever live on
   // the hotbar now. Force this unconditionally (not just when undefined)
   // so a device/account that had previously picked "Floating widget" gets
   // migrated back to the hotbar instead of keeping a now-unsupported value.
   settings.timerDisplay = 'hotbar';
   settings.notesDisplay = 'hotbar';
-  if (!Array.isArray(settings.hotbarOrder) || settings.hotbarOrder.length !== 2) settings.hotbarOrder = ['timer', 'notes'];
+  // Appending any missing key (rather than resetting the whole array)
+  // preserves an existing user's timer/notes order when angle joins as a
+  // 3rd slot — only a genuinely malformed value gets a full reset.
+  if (!Array.isArray(settings.hotbarOrder)) settings.hotbarOrder = ['timer', 'notes', 'angle'];
+  else ['timer', 'notes', 'angle'].forEach(k => { if (!settings.hotbarOrder.includes(k)) settings.hotbarOrder.push(k); });
   exerciseUnits = await loadJSON('exerciseUnits', {});
   notes = await loadJSON('notes', []);
   customExercises = await loadJSON('customExercises', []);
@@ -2637,6 +2666,19 @@ function _flushDeferredRender() {
 }
 document.addEventListener('touchend', _flushDeferredRender, { passive: true });
 document.addEventListener('touchcancel', _flushDeferredRender, { passive: true });
+// touchend/touchcancel only mark the moment the finger lifts — on iOS/Android
+// a flick keeps scrolling under momentum well after that, and a background
+// render landing during that window still cuts the gesture short (see the
+// render() comment below). Track real scroll activity too, with a short
+// cooldown after the last scroll event, and only flush once scrolling has
+// actually settled.
+let lastScrollTime = 0;
+let scrollEndTimer = null;
+window.addEventListener('scroll', () => {
+  lastScrollTime = Date.now();
+  if (scrollEndTimer) clearTimeout(scrollEndTimer);
+  scrollEndTimer = setTimeout(_flushDeferredRender, 150);
+}, { passive: true });
 
 let lastRenderedScreen = null;
 // Background updates (cloud sync landing, realtime pulls, etc.) call the
@@ -2658,7 +2700,7 @@ function render() {
   if (_mediaHydrateObserver) _mediaHydrateObserver.disconnect();
   const app = document.getElementById('app');
   const isScreenChange = screen !== lastRenderedScreen;
-  if (!isScreenChange && userIsTouching) { pendingBackgroundRender = true; return; }
+  if (!isScreenChange && (userIsTouching || Date.now() - lastScrollTime < 400)) { pendingBackgroundRender = true; return; }
   // Wiping and rebuilding #app (below) briefly makes the document much
   // shorter, and the browser clamps window.scrollY down to fit during that
   // instant. On a genuine navigation we want top-of-page anyway, but on a
@@ -2720,14 +2762,6 @@ function render() {
   // Synchronous (not rAF): getBoundingClientRect() already forces a fresh
   // layout flush, so deferring to the next frame only bought a visible
   // flash of stale padding before the correct value snapped in.
-  // Same reasoning applies to the chrome-offset var: scrollTo() above is
-  // exactly what triggers the mobile nav-bar show/hide animation (this is
-  // desktop-only-safe; a scrollTo on desktop doesn't move any browser
-  // chrome), and waiting on the async visualViewport event to catch up
-  // is what let this specific navigation-triggered case slip through —
-  // recomputing it synchronously here, same as the reserved-space measure
-  // right below, closes that gap.
-  updateHotbarChromeOffset();
   updateHotbarReservedSpace();
 }
 
@@ -3150,7 +3184,12 @@ function renderHome(root) {
     </div>
     <div class="time-readout mono" id="homeTime">${greeting}, ${account ? account.username : ''}</div>
     <div class="date-readout mono">${fmtDate(new Date().toISOString())}</div>
-    ${draft ? `<button class="btn-primary" id="resumeBtn">Resume ${draft.day} workout</button>` : ''}
+    ${draft ? `<div class="resume-wrap">
+      <button class="btn-primary" id="resumeBtn">Resume ${draft.day} workout</button>
+      <button class="resume-dismiss-btn" id="resumeDismissBtn" title="Discard workout">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 5L19 19M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>` : ''}
     <div class="yn-row">
       <button class="yn-btn yes" id="btnStart">Start tracking</button>
       <button class="yn-btn no" id="btnLogs">Check Logs</button>
@@ -3179,6 +3218,19 @@ function renderHome(root) {
   root.querySelector('#btnStart').onclick = () => goTo('track-select');
   root.querySelector('#btnLogs').onclick = async () => { await loadHistory(); goTo('logs'); };
   root.querySelector('#allExercisesLink').onclick = async () => { await loadHistory(); goTo('all-exercises'); };
+  if (draft) root.querySelector('#resumeDismissBtn').onclick = async (e) => {
+    e.stopPropagation();
+    if (draftHasData(draft)) {
+      const ok = await appConfirmDelete("Discard this workout? All tracked sets and reps will be lost. This can't be undone.");
+      if (!ok) return;
+    }
+    if (_draftSaveTimer) { clearTimeout(_draftSaveTimer); _draftSaveTimer = null; }
+    draft = null;
+    await deleteKey('draft');
+    stopRestTimer();
+    resetStopwatch();
+    render();
+  };
   if (draft) root.querySelector('#resumeBtn').onclick = () => {
     currentDay = draft.day;
     // Land on the exercise list, not straight back inside whichever exercise
@@ -3339,6 +3391,8 @@ function renderAllExercises(root) {
       btn.onclick = (ev) => {
         ev.stopPropagation();
         allExSortMode = btn.dataset.v;
+        saveJSON('allExSortMode', allExSortMode);
+        pushCloudAppState('allExSortMode', allExSortMode);
         renderAllExercises(root);
       };
     });
@@ -3770,7 +3824,6 @@ function renderExerciseEdit(root) {
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${editingDay}</div>
     <h1 class="big">Edit Exercises</h1>
     <p class="sub">Changes apply going forward — your past logs stay exactly as recorded. Drag the handle to reorder.</p>
-    <div id="editList"></div>
     <div class="row-inline">
       <div class="ex-ac-wrap">
         <input type="text" id="newExInput" placeholder="+ Add exercise" autocomplete="off">
@@ -3779,6 +3832,7 @@ function renderExerciseEdit(root) {
       <button class="uni-toggle" id="newUniToggle" title="One side at a time, tracked as separate R/L reps">L | R</button>
       <button class="icon-btn no-pop" id="newExBtn">Add</button>
     </div>
+    <div id="editList"></div>
   `;
   const editList = root.querySelector('#editList');
   function persistEditList() { exercisesByDay[editingDay] = list; saveJSON('exercisesByDay', exercisesByDay); }
@@ -4181,7 +4235,13 @@ function buildPrefilledSet(name, unilateral, setIndex, fallback) {
       : { weight: '', reps: '', rir: '', rpe: '', rest, media: [] };
   }
   const priorSets = findMostRecentExerciseSets(name, unilateral);
-  const prior = priorSets && priorSets[setIndex] ? priorSets[setIndex] : null;
+  // Carry on from last week's final set once this week runs longer than
+  // last week did — an exact index match would leave set 4 baseline-less
+  // if last week stopped at 3, even though set 3's numbers are still the
+  // right thing to compare against.
+  const prior = priorSets && priorSets.length
+    ? priorSets[Math.min(setIndex, priorSets.length - 1)]
+    : null;
   if (!prior) {
     return unilateral
       ? { weight: (fallback && fallback.weight) || '', repsR: '', repsL: '', rir: '', rpe: '', rest, media: [] }
@@ -6246,6 +6306,12 @@ function renderSettings(root) {
       <button class="chip ${settings.notesEnabled!==false?'selected':''}" data-v="on">On</button>
       <button class="chip ${settings.notesEnabled===false?'selected':''}" data-v="off">Off</button>
     </div>
+    <div class="section-label">Bench Angle Finder</div>
+    <p class="progress-help">Lay your phone flat on a bench to read its incline angle off the motion sensor.</p>
+    <div class="chip-grid" id="angleEnabledGrid">
+      <button class="chip ${settings.angleFinderEnabled===true?'selected':''}" data-v="on">On</button>
+      <button class="chip ${settings.angleFinderEnabled!==true?'selected':''}" data-v="off">Off</button>
+    </div>
     <div class="section-label">Legal</div>
     <div class="list-item" id="termsRow"><div class="li-name">Terms &amp; Conditions</div><div class="li-right">›</div></div>
     <div class="list-item" id="privacyRow"><div class="li-name">Privacy Policy</div><div class="li-right">›</div></div>
@@ -6490,6 +6556,14 @@ function renderSettings(root) {
   root.querySelectorAll('#notesEnabledGrid .chip').forEach(btn => {
     btn.onclick = async () => {
       settings.notesEnabled = (btn.dataset.v === 'on');
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSettings(root);
+    };
+  });
+  root.querySelectorAll('#angleEnabledGrid .chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.angleFinderEnabled = (btn.dataset.v === 'on');
       await saveJSON('settings', settings);
       refreshHotbarLayout();
       renderSettings(root);
@@ -6749,7 +6823,7 @@ function renderSetupAppearance(root) {
 function renderSetupWidgets(root) {
   root.innerHTML = `
     <div class="eyebrow">Setup</div>
-    <h1 class="big">Timer &amp; Notes</h1>
+    <h1 class="big">Timer, Notes &amp; Angle</h1>
     <p class="sub">Quick access from any screen. You can change this anytime in Settings.</p>
     <div class="section-label">Timer</div>
     <p class="progress-help">Quick access to the rest timer/stopwatch from any screen.</p>
@@ -6762,6 +6836,12 @@ function renderSetupWidgets(root) {
     <div class="chip-grid" id="setupNotesEnabledGrid">
       <button class="chip ${settings.notesEnabled!==false?'selected':''}" data-v="on">On</button>
       <button class="chip ${settings.notesEnabled===false?'selected':''}" data-v="off">Off</button>
+    </div>
+    <div class="section-label">Bench Angle Finder</div>
+    <p class="progress-help">Lay your phone flat on a bench to read its incline angle off the motion sensor.</p>
+    <div class="chip-grid" id="setupAngleEnabledGrid">
+      <button class="chip ${settings.angleFinderEnabled===true?'selected':''}" data-v="on">On</button>
+      <button class="chip ${settings.angleFinderEnabled!==true?'selected':''}" data-v="off">Off</button>
     </div>
     <button class="btn-primary" id="widgetsContinueBtn" style="margin-top:8px;">Continue</button>
   `;
@@ -6776,6 +6856,14 @@ function renderSetupWidgets(root) {
   root.querySelectorAll('#setupNotesEnabledGrid .chip').forEach(btn => {
     btn.onclick = async () => {
       settings.notesEnabled = (btn.dataset.v === 'on');
+      await saveJSON('settings', settings);
+      refreshHotbarLayout();
+      renderSetupWidgets(root);
+    };
+  });
+  root.querySelectorAll('#setupAngleEnabledGrid .chip').forEach(btn => {
+    btn.onclick = async () => {
+      settings.angleFinderEnabled = (btn.dataset.v === 'on');
       await saveJSON('settings', settings);
       refreshHotbarLayout();
       renderSetupWidgets(root);
@@ -7179,6 +7267,7 @@ function rwPositionPanel() {
 
 function rwOpenPanel() {
   closeNotesPanel();
+  closeAnglePanel();
   rwOpen = true;
   rwPanelEl = document.createElement('div');
   rwPanelEl.className = 'rw-panel';
@@ -7202,11 +7291,237 @@ function rwClosePanel() {
   }
 }
 
+/* ---------- bench angle finder (hotbar) ----------
+   How real bubble-level / angle-finder apps do this (iHandy Level,
+   Clinometer, Bubble Level, etc.): they don't assume the phone is lying
+   flat. The accelerometer's gravity vector has three components (x, y, z
+   in the phone's own frame), and whichever axis gravity is most aligned
+   with tells you how the phone is currently resting — flat on its back
+   (z dominant), propped up in portrait (y dominant, e.g. leaned against
+   an incline bench's backrest), or propped up in landscape (x dominant).
+   The other two axes, the ones roughly perpendicular to gravity, are the
+   "pivot" plane the tilt actually needs measuring in — so which pair of
+   axes feeds the atan2() call switches with the dominant one. That's the
+   whole trick: pick the dominant axis, measure tilt off the OTHER two,
+   and you get one continuous, correct reading whether the phone is lying
+   on the seat or held/propped against the backrest, with no separate
+   "vertical mode" toggle for the user to flip themselves.
+
+   Two more things real implementations do that a naive atan2() doesn't:
+   - Low-pass filter the raw x/y/z components themselves (not the derived
+     angle) — filtering the vector avoids the jumps you'd get smoothing an
+     angle across the axis boundaries where it can wrap.
+   - Make the dominant-axis switch "sticky" (require a margin, not just
+     "greater than") — otherwise, right around the 45° boundary between
+     two planes, the reading flickers back and forth between them.
+
+   iOS requires an explicit one-tap permission grant
+   (DeviceMotionEvent.requestPermission()) before devicemotion fires at
+   all; Android doesn't need this. Panel follows the same
+   open/close/position pattern as the rest-timer panel above, anchored to
+   its own hotbar button instead. */
+let angleOpen = false, anglePanelEl = null;
+let angleListening = false, angleMotionHandler = null;
+let angleFilt = null;          // { x, y, z } — low-pass filtered gravity vector
+let angleActiveAxis = null;    // 'x' | 'y' | 'z' — sticky dominant axis
+let angleReading = null;       // latest computeAngleReading() result
+let angleZeroOffsets = { x: 0, y: 0, z: 0 }; // calibration, kept separate per axis/mode
+let anglePermissionGranted = (typeof DeviceMotionEvent === 'undefined' || typeof DeviceMotionEvent.requestPermission !== 'function');
+
+function angleNeedsPermissionPrompt() {
+  return typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function' && !anglePermissionGranted;
+}
+/* Picks the dominant (gravity-aligned) axis and measures tilt off the
+   other two — see the block comment above for why. offAxisADeg/offAxisBDeg
+   are that pair broken into individual signed angles (each axis's own
+   atan2 against the dominant one), which is what the 2D bubble dot uses
+   to show *which direction* it's off, not just by how much. */
+function computeAngleReading(fx, fy, fz) {
+  const absX = Math.abs(fx), absY = Math.abs(fy), absZ = Math.abs(fz);
+  const mags = { x: absX, y: absY, z: absZ };
+  const trueDominant = absX >= absY && absX >= absZ ? 'x' : (absY >= absZ ? 'y' : 'z');
+  // Stickiness: keep the currently-active axis unless a different one now
+  // exceeds it by a real margin (15%), so the reading doesn't flicker
+  // between "flat" and "vertical" right at the crossover point.
+  const dominant = (angleActiveAxis && mags[angleActiveAxis] * 1.15 >= mags[trueDominant]) ? angleActiveAxis : trueDominant;
+  angleActiveAxis = dominant;
+
+  let angleDeg, offA, offB, offAxisADeg, offAxisBDeg, label;
+  const domAbs = mags[dominant];
+  if (dominant === 'z') {
+    angleDeg = Math.atan2(Math.sqrt(fx * fx + fy * fy), domAbs) * (180 / Math.PI);
+    offA = fx; offB = fy;
+    label = fz >= 0 ? 'Flat — screen up' : 'Flat — screen down';
+  } else if (dominant === 'y') {
+    angleDeg = Math.atan2(Math.sqrt(fx * fx + fz * fz), domAbs) * (180 / Math.PI);
+    offA = fx; offB = fz;
+    label = fy >= 0 ? 'Vertical — portrait' : 'Vertical — portrait, upside down';
+  } else {
+    angleDeg = Math.atan2(Math.sqrt(fy * fy + fz * fz), domAbs) * (180 / Math.PI);
+    offA = fy; offB = fz;
+    label = fx >= 0 ? 'Vertical — landscape' : 'Vertical — landscape, flipped';
+  }
+  offAxisADeg = Math.atan2(offA, domAbs) * (180 / Math.PI);
+  offAxisBDeg = Math.atan2(offB, domAbs) * (180 / Math.PI);
+  return { dominant, angleDeg, offAxisADeg, offAxisBDeg, label };
+}
+function startAngleSensor() {
+  if (angleListening) return;
+  angleFilt = null;
+  angleActiveAxis = null;
+  angleReading = null;
+  angleMotionHandler = (e) => {
+    const g = e.accelerationIncludingGravity;
+    if (!g || g.x === null || g.z === null) return;
+    // Light low-pass (EMA) on the vector itself — see block comment above
+    // for why this beats smoothing the derived angle.
+    angleFilt = angleFilt == null
+      ? { x: g.x, y: g.y, z: g.z }
+      : { x: angleFilt.x * 0.8 + g.x * 0.2, y: angleFilt.y * 0.8 + g.y * 0.2, z: angleFilt.z * 0.8 + g.z * 0.2 };
+    angleReading = computeAngleReading(angleFilt.x, angleFilt.y, angleFilt.z);
+    updateAngleDisplay();
+  };
+  window.addEventListener('devicemotion', angleMotionHandler);
+  angleListening = true;
+}
+function stopAngleSensor() {
+  if (angleMotionHandler) window.removeEventListener('devicemotion', angleMotionHandler);
+  angleMotionHandler = null;
+  angleListening = false;
+  angleFilt = null;
+  angleActiveAxis = null;
+  angleReading = null;
+}
+function updateAngleDisplay() {
+  if (!anglePanelEl || !angleReading) return;
+  const displayEl = anglePanelEl.querySelector('#angleDisplay');
+  const labelEl = anglePanelEl.querySelector('#angleModeLabel');
+  const dotEl = anglePanelEl.querySelector('#angleBubbleDot');
+  if (!displayEl) return;
+  const offset = angleZeroOffsets[angleReading.dominant] || 0;
+  const shown = Math.max(0, angleReading.angleDeg - offset);
+  displayEl.textContent = shown.toFixed(1) + '°';
+  if (labelEl) labelEl.textContent = angleReading.label;
+  if (dotEl) {
+    // Bubble dot position is deliberately NOT zero-offset — it always
+    // shows true physical tilt direction/magnitude (like a real vial),
+    // while the number above is the calibrated reading. A dead-center
+    // dot with a non-zero number just means the calibration point wasn't
+    // quite flat/plumb itself.
+    const R = 39, maxDeg = 45; // px the dot can travel; ° that pins it to the edge
+    const px = (Math.max(-maxDeg, Math.min(maxDeg, angleReading.offAxisADeg)) / maxDeg) * R;
+    const py = (Math.max(-maxDeg, Math.min(maxDeg, angleReading.offAxisBDeg)) / maxDeg) * R;
+    dotEl.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px))`;
+    dotEl.classList.toggle('off-level', shown > 1);
+  }
+}
+function renderAnglePanel() {
+  if (!anglePanelEl) return;
+  if (angleNeedsPermissionPrompt()) {
+    anglePanelEl.innerHTML = `
+      <div class="rw-panel-header">
+        <span class="rw-panel-title">Bench Angle</span>
+        <button class="rw-panel-close" id="angleCloseBtn">&times;</button>
+      </div>
+      <div class="angle-sub">This device needs motion-sensor permission to read tilt.</div>
+      <div class="rw-btn-row">
+        <button class="rw-btn rw-btn-primary" id="angleEnableBtn">Enable Sensor</button>
+      </div>
+    `;
+    anglePanelEl.querySelector('#angleCloseBtn').onclick = () => closeAnglePanel();
+    anglePanelEl.querySelector('#angleEnableBtn').onclick = () => {
+      DeviceMotionEvent.requestPermission().then(state => {
+        if (state === 'granted') {
+          anglePermissionGranted = true;
+          startAngleSensor();
+          renderAnglePanel();
+          anglePositionPanel();
+        } else {
+          showToast('Motion permission denied');
+        }
+      }).catch(() => showToast('Motion permission denied'));
+    };
+    return;
+  }
+  anglePanelEl.innerHTML = `
+    <div class="rw-panel-header">
+      <span class="rw-panel-title">Bench Angle</span>
+      <button class="rw-panel-close" id="angleCloseBtn">&times;</button>
+    </div>
+    <div class="angle-mode-label" id="angleModeLabel">Reading sensor…</div>
+    <div class="angle-bubble-wrap">
+      <div class="angle-bubble-ring"></div>
+      <div class="angle-bubble-cross"></div>
+      <div class="angle-bubble-dot" id="angleBubbleDot"></div>
+    </div>
+    <div class="rw-display" id="angleDisplay">--°</div>
+    <div class="angle-sub">Lay it flat on the seat, or stand it against the backrest — mode auto-detects</div>
+    <div class="rw-btn-row">
+      <button class="rw-btn rw-btn-primary" id="angleZeroBtn">Zero</button>
+      <button class="rw-btn rw-btn-ghost" id="angleResetZeroBtn">Reset</button>
+    </div>
+  `;
+  anglePanelEl.querySelector('#angleCloseBtn').onclick = () => closeAnglePanel();
+  anglePanelEl.querySelector('#angleZeroBtn').onclick = () => {
+    // Calibrates out a bench/backrest/phone-case surface that isn't
+    // perfectly flat or plumb itself — zero it out while the phone sits
+    // on a known-true spot. Stored per dominant axis, since "flat" and
+    // "vertical" calibrations are physically unrelated measurements.
+    if (angleReading) angleZeroOffsets[angleReading.dominant] = angleReading.angleDeg;
+    updateAngleDisplay();
+  };
+  anglePanelEl.querySelector('#angleResetZeroBtn').onclick = () => {
+    angleZeroOffsets = { x: 0, y: 0, z: 0 };
+    updateAngleDisplay();
+  };
+  startAngleSensor();
+  updateAngleDisplay();
+}
+function anglePositionPanel() {
+  if (!anglePanelEl || !hbAngleBtn) return;
+  const w = window.innerWidth, h = window.innerHeight;
+  const panelW = 220;
+  const measuredH = anglePanelEl.offsetHeight;
+  const panelH = measuredH > 0 ? measuredH : 340;
+  const btnRect = hbAngleBtn.getBoundingClientRect();
+  let left = btnRect.right - panelW;
+  if (left < 8) left = 8;
+  if (left + panelW > w - 8) left = w - panelW - 8;
+  const spaceBelow = h - btnRect.bottom;
+  let top = (spaceBelow >= panelH + 10 || btnRect.top < panelH) ? btnRect.bottom + 10 : btnRect.top - panelH - 10;
+  top = Math.max(8, Math.min(top, h - panelH - 8));
+  anglePanelEl.style.left = left + 'px';
+  anglePanelEl.style.top = top + 'px';
+}
+function openAnglePanel() {
+  rwClosePanel();
+  closeNotesPanel();
+  angleOpen = true;
+  anglePanelEl = document.createElement('div');
+  anglePanelEl.className = 'rw-panel angle-panel';
+  document.getElementById('restWidget').appendChild(anglePanelEl);
+  renderAnglePanel();
+  anglePositionPanel();
+  setTimeout(() => document.addEventListener('pointerdown', angleOutsideClick), 0);
+}
+function angleOutsideClick(e) {
+  if (anglePanelEl && !anglePanelEl.contains(e.target) && !(hbAngleBtn && hbAngleBtn.contains(e.target))) closeAnglePanel();
+}
+function closeAnglePanel() {
+  angleOpen = false;
+  document.removeEventListener('pointerdown', angleOutsideClick);
+  stopAngleSensor();
+  if (anglePanelEl) { anglePanelEl.remove(); anglePanelEl = null; }
+}
+
 function initRestWidget() {
   let rwResizeDebounce = null;
   window.addEventListener('resize', () => {
     clearTimeout(rwResizeDebounce);
-    rwResizeDebounce = setTimeout(() => { if (rwOpen) rwPositionPanel(); }, 200);
+    rwResizeDebounce = setTimeout(() => {
+      if (rwOpen) rwPositionPanel();
+      if (angleOpen) anglePositionPanel();
+    }, 200);
   });
 
   // Restore any timer that was running or paused before the app closed.
@@ -7254,7 +7569,7 @@ function initRestWidget() {
    when both Timer and Notes are off, since a position setting for an
    empty/invisible bar makes no sense. */
 function hotbarWillHaveContent(s) {
-  return s.timerEnabled !== false || s.notesEnabled !== false;
+  return s.timerEnabled !== false || s.notesEnabled !== false || s.angleFinderEnabled === true;
 }
 
 function initHotbar() {
@@ -7263,18 +7578,17 @@ function initHotbar() {
   initHotbarReorder();
 }
 
-/* Drag a hotbar button left/right to swap Timer/Notes positions — same
-   live pointer-follow approach as the vertical exercise-list drag in
-   makeReorderable(), just measured horizontally across exactly two slots.
-   Arms instantly on pointerdown (no hold delay, matching the exercise
-   drag's handle-starts-immediately feel) and only engages once real
-   movement (MOVE_CANCEL_PX) is seen, so an ordinary tap still opens
-   Timer/Notes normally. The swap previews continuously as the finger
-   crosses back and forth (hysteresis band, not a one-shot threshold) so
-   it can be flipped multiple times within a single press instead of
-   needing to release and re-press for each swap. Uses pointer-event
-   delegation on #hotbar itself rather than rebinding per button, since
-   refreshHotbarLayout recreates the buttons on every settings change. */
+/* Drag a hotbar button left/right to reorder Timer/Notes/Angle — same live
+   pointer-follow approach as the vertical exercise-list drag in
+   makeReorderable(), generalized to however many slots are on the bar (was
+   a hardcoded 2-item swap; Angle joining as a 3rd slot meant this had to
+   become a real "which slot is my live position nearest to" ranking rather
+   than a single toggle). Arms instantly on pointerdown (no hold delay,
+   matching the exercise drag's handle-starts-immediately feel) and only
+   engages once real movement (MOVE_CANCEL_PX) is seen, so an ordinary tap
+   still opens Timer/Notes/Angle normally. Uses pointer-event delegation on
+   #hotbar itself rather than rebinding per button, since refreshHotbarLayout
+   recreates the buttons on every settings change. */
 function initHotbarReorder() {
   const hotbar = document.getElementById('hotbar');
   if (!hotbar) return;
@@ -7284,28 +7598,31 @@ function initHotbarReorder() {
   // below means only a real, deliberate horizontal drag ever engages.
   const MOVE_CANCEL_PX = 16;
   let armed = false, dragging = false, pointerId = null;
-  let dragBtn = null, otherBtn = null, otherW = 0, baseOffset = 0, curSwapped = false;
+  let items = []; // { el, key, origLeft, origWidth, origCenter } snapshotted at pointerdown
+  let dragIndex = -1;
+  let liveOrder = []; // keys in current logical (possibly reordered) order
 
   hotbar.addEventListener('pointerdown', (e) => {
     const btn = e.target.closest('.hb-btn');
     const pill = btn && btn.closest('.hb-pill');
     if (!btn || !pill || pill.children.length < 2) return;
     hbPressStartX = e.clientX; hbPressStartY = e.clientY;
-    dragging = false; curSwapped = false;
+    dragging = false;
     pointerId = e.pointerId;
     armed = true;
-    dragBtn = btn;
-    otherBtn = Array.from(pill.children).find(c => c !== btn);
-    otherW = otherBtn.getBoundingClientRect().width;
-    // Signed distance dragBtn must travel to land in otherBtn's slot —
-    // same "how far to slide" idea as rowSpacing in the vertical drag.
-    baseOffset = (dragBtn.compareDocumentPosition(otherBtn) & Node.DOCUMENT_POSITION_FOLLOWING) ? otherW : -otherW;
+    const pillRect = pill.getBoundingClientRect();
+    items = Array.from(pill.children).map(el => {
+      const r = el.getBoundingClientRect();
+      const left = r.left - pillRect.left;
+      return { el, key: el.dataset.hbKey, origLeft: left, origWidth: r.width, origCenter: left + r.width / 2 };
+    });
+    dragIndex = items.findIndex(it => it.el === btn);
+    liveOrder = items.map(it => it.key);
   });
 
   hotbar.addEventListener('pointermove', (e) => {
-    if (pointerId === null || e.pointerId !== pointerId) return;
+    if (pointerId === null || e.pointerId !== pointerId || !armed || dragIndex < 0) return;
     const dx = e.clientX - hbPressStartX, dy = e.clientY - hbPressStartY;
-    if (!armed) return;
     if (!dragging) {
       // Wait for real movement before engaging — an ordinary tap has near-
       // zero delta, and this keeps a small vertical scroll from being
@@ -7314,48 +7631,65 @@ function initHotbarReorder() {
       if (Math.abs(dy) > Math.abs(dx)) { armed = false; return; }
       dragging = true;
       hbSuppressClick = true;
-      try { dragBtn.setPointerCapture(pointerId); } catch (err) {}
-      dragBtn.style.position = 'relative';
-      dragBtn.style.zIndex = '2';
-      dragBtn.style.transition = 'none';
-      otherBtn.style.transition = 'transform 0.22s var(--ease-glide)';
+      const dragEl = items[dragIndex].el;
+      try { dragEl.setPointerCapture(pointerId); } catch (err) {}
+      dragEl.style.position = 'relative';
+      dragEl.style.zIndex = '2';
+      dragEl.style.transition = 'none';
+      items.forEach((it, i) => { if (i !== dragIndex) it.el.style.transition = 'transform 0.22s var(--ease-glide)'; });
     }
-    dragBtn.style.transform = `translateX(${dx}px) scale(1.03)`;
-    // Different thresholds going forward vs. back (hysteresis) so it
-    // doesn't flicker right at the crossing point, while still letting
-    // the same hold swap and un-swap as many times as the finger crosses.
-    const wantSwap = curSwapped
-      ? Math.abs(dx) > Math.abs(baseOffset) * 0.35
-      : Math.abs(dx) > Math.abs(baseOffset) * 0.65;
-    if (wantSwap !== curSwapped) {
-      curSwapped = wantSwap;
-      otherBtn.style.transform = curSwapped ? `translateX(${-baseOffset}px)` : '';
+    const dragEl = items[dragIndex].el;
+    dragEl.style.transform = `translateX(${dx}px) scale(1.03)`;
+    const dragLiveCenter = items[dragIndex].origCenter + dx;
+    // Rank every item by position — the dragged one at its live (finger-
+    // following) center, everyone else at their original center — to get
+    // the target logical order. This is what generalizes past exactly two
+    // slots: with only 2 items it degenerates to the old single swap.
+    const ranked = items
+      .map((it, i) => ({ key: it.key, i, pos: i === dragIndex ? dragLiveCenter : it.origCenter }))
+      .sort((a, b) => a.pos - b.pos);
+    const newOrder = ranked.map(r => r.key);
+    if (newOrder.join('|') !== liveOrder.join('|')) {
+      liveOrder = newOrder;
+      // Slide every non-dragged item to the original slot its new logical
+      // position now implies — items themselves never move in the DOM,
+      // only visually via transform, so refreshHotbarLayout() can cleanly
+      // rebuild in the committed order once the drag ends.
+      items.forEach((it, i) => {
+        if (i === dragIndex) return;
+        const newSlotIndex = liveOrder.indexOf(it.key);
+        if (newSlotIndex === i) { it.el.style.transform = ''; return; }
+        const targetOrigLeft = items[newSlotIndex].origLeft;
+        it.el.style.transform = `translateX(${targetOrigLeft - it.origLeft}px)`;
+      });
       try { if (navigator.vibrate) navigator.vibrate(8); } catch (err) {}
     }
   });
 
   function endDrag() {
-    if (!dragging) { armed = false; pointerId = null; return; }
+    if (!dragging) { armed = false; pointerId = null; items = []; dragIndex = -1; liveOrder = []; return; }
     dragging = false; armed = false;
-    try { dragBtn.releasePointerCapture(pointerId); } catch (err) {}
+    const dragEl = items[dragIndex] && items[dragIndex].el;
+    try { if (dragEl) dragEl.releasePointerCapture(pointerId); } catch (err) {}
     pointerId = null;
-    if (curSwapped) {
-      const order = settings.hotbarOrder;
-      settings.hotbarOrder = [order[1], order[0]];
+    const origOrder = items.map(it => it.key);
+    if (liveOrder.length && liveOrder.join('|') !== origOrder.join('|')) {
+      // Commit the new order for the "on" items; any currently-off keys
+      // get appended after, in their existing relative order — their
+      // position only matters again once they're turned back on.
+      const offKeys = settings.hotbarOrder.filter(k => !liveOrder.includes(k));
+      settings.hotbarOrder = [...liveOrder, ...offKeys];
       saveJSON('settings', settings);
     }
-    // Clear the drag inline styles before refreshHotbarLayout rebuilds the
-    // buttons in their (possibly newly-committed) order, so the fresh
-    // elements don't inherit a stray transform/position.
-    [dragBtn, otherBtn].forEach(el => {
-      el.style.transition = ''; el.style.transform = ''; el.style.position = ''; el.style.zIndex = '';
+    items.forEach(it => {
+      it.el.style.transition = ''; it.el.style.transform = ''; it.el.style.position = ''; it.el.style.zIndex = '';
     });
     refreshHotbarLayout();
     // Safety net: if the DOM under the finger gets swapped mid-touch, the
     // browser sometimes never delivers a matching click to consume this
     // flag — left stuck true it would silently eat the very next real tap.
     setTimeout(() => { hbSuppressClick = false; }, 400);
-    dragBtn = null; otherBtn = null; curSwapped = false;
+    items = []; dragIndex = -1; liveOrder = [];
   }
 
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => hotbar.addEventListener(evt, endDrag));
@@ -7371,10 +7705,12 @@ function refreshHotbarLayout() {
   if (!hotbar) return;
   const timerOnBar = settings.timerEnabled !== false;
   const notesOnBar = settings.notesEnabled !== false;
+  const angleOnBar = settings.angleFinderEnabled === true;
 
   const barSlots = [
     { key: 'timer', on: timerOnBar, html: `<button class="hb-btn" id="hbTimerBtn" data-hb-key="timer" aria-label="Timer">Timer</button>` },
-    { key: 'notes', on: notesOnBar, html: `<button class="hb-btn" id="hbNotesBtn" data-hb-key="notes" aria-label="Notes">Notes</button>` }
+    { key: 'notes', on: notesOnBar, html: `<button class="hb-btn" id="hbNotesBtn" data-hb-key="notes" aria-label="Notes">Notes</button>` },
+    { key: 'angle', on: angleOnBar, html: `<button class="hb-btn" id="hbAngleBtn" data-hb-key="angle" aria-label="Bench Angle">Angle</button>` }
   ].sort((a, b) => settings.hotbarOrder.indexOf(a.key) - settings.hotbarOrder.indexOf(b.key));
   const barItemsList = barSlots.filter(item => item.on);
   const barItems = barItemsList.length;
@@ -7391,6 +7727,7 @@ function refreshHotbarLayout() {
 
   hbTimerBtn = document.getElementById('hbTimerBtn');
   hbNotesBtn = document.getElementById('hbNotesBtn');
+  hbAngleBtn = document.getElementById('hbAngleBtn');
   const timerTap = (e) => {
     ensureAudioCtx();
     // When both are running, the pill shows two slots (Timer / SW). Tap
@@ -7410,6 +7747,9 @@ function refreshHotbarLayout() {
   const notesTap = () => {
     if (notesOpen) closeNotesPanel(); else openNotesPanel();
   };
+  const angleTap = () => {
+    if (angleOpen) closeAnglePanel(); else openAnglePanel();
+  };
   if (hbTimerBtn) {
     hbTimerBtn.onclick = (e) => {
       if (hbSuppressClick) { hbSuppressClick = false; return; }
@@ -7422,11 +7762,18 @@ function refreshHotbarLayout() {
       notesTap();
     };
   }
+  if (hbAngleBtn) {
+    hbAngleBtn.onclick = () => {
+      if (hbSuppressClick) { hbSuppressClick = false; return; }
+      angleTap();
+    };
+  }
   // If a feature just got turned off while its panel was open, that
   // trigger no longer exists — close the now-orphaned panel instead of
   // leaving it stranded.
   if (rwOpen && !hbTimerBtn) rwClosePanel();
   if (notesOpen && !hbNotesBtn) closeNotesPanel();
+  if (angleOpen && !hbAngleBtn) closeAnglePanel();
 
   placeHotbar();
   updateHotbarTimerLabel();
@@ -7506,38 +7853,12 @@ function updateHotbarTimerLabel() {
    gesture bar. #app gets matching reserved padding so content never sits
    underneath it. Called on boot, whenever a relevant setting changes, and
    after login. */
-/* env(safe-area-inset-bottom) is measured against the *layout* viewport,
-   which on Android does NOT track the gesture-nav bar / 3-button bar
-   auto-hiding and reappearing — window.innerHeight changes when that
-   happens, but the CSS safe-area value doesn't update in step, so a
-   pure-CSS `bottom: env(...)` briefly points at the wrong spot every time
-   the bar toggles (that's the "hotbar disappears then snaps back" bug).
-   visualViewport DOES track it live (same reason positionNotesPanel()
-   below already uses it for the keyboard), so this measures the real gap
-   between the layout viewport's bottom and the visual viewport's bottom
-   — i.e. exactly how much bar/chrome is currently covering the bottom
-   edge — and feeds it into the CSS as an extra offset on top of the
-   normal safe-area inset. Skipped while a text input is focused so this
-   doesn't fight the keyboard-avoidance logic elsewhere (that's handled
-   separately, and its shrink looks identical to the nav-bar case from
-   visualViewport's perspective). */
-function updateHotbarChromeOffset() {
-  const container = document.getElementById('hotbar');
-  const vv = window.visualViewport;
-  if (!container || !vv) return;
-  const tag = document.activeElement && document.activeElement.tagName;
-  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-  const chromeBottom = window.innerHeight - (vv.height + vv.offsetTop);
-  container.style.setProperty('--hb-chrome-bottom', Math.max(0, Math.round(chromeBottom)) + 'px');
-}
-
 function placeHotbar() {
   const container = document.getElementById('hotbar');
   const app = document.getElementById('app');
   if (!container || !app) return;
   const hotbarHasContent = !container.classList.contains('hb-empty') && !container.classList.contains('hb-hidden');
   container.classList.add('hb-pos-bottom');
-  updateHotbarChromeOffset();
   app.classList.remove('app-hb-bottom', 'app-hb-none');
   app.classList.add(hotbarHasContent ? 'app-hb-bottom' : 'app-hb-none');
   if (rwOpen) rwPositionPanel();
@@ -7577,14 +7898,6 @@ function updateHotbarReservedSpace() {
 }
 window.addEventListener('resize', () => requestAnimationFrame(updateHotbarReservedSpace));
 window.addEventListener('orientationchange', () => requestAnimationFrame(updateHotbarReservedSpace));
-// The actual fix for the nav-bar toggle jump: visualViewport fires its own
-// resize (and scroll, when the address/nav bar reveal shifts offsetTop)
-// independently of — and earlier/more reliably than — window's resize on
-// Android, so this is what keeps the hotbar's position honest in real time.
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', () => { updateHotbarChromeOffset(); requestAnimationFrame(updateHotbarReservedSpace); });
-  window.visualViewport.addEventListener('scroll', () => { updateHotbarChromeOffset(); requestAnimationFrame(updateHotbarReservedSpace); });
-}
 
 /* The hotbar/widgets (and their panels) only make sense once someone is
    signed in and past auth — hidden during loading/register/login so they
@@ -7684,6 +7997,7 @@ function detachNotesViewportListeners() {
 
 function openNotesPanel() {
   rwClosePanel();
+  closeAnglePanel();
   notesOpen = true;
   notesOverlayEl = document.createElement('div');
   notesOverlayEl.className = 'notes-overlay';
@@ -7807,7 +8121,8 @@ delete settings.hotbarPosition; // drop any legacy saved value
 // here too, or a settings object saved before hotbarOrder existed crashes
 // the very first placeHotbar() call with "Cannot read properties of
 // undefined (reading 'indexOf')".
-if (!Array.isArray(settings.hotbarOrder) || settings.hotbarOrder.length !== 2) settings.hotbarOrder = ['timer', 'notes'];
+if (!Array.isArray(settings.hotbarOrder)) settings.hotbarOrder = ['timer', 'notes', 'angle'];
+else ['timer', 'notes', 'angle'].forEach(k => { if (!settings.hotbarOrder.includes(k)) settings.hotbarOrder.push(k); });
 initHotbar();
 initRestWidget();
 boot();
