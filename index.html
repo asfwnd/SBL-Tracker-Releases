@@ -325,7 +325,8 @@
     border-width: 1.75px; border-style: solid; border-color: transparent;
     overflow: hidden;
     box-shadow: 0 30px 70px -30px rgba(0,0,0,0.7), 0 0 60px -24px var(--teal-glow);
-    max-width: 260px;
+    width: 100%;
+    max-width: clamp(160px, 55vw, 260px);
   }
   .device-frame img { display: block; width: 100%; height: auto; }
   .device-float { animation: device-float 6s ease-in-out infinite; }
@@ -552,7 +553,9 @@
     .trust-inline { justify-content: center; }
     .fgroup, .fgroup.reverse { flex-direction: column; text-align: center; }
     .fgroup-content { text-align: left; width: 100%; }
+    .fgroup-media { flex: none; width: 100%; }
     .fgroup-title { margin-left: auto; margin-right: auto; }
+    .hero-media { flex: none; width: 100%; margin: 0 auto; }
   }
 
   @media (max-width: 720px) {
