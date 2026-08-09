@@ -779,7 +779,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.2.9';
+const APP_VERSION = '1.3.0';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -7891,6 +7891,11 @@ function cacheSafeAreaBottom() {
   document.documentElement.style.setProperty('--safe-bottom-cached', val + 'px');
 }
 cacheSafeAreaBottom();
+// One extra safety-net measurement shortly after cold boot: on a fresh
+// launch the very first reading above can run before the WebView has
+// finished settling its real safe-area values, and unlike a keyboard
+// open/close this case has no resize event to trigger a correction later.
+setTimeout(() => { cacheSafeAreaBottom(); updateHotbarReservedSpace(); }, 500);
 
 /* Bottom-only hotbar placement: fixed just above the home indicator /
    gesture bar. #app gets matching reserved padding so content never sits
@@ -7939,8 +7944,26 @@ function updateHotbarReservedSpace() {
   const rect = container.getBoundingClientRect();
   app.style.setProperty('--hotbar-reserved-bottom', Math.ceil(window.innerHeight - rect.top + BREATHING_ROOM) + 'px');
 }
-window.addEventListener('resize', () => requestAnimationFrame(() => { cacheSafeAreaBottom(); updateHotbarReservedSpace(); }));
-window.addEventListener('orientationchange', () => requestAnimationFrame(() => { cacheSafeAreaBottom(); updateHotbarReservedSpace(); }));
+// Debounced: a keyboard opening/closing (which happens on Edit Exercise,
+// Edit Logs, and any screen with a text input) fires several 'resize'
+// events on the way — one per animation frame of the keyboard sliding in
+// or out, not just one clean event at the end. Re-measuring on every one
+// of those meant briefly caching a mid-transition (wrong) safe-area value
+// and then correcting again a moment later, which is exactly the
+// hotbar-sinks-then-snaps-back-up users were seeing. Waiting until the
+// events stop firing for 220ms before measuring means we only ever read
+// the real, settled value.
+let _safeAreaResizeTimer = null;
+function scheduleSafeAreaRemeasure() {
+  if (_safeAreaResizeTimer) clearTimeout(_safeAreaResizeTimer);
+  _safeAreaResizeTimer = setTimeout(() => {
+    _safeAreaResizeTimer = null;
+    cacheSafeAreaBottom();
+    updateHotbarReservedSpace();
+  }, 220);
+}
+window.addEventListener('resize', scheduleSafeAreaRemeasure);
+window.addEventListener('orientationchange', scheduleSafeAreaRemeasure);
 
 /* The hotbar/widgets (and their panels) only make sense once someone is
    signed in and past auth — hidden during loading/register/login so they
