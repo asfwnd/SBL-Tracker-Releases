@@ -22,20 +22,22 @@
     --teal-ink: hsl(calc(var(--hue) + 1), calc(78.2% * var(--sat-mult)), 7%); --teal-ink-a18: hsla(calc(var(--hue) + 1), calc(78.2% * var(--sat-mult)), 7%, 0.18); --teal-ink-a0: hsla(calc(var(--hue) + 1), calc(78.2% * var(--sat-mult)), 7%, 0);
     --input-bg: hsl(calc(var(--hue) + 6), calc(77.05% * var(--sat-mult)), 5%); --muted: hsl(calc(var(--hue) + 4), calc(17.25% * var(--sat-mult)), 28%);
     --text: #e4efed; --text-dim: hsl(calc(var(--hue) + 5), calc(11% * var(--sat-mult)), 48%); --amber: #e0a860; --danger: #e5484d; --danger-glow: rgba(229,72,77,0.5);
-    /* Every accent-role color (Volume/Sets/Elapsed stat numbers, the PR badge,
-       the "new exercise" badge) is now hue-relative instead of two of them
-       (gold, blue) being frozen at fixed hex — a fixed color has no
-       relationship to the accent you pick in Appearance, so it can land
-       right next to it (low contrast) or clash outright depending on hue.
-       Splitting all five evenly around the wheel — 72° apart, not just a
-       120°/240° triad — means Volume (the accent itself, +0), Sets (+72),
-       Elapsed (+144), PR-gold (+216), and New-blue (+288) are always at
-       maximum mutual distance from each other AND from your chosen accent,
-       for any hue you pick. */
+    /* PR-gold and New-blue stay hue-shifted — they're status badges (a
+       personal record, a first-time exercise), not part of this trio, so
+       they benefit from reading as a genuinely different color at a
+       glance rather than a shade of the accent.
+       Volume/Sets/Elapsed, by contrast, are three peers in the same
+       stat row — they used to be spread 72°/144° around the wheel, which
+       reads as a random rainbow next to whatever accent you picked (teal
+       next to violet next to pink) instead of looking like a set. They're
+       now a same-hue tonal ramp off your actual accent instead: Sets is a
+       lighter/paler tint of it, Elapsed a deeper/richer shade, so all
+       three always read as "your color, three ways" no matter which hue
+       or saturation you pick on the wheel. */
     --gold: hsl(calc(var(--hue) + 216), calc(85% * var(--sat-mult)), 70%); --gold-glow: hsla(calc(var(--hue) + 216), calc(85% * var(--sat-mult)), 70%, 0.5);
     --blue: hsl(calc(var(--hue) + 288), calc(80% * var(--sat-mult)), 73%); --blue-glow: hsla(calc(var(--hue) + 288), calc(80% * var(--sat-mult)), 73%, 0.4);
-    --stat-b: hsl(calc(var(--hue) + 72), calc(78% * var(--sat-mult)), 68%); --stat-b-glow: hsla(calc(var(--hue) + 72), calc(78% * var(--sat-mult)), 68%, 0.45);
-    --stat-c: hsl(calc(var(--hue) + 144), calc(78% * var(--sat-mult)), 70%); --stat-c-glow: hsla(calc(var(--hue) + 144), calc(78% * var(--sat-mult)), 70%, 0.4);
+    --stat-b: hsl(var(--hue), calc(62% * var(--sat-mult)), 76%); --stat-b-glow: hsla(var(--hue), calc(62% * var(--sat-mult)), 76%, 0.45);
+    --stat-c: hsl(var(--hue), calc(100% * var(--sat-mult)), 39%); --stat-c-glow: hsla(var(--hue), calc(100% * var(--sat-mult)), 39%, 0.5);
     --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     --ease-press: cubic-bezier(0.32, 0, 0.67, 0);
@@ -94,7 +96,11 @@
     border: none; border-radius: 6px; font-size: 10.92px; width: 18px; height: 18px; cursor: pointer; line-height: 1.15;
     box-shadow: 0 0 8px -2px var(--danger-glow); }.set-media-btn{ background: var(--btn-bg); border: none; color: var(--teal); border-radius: 11px;
     width: 100%; align-self: stretch; min-height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer;
-    box-shadow: none; position: relative; }.set-media-btn svg{ width: 24px; height: 24px; position: relative; top: -2px; }.set-media-btn.has-media{ border-color: var(--border); }.set-media-btn .dot{ position: absolute; top: -3px; right: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 6px var(--teal-glow); }.log-media-thumb{ width: 84px; height: 84px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--panel-2); display: inline-block; }.log-media-thumb img, .log-media-thumb video{ width: 100%; height: 100%; object-fit: cover; }.log-media-tag{ font-size: 10.92px; color: var(--text-dim); background: var(--panel-2); border: 1px solid var(--border); border-radius: 9px; padding: 6.9px 10px; display: inline-block; }h1.big{ font-size: 19.95px; font-weight: 700; line-height: 1.438; margin: 39.1px 0 29.9px; letter-spacing: -0.01em; }h1.brand{ font-size: 26.08px; font-weight: 800; text-align: center; color: var(--teal); text-shadow: 0 0 30px var(--teal-glow); letter-spacing: 0.02em; }.loading-wrap{ display: flex; flex-direction: column; align-items: center; }.loading-sub{ color: #fff; font-size: 13.23px; font-weight: 500; letter-spacing: 0.02em; margin-top: 36.8px; }.loading-spinner{ margin-top: 18.4px; width: 32px; height: 32px; border-radius: 50%;
+    box-shadow: none; position: relative; }.set-media-btn svg{ width: 16px; height: 16px; position: relative; top: -1px; }.set-media-btn.has-media{ border-color: var(--border); }.set-media-btn .dot{ position: absolute; top: -2px; right: -2px; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 6px var(--teal-glow); }.set-done-btn{ background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px;
+    width: 100%; align-self: stretch; min-height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    box-shadow: none; transition: background .2s var(--ease-glide), color .2s var(--ease-glide); }.set-done-btn svg{ width: 21px; height: 21px; }.set-done-btn.done{ background: var(--teal); color: var(--teal-ink); box-shadow: 0 0 8px -3px var(--teal-glow); }.set-media-bar{ width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px;
+    background: var(--btn-bg); border: none; color: var(--teal); border-radius: 11px; padding: 10px 0;
+    font-size: 11.91px; font-weight: 600; cursor: pointer; box-shadow: none; box-sizing: border-box; }.set-media-bar svg{ width: 18px; height: 18px; }.set-media-bar.has-media{ border: 1px solid var(--border); }.set-actions-row{ display: flex; align-items: center; gap: 8px; margin: 4px 0 12px 0; }.set-actions-row .set-media-bar{ flex: 1; margin: 0; min-width: 0; }.set-actions-row .set-media-bar span{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.set-actions-row.has-media{ align-items: flex-start; }.set-actions-row.has-media .set-media-half{ flex: 1; min-width: 0; display: flex; justify-content: center; }.set-actions-row.has-media .set-media-inline{ margin: 0 !important; justify-content: center; }.set-actions-row.has-media .set-note-bar{ flex: 1; min-width: 0; align-self: stretch; }.set-note-bar.has-note{ border: 1px solid var(--border); }.confirm-textarea{ resize: vertical; min-height: 90px; font-family: inherit; line-height: 1.5; }.log-media-thumb{ width: 84px; height: 84px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--panel-2); display: inline-block; }.log-media-thumb img, .log-media-thumb video{ width: 100%; height: 100%; object-fit: cover; }.log-media-tag{ font-size: 10.92px; color: var(--text-dim); background: var(--panel-2); border: 1px solid var(--border); border-radius: 9px; padding: 6.9px 10px; display: inline-block; }h1.big{ font-size: 19.95px; font-weight: 700; line-height: 1.438; margin: 39.1px 0 29.9px; letter-spacing: -0.01em; }h1.brand{ font-size: 26.08px; font-weight: 800; text-align: center; color: var(--teal); text-shadow: 0 0 30px var(--teal-glow); letter-spacing: 0.02em; }.loading-wrap{ display: flex; flex-direction: column; align-items: center; }.loading-sub{ color: #fff; font-size: 13.23px; font-weight: 500; letter-spacing: 0.02em; margin-top: 36.8px; }.loading-spinner{ margin-top: 18.4px; width: 32px; height: 32px; border-radius: 50%;
     background: conic-gradient(from 0deg, rgba(255,255,255,0) 0%, #ffffff 100%);
     -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3.5px), #000 calc(100% - 3.5px));
     mask: radial-gradient(farthest-side, transparent calc(100% - 3.5px), #000 calc(100% - 3.5px));
@@ -154,7 +160,7 @@
     border-radius: 7px; border: 1.25px solid var(--border); background: none; color: var(--text-dim); cursor: pointer; white-space: nowrap; }.set-row.uni .warmup-toggle{ font-size: 7.1px; padding: 0; }.warmup-toggle.active{ background: var(--amber); border-color: var(--amber); color: #2a1a06; }.set-row.is-warmup .set-num{ color: var(--amber); }.set-row input{ width: 100%; min-width: 0; padding: 12.65px 2px; font-size: 13.23px; text-align: center; background: var(--input-bg); -moz-appearance: textfield; appearance: textfield; }.set-row input::-webkit-outer-spin-button, .set-row input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }.set-row.uni input{ padding: 12.65px 1px; font-size: 11.91px; }.set-cell-trend{ position: relative; }.trend-arrow{ position: absolute; top: 50%; left: -8px; width: 15px; height: 15px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center; font-size: 10.92px; line-height: 1.15;
     background: var(--panel); box-shadow: 0 0 0 1px var(--border); opacity: 0; transform: translateY(-50%) scale(0.6);
-    transition: opacity .15s var(--ease-press), transform .15s var(--ease-press); pointer-events: none; }.trend-arrow.show{ opacity: 1; transform: translateY(-50%) scale(1); }.trend-arrow.up{ color: var(--teal); box-shadow: 0 0 0 1px var(--teal), 0 0 8px -3px var(--teal-glow); }.trend-arrow.down{ color: var(--danger); box-shadow: 0 0 0 1px var(--danger), 0 0 8px -3px var(--danger-glow); }.col-labels{ display: grid; grid-template-columns: 32px 48px minmax(0,1fr) minmax(0,1fr) minmax(0,0.85fr) minmax(0,0.85fr) 34px; gap: 5.75px; margin-bottom: 6.9px; }.col-labels.uni{ grid-template-columns: 30px 40px minmax(0,0.88fr) minmax(0,0.7fr) minmax(0,0.7fr) minmax(0,0.62fr) minmax(0,0.62fr) 30px; }.col-labels div{ font-size: 10.92px; color: var(--text-dim); text-align: center; letter-spacing: 0.07em; text-transform: uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }.set-num-btn{ font-size: 10.92px; font-weight: 800; text-align: center; background: none; border: 1.75px solid var(--border); color: var(--text-dim); border-radius: 50%; width: 26px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1.15; margin: 0 auto; }.set-num-btn.checked{ border-color: transparent; color: var(--teal-ink); background: var(--teal); box-shadow: 0 0 8px -3px var(--teal-glow); }.set-select-circle{ background: none; border: 1.75px solid var(--border); border-radius: 50%; width: 24px; height: 24px; padding: 0; cursor: pointer; margin: 0 auto; display: block; box-sizing: border-box; }.set-select-circle.checked{ border-color: transparent; background: var(--teal); box-shadow: 0 0 8px -3px var(--teal-glow); }.add-set-btn{ width: 100%; background: none; border: 1.75px dashed var(--border); color: var(--text-dim); padding: 12px; border-radius: 12px; font-size: 12.34px; cursor: pointer; margin-top: 4.6px; transition: border-color .38s var(--ease-glide), color .38s var(--ease-glide), transform .48s var(--ease-bounce); }.add-set-btn:active{ border-color: var(--border); color: var(--teal); transform: scale(0.94); transition: transform .14s var(--ease-press); }.section-label{ font-size: 10.92px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 29.9px 0 11.5px; display: flex; align-items: center; gap: 9.2px; }.tap-heading{ display: flex; align-items: center; justify-content: space-between; gap: 9.2px; margin: 25.3px 0 13.8px; cursor: pointer; color: var(--teal); }.tap-heading .th-title{ font-size: 14.57px; font-weight: 800; }.tap-heading .th-arrow{ font-size: 15px; opacity: 0.75; flex-shrink: 0; }.tap-heading:active{ opacity: 0.7; transition: opacity .14s var(--ease-press); }.section-label::after{ content: ""; flex: 1; height: 1px; background: var(--border); }.stat-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 11.5px; margin-bottom: 6.9px; }.stat-grid.cols-3{ grid-template-columns: repeat(3, 1fr); }.stat-grid.cols-4{ grid-template-columns: repeat(2, 1fr); }.stat-grid.cols-4 .stat-box .sv{ font-size: 15px; }.stat-box{ background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }.stat-box .sv{ font-size: 15.34px; font-weight: 800; color: var(--teal); }.stat-box .sk{ font-size: 10.92px; color: var(--text-dim); margin-top: 3.45px; text-transform: uppercase; letter-spacing: 0.05em; }.badge.pr{ color: var(--gold); background: hsla(calc(var(--hue) + 216), calc(85% * var(--sat-mult)), 70%, 0.16); box-shadow: 0 0 10px -4px var(--gold-glow); }.badge.new{ color: var(--blue); background: hsla(calc(var(--hue) + 288), calc(80% * var(--sat-mult)), 73%, 0.14); }.summary-hero{ display: flex; align-items: center; gap: 16.1px; margin: 25.3px 0 23px; }.summary-hero-badge{ width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 19.95px; background: var(--teal-a14); box-shadow: 0 0 20px -8px var(--teal-glow); }.summary-hero-badge svg{ width: 24px; height: 24px; color: var(--teal); }.summary-card{ touch-action: manipulation; display: flex; align-items: center; gap: 13.8px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14.95px 15px; margin-bottom: 10.35px; cursor: pointer; transition: transform .38s var(--ease-bounce), border-color .3s var(--ease-glide); }.summary-card:active{ transform: scale(0.97); transition: transform .14s var(--ease-press); }.summary-card:hover{ border-color: var(--border); }.summary-card-icon{ width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; }.summary-card-icon.pr{ background: hsla(calc(var(--hue) + 216), calc(85% * var(--sat-mult)), 70%, 0.16); }.summary-card-icon.new{ background: hsla(calc(var(--hue) + 288), calc(80% * var(--sat-mult)), 73%, 0.16); }.summary-card-icon.up{ background: var(--teal-a16); }.summary-card-icon.down{ background: rgba(224,168,96,0.12); }.summary-card-icon.flat{ background: var(--panel-2); }.summary-card-body{ display: flex; flex-direction: column; gap: 2.3px; min-width: 0; flex: 1; }.summary-card-name{ font-size: 13.23px; font-weight: 700; }.summary-card-detail{ font-size: 11.02px; color: var(--text-dim); line-height: 1.61; }.summary-card .pc-arrow{ color: var(--text-dim); font-size: 15px; flex-shrink: 0; }.history-item{ border: 1px solid var(--border); border-radius: 14px; margin-bottom: 11.5px; background: var(--panel); overflow: hidden; transition: border-color .38s var(--ease-glide), transform .07s var(--ease-press); }.history-item:has(.history-head:active){ transform: scale(0.995); }.history-head{ display: flex; justify-content: space-between; align-items: center; padding: 16.1px 16px; cursor: pointer; gap: 11.5px; }.hd-left{ flex: 1 1 auto; min-width: 0; }.hd-right{ display: flex; align-items: center; gap: 9.2px; flex: 0 0 auto; }.hd-date{ font-size: 13.23px; font-weight: 700; }.hd-meta{ font-size: 13.11px; color: var(--text-dim); margin-top: 2.3px; }.hd-stats{ display: flex; gap: 25.3px; padding: 0 16px 16.1px; margin-top: -2.3px; }.hd-stat{ display: flex; flex-direction: column; gap: 3.45px; }.hd-stat-val{ font-size: 15.45px; font-weight: 800; letter-spacing: 0.01em; }.hd-stat-val.hd-volume{ color: var(--teal); text-shadow: 0 0 10px var(--teal-glow); }.hd-stat-val.hd-sets{ color: var(--stat-b); text-shadow: 0 0 10px var(--stat-b-glow); }.hd-stat-val.hd-elapsed{ color: var(--stat-c); text-shadow: 0 0 10px var(--stat-c-glow); }.hd-stat-lbl{ font-size: 10.92px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }.history-body{ max-height: 0; opacity: 0; overflow: hidden; padding: 0 16px; transition: max-height .27s cubic-bezier(0.4,0,0.2,1), opacity .507s cubic-bezier(0.4,0,0.2,1), padding .249s cubic-bezier(0.4,0,0.2,1); }.history-body.open{ max-height: 2400px; opacity: 1; padding: 0 16px 18.4px; transition: max-height .256s cubic-bezier(0.4,0,0.2,1), opacity .108s cubic-bezier(0.4,0,0.2,1), padding .18s cubic-bezier(0.4,0,0.2,1); }.hex{ padding: 11.5px 0; border-top: 1px solid var(--border); }.hex:first-child{ border-top: none; }.hex-name{ font-size: 12.34px; font-weight: 700; color: var(--teal); margin-bottom: 4.83px; cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; gap: 11.5px; }.hex-pr{ font-size: 12.34px; font-weight: 700; color: var(--teal); white-space: nowrap; }.hex-sets{ font-size: 13.11px; color: var(--text-dim); overflow-wrap: anywhere; word-break: break-word; }.history-empty{ text-align: center; color: var(--text-dim); font-size: 11.91px; padding: 46px 0; }/* Progress page ("Your numbers") was the one screen where the smaller
+    transition: opacity .15s var(--ease-press), transform .15s var(--ease-press); pointer-events: none; }.trend-arrow.show{ opacity: 1; transform: translateY(-50%) scale(1); }.trend-arrow.up{ color: var(--teal); box-shadow: 0 0 0 1px var(--teal), 0 0 8px -3px var(--teal-glow); }.trend-arrow.down{ color: var(--danger); box-shadow: 0 0 0 1px var(--danger), 0 0 8px -3px var(--danger-glow); }.col-labels{ display: grid; grid-template-columns: 32px 48px minmax(0,1fr) minmax(0,1fr) minmax(0,0.85fr) minmax(0,0.85fr) 34px; gap: 5.75px; margin-bottom: 6.9px; }.col-labels.uni{ grid-template-columns: 30px 40px minmax(0,0.88fr) minmax(0,0.7fr) minmax(0,0.7fr) minmax(0,0.62fr) minmax(0,0.62fr) 30px; }.col-labels div{ font-size: 10.92px; color: var(--text-dim); text-align: center; letter-spacing: 0.07em; text-transform: uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }.set-num-btn{ font-size: 10.92px; font-weight: 800; text-align: center; background: none; border: 1.75px solid var(--border); color: var(--text-dim); border-radius: 50%; width: 26px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1.15; margin: 0 auto; }.set-num-btn.checked{ border-color: transparent; color: var(--teal-ink); background: var(--teal); box-shadow: 0 0 8px -3px var(--teal-glow); }.set-select-circle{ background: none; border: 1.75px solid var(--border); border-radius: 50%; width: 24px; height: 24px; padding: 0; cursor: pointer; margin: 0 auto; display: block; box-sizing: border-box; }.set-select-circle.checked{ border-color: transparent; background: var(--teal); box-shadow: 0 0 8px -3px var(--teal-glow); }.add-set-btn{ width: 100%; background: none; border: 1.75px dashed var(--border); color: var(--text-dim); padding: 12px; border-radius: 12px; font-size: 12.34px; cursor: pointer; margin-top: 4.6px; transition: border-color .38s var(--ease-glide), color .38s var(--ease-glide), transform .48s var(--ease-bounce); }.add-set-btn:active{ border-color: var(--border); color: var(--teal); transform: scale(0.94); transition: transform .14s var(--ease-press); }.section-label{ font-size: 10.92px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 29.9px 0 11.5px; display: flex; align-items: center; gap: 9.2px; }.tap-heading{ display: flex; align-items: center; justify-content: space-between; gap: 9.2px; margin: 25.3px 0 13.8px; cursor: pointer; color: var(--teal); }.tap-heading .th-title{ font-size: 14.57px; font-weight: 800; }.tap-heading .th-arrow{ font-size: 15px; opacity: 0.75; flex-shrink: 0; }.tap-heading:active{ opacity: 0.7; transition: opacity .14s var(--ease-press); }.section-label::after{ content: ""; flex: 1; height: 1px; background: var(--border); }.stat-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 11.5px; margin-bottom: 6.9px; }.stat-grid.cols-3{ grid-template-columns: repeat(3, 1fr); }.stat-grid.cols-4{ grid-template-columns: repeat(2, 1fr); }.stat-grid.cols-4 .stat-box .sv{ font-size: 15px; }.stat-box{ background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }.stat-box .sv{ font-size: 15.34px; font-weight: 800; color: var(--teal); }.stat-box .sk{ font-size: 10.92px; color: var(--text-dim); margin-top: 3.45px; text-transform: uppercase; letter-spacing: 0.05em; }.badge.pr{ color: var(--gold); background: hsla(calc(var(--hue) + 216), calc(85% * var(--sat-mult)), 70%, 0.16); box-shadow: 0 0 10px -4px var(--gold-glow); }.badge.new{ color: var(--blue); background: hsla(calc(var(--hue) + 288), calc(80% * var(--sat-mult)), 73%, 0.14); }.summary-hero{ display: flex; align-items: center; gap: 16.1px; margin: 25.3px 0 23px; }.summary-hero-badge{ width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 19.95px; background: var(--teal-a14); box-shadow: 0 0 20px -8px var(--teal-glow); }.summary-hero-badge svg{ width: 24px; height: 24px; color: var(--teal); }.summary-card{ touch-action: manipulation; display: flex; align-items: center; gap: 13.8px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14.95px 15px; margin-bottom: 10.35px; cursor: pointer; transition: transform .38s var(--ease-bounce), border-color .3s var(--ease-glide); }.summary-card:active{ transform: scale(0.97); transition: transform .14s var(--ease-press); }.summary-card:hover{ border-color: var(--border); }.summary-card-icon{ width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; }.summary-card-icon.pr{ background: hsla(calc(var(--hue) + 216), calc(85% * var(--sat-mult)), 70%, 0.16); }.summary-card-icon.new{ background: hsla(calc(var(--hue) + 288), calc(80% * var(--sat-mult)), 73%, 0.16); }.summary-card-icon.up{ background: var(--teal-a16); }.summary-card-icon.down{ background: rgba(224,168,96,0.12); }.summary-card-icon.flat{ background: var(--panel-2); }.summary-card-body{ display: flex; flex-direction: column; gap: 2.3px; min-width: 0; flex: 1; }.summary-card-name{ font-size: 13.23px; font-weight: 700; }.summary-card-detail{ font-size: 11.02px; color: var(--text-dim); line-height: 1.61; }.summary-card .pc-arrow{ color: var(--text-dim); font-size: 15px; flex-shrink: 0; }.history-item{ border: 1px solid var(--border); border-radius: 14px; margin-bottom: 11.5px; background: var(--panel); overflow: hidden; transition: border-color .38s var(--ease-glide), transform .07s var(--ease-press); }.history-item:has(.history-head:active){ transform: scale(0.995); }.history-head{ display: flex; justify-content: space-between; align-items: center; padding: 16.1px 16px; cursor: pointer; gap: 11.5px; }.hd-left{ flex: 1 1 auto; min-width: 0; }.hd-right{ display: flex; align-items: center; gap: 9.2px; flex: 0 0 auto; }.hd-date{ font-size: 13.23px; font-weight: 700; }.hd-meta{ font-size: 13.11px; color: var(--text-dim); margin-top: 2.3px; }.hd-stats{ display: flex; gap: 25.3px; padding: 0 16px 16.1px; margin-top: -2.3px; }.hd-stat{ display: flex; flex-direction: column; gap: 3.45px; }.hd-stat-val{ font-size: 15.45px; font-weight: 800; letter-spacing: 0.01em; }.hd-stat-val.hd-volume{ color: var(--teal); text-shadow: 0 0 10px var(--teal-glow); }.hd-stat-val.hd-sets{ color: var(--stat-b); text-shadow: 0 0 10px var(--stat-b-glow); }.hd-stat-val.hd-elapsed{ color: var(--stat-c); text-shadow: 0 0 10px var(--stat-c-glow); }.hd-stat-lbl{ font-size: 10.92px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }.history-body{ max-height: 0; opacity: 0; overflow: hidden; padding: 0 16px; transition: max-height .27s cubic-bezier(0.4,0,0.2,1), opacity .507s cubic-bezier(0.4,0,0.2,1), padding .249s cubic-bezier(0.4,0,0.2,1); }.history-body.open{ max-height: 2400px; opacity: 1; padding: 0 16px 18.4px; transition: max-height .256s cubic-bezier(0.4,0,0.2,1), opacity .108s cubic-bezier(0.4,0,0.2,1), padding .18s cubic-bezier(0.4,0,0.2,1); }.hex{ padding: 11.5px 0; border-top: 1px solid var(--border); }.hex:first-child{ border-top: none; }.hex.dragging{ background: var(--panel-2); border-radius: 12px; border-top-color: transparent; box-shadow: 0 10px 26px -6px rgba(0,0,0,0.55); padding-left: 10px; padding-right: 10px; }.hex-name{ font-size: 12.34px; font-weight: 700; color: var(--teal); margin-bottom: 4.83px; cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; gap: 11.5px; }.hex-pr{ font-size: 12.34px; font-weight: 700; color: var(--teal); white-space: nowrap; }.hex-sets{ font-size: 13.11px; color: var(--text-dim); overflow-wrap: anywhere; word-break: break-word; }.set-line-trend{ display:inline-block; font-size: 10.5px; font-weight: 800; margin-left: 2px; }.set-line-trend.up{ color: var(--teal); }.set-line-trend.down{ color: var(--danger); }.history-empty{ text-align: center; color: var(--text-dim); font-size: 11.91px; padding: 46px 0; }/* Progress page ("Your numbers") was the one screen where the smaller
      base sizes genuinely read too small, so its text stays at the larger
      1.05x scale that the rest of the app was reverted away from. Scoped to
      #progContent (only rendered by renderProgress) so it doesn't leak into
@@ -238,7 +244,7 @@
      (set by updateNavbarReservedSpace()) instead of a guessed constant. */
   #hotbar.hb-pos-bottom.hb-above-nav{ bottom: calc(var(--navbar-reserved-bottom, 78px) + 13px); }.hb-pill{ display: flex; align-items: stretch; background: var(--teal); border: 1px solid var(--border); border-radius: 10px; height: 33.12px;
     overflow: hidden; box-shadow: 0 6px 20px -8px var(--teal-glow); }.hb-btn{ flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center;
-    background: var(--teal); border: none; color: var(--teal-ink); font-size: 13.86px; font-weight: 600;
+    background: var(--teal); border: none; color: var(--teal-ink); font-size: 18px; font-weight: 600;
     cursor: pointer; font-family: inherit; letter-spacing: 0.02em; text-transform: capitalize; line-height: 1;
     padding: 0 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     /* Overrides the global `button { touch-action: manipulation }` rule.
@@ -253,7 +259,7 @@
      button ends up second after a drag-reorder swap still gets a crisp
      divider instead of it occasionally painting as an unstyled/blown-out
      edge. Same border color as widget outlines for visual consistency. */
-  .hb-btn:not(:first-child){ box-shadow: inset 1px 0 0 var(--border); }.hb-btn:active{ transform: scale(0.96); transition: transform .14s var(--ease-press); }.hb-btn.hb-running{ font-variant-numeric: tabular-nums; flex-direction: column; gap: 0; line-height: 1; font-size: 10px; }/* Both clocks active at once — two slots side by side instead of one
+  .hb-btn:not(:first-child){ box-shadow: inset 1px 0 0 var(--border); }.hb-btn:active{ transform: scale(0.96); transition: transform .14s var(--ease-press); }.hb-btn.hb-running{ font-variant-numeric: tabular-nums; flex-direction: column; gap: 0; line-height: 1; }/* Both clocks active at once — two slots side by side instead of one
      stacked value, so a countdown and a stopwatch can share the same
      pill without either hiding the other. Same type size as the single
      case — just two of them instead of one centered. */
@@ -262,9 +268,13 @@
      same size" ask turned out to mean shrinking the digits down to match
      this, not blowing this up to match the digits — reverted). */
   .hb-mode-tag{ font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    opacity: 0.72; line-height: 1; margin-top: 1.15px; white-space: nowrap; }.hb-time{ white-space: nowrap; }/* A single enabled item fills the whole pill and reads bigger, instead
+    opacity: 0.72; line-height: 1; margin-top: 1.15px; white-space: nowrap; }.hb-time{ white-space: nowrap; font-size: 18px; }/* Single clock running (not the dual timer+stopwatch layout): the tiny
+     "Timer"/"Stopwatch" caption goes away and the time itself just fills
+     the pill, big and centered — no room-for-two constraint to work
+     around when there's only one value to show. */
+  .hb-btn.hb-running:not(.hb-dual) .hb-mode-tag{ display: none; }/* A single enabled item fills the whole pill and reads bigger, instead
      of sitting cramped in a half-width slot meant for two. */
-  .hb-pill.hb-single .hb-btn{ font-size: 15.26px; }/* Reserves room so the fixed hotbar never overlaps screen content —
+  .hb-pill.hb-single .hb-btn{ font-size: 18px; }/* Reserves room so the fixed hotbar never overlaps screen content —
      toggled by placeHotbar() in JS. app-hb-none applies when both
      features are off/widget-only, so the hotbar itself is empty and no
      space needs to be reserved. --hotbar-reserved-bottom is set by
@@ -447,7 +457,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.3.2';
+const APP_VERSION = '1.3.3';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -645,7 +655,7 @@ async function pullCustomExercises() {
     // the file only as an offline-first-launch fallback — see its comment.
     const { data, error } = await supabase
       .from('exercises')
-      .select('name,name_key,category,unilateral,source,is_global,usage_count')
+      .select('name,name_key,category,unilateral,bodyweight_exercise,source,is_global,usage_count')
       .or(`is_global.eq.true,user_id.eq.${account.id}`);
     if (error) throw error;
     // Anything still in the retry queue hasn't reached the server yet, so
@@ -665,7 +675,11 @@ async function pushCustomExercise(entry) {
     const { error } = await supabase
       .from('exercises')
       .upsert(
-        { user_id: account.id, name: entry.name, unilateral: !!entry.unilateral, category: entry.category || null },
+        {
+          user_id: account.id, name: entry.name, unilateral: !!entry.unilateral,
+          category: entry.category || null,
+          bodyweight_exercise: typeof entry.bodyweight_exercise === 'boolean' ? entry.bodyweight_exercise : null
+        },
         { onConflict: 'user_id,name_key' }
       );
     if (error) throw error;
@@ -702,14 +716,46 @@ async function syncPendingExerciseInserts() {
    name-based classification — just the most relevant guess available
    from context, immediately correct enough to file it under, and never
    left unset like Phase 1 did. */
-function captureNewExerciseIfUnknown(name, unilateral, category) {
+function captureNewExerciseIfUnknown(name, unilateral, category, bodyweightExercise) {
   const key = nameKey(name);
   if (!key) return;
   const known = EXERCISE_LIBRARY_FLAT.some(item => nameKey(item.name) === key) ||
     customExercises.some(item => item.name_key === key);
   if (known) return;
-  const entry = { name, name_key: key, category: category || null, unilateral: !!unilateral, source: 'user', is_global: false, usage_count: 0 };
+  // bodyweight_exercise is stored as null (undecided) unless the caller
+  // already knows the answer at add-time — isBodyweightExercise's name
+  // heuristic still applies on every read regardless, so leaving this null
+  // is not the same as "false"; it just means nothing's been explicitly
+  // chosen for this exercise yet. See syncExerciseCatalogSetting for how
+  // an explicit BW/L|R choice made anywhere in the app gets written back
+  // here, including for exercises that were already known.
+  const entry = {
+    name, name_key: key, category: category || null, unilateral: !!unilateral,
+    bodyweight_exercise: typeof bodyweightExercise === 'boolean' ? bodyweightExercise : null,
+    source: 'user', is_global: false, usage_count: 0
+  };
   customExercises.push(entry);
+  saveJSON('customExercises', customExercises);
+  pushCustomExercise(entry);
+}
+/* Call this any time the user explicitly sets an exercise's unilateral or
+   bodyweight flag anywhere in the app (setup picker, Edit Exercises, the
+   live tracking screen, or editing a past log) — not just when the
+   exercise is brand new. Updates (or creates, if somehow missing) this
+   user's personal catalog row for that exercise so the choice is
+   remembered and synced everywhere, the same way a freshly-typed exercise
+   already is. `patch` only needs the keys that changed, e.g.
+   {unilateral: true} or {bodyweightExercise: false}. */
+function syncExerciseCatalogSetting(name, patch) {
+  const key = nameKey(name);
+  if (!key) return;
+  let entry = customExercises.find(item => item.name_key === key);
+  if (!entry) {
+    entry = { name, name_key: key, category: null, unilateral: false, bodyweight_exercise: null, source: 'user', is_global: false, usage_count: 0 };
+    customExercises.push(entry);
+  }
+  if ('unilateral' in patch) entry.unilateral = !!patch.unilateral;
+  if ('bodyweightExercise' in patch) entry.bodyweight_exercise = typeof patch.bodyweightExercise === 'boolean' ? patch.bodyweightExercise : null;
   saveJSON('customExercises', customExercises);
   pushCustomExercise(entry);
 }
@@ -813,6 +859,37 @@ function showAppPrompt(message, placeholder, submitLabel) {
     setTimeout(() => input.focus(), 50);
   });
 }
+// Multiline variant of showAppPrompt — used for set notes, where a single-
+// line input would be too cramped. Prefills existing text and offers a
+// "Remove note" action when there's something to remove.
+function showAppTextPrompt(message, placeholder, submitLabel, initialValue) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.innerHTML = `
+      <div class="confirm-card">
+        <div class="confirm-msg">${message}</div>
+        <textarea class="confirm-input confirm-textarea" id="promptTextarea" placeholder="${placeholder || ''}" rows="4">${initialValue ? initialValue.replace(/</g, '&lt;') : ''}</textarea>
+        <div class="confirm-btns">
+          <button class="yn-btn yes" id="promptSubmit">${submitLabel || 'Save'}</button>
+          ${initialValue ? '<button class="yn-btn danger" id="promptRemove">Remove note</button>' : ''}
+        </div>
+        <button class="confirm-cancel" id="confirmCancel">Cancel</button>
+      </div>`;
+    document.body.appendChild(overlay);
+    const textarea = overlay.querySelector('#promptTextarea');
+    const close = (val) => { document.body.removeChild(overlay); resolve(val); };
+    overlay.querySelector('#promptSubmit').onclick = () => {
+      const v = textarea.value.trim();
+      close(v || null);
+    };
+    const removeBtn = overlay.querySelector('#promptRemove');
+    if (removeBtn) removeBtn.onclick = () => close('');
+    overlay.querySelector('#confirmCancel').onclick = () => close(undefined);
+    overlay.onclick = (e) => { if (e.target === overlay) close(undefined); };
+    setTimeout(() => { textarea.focus(); textarea.selectionStart = textarea.value.length; }, 50);
+  });
+}
 const ICON_EDIT_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 /* ---------- legal: terms, privacy, viewer modal ----------
    Plain constants (not fetched files) so they work offline and inside a
@@ -889,8 +966,10 @@ function showLegalDoc(title, html) {
 const ICON_LOGO_SVG = `<svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="13" width="4.4" height="7.5" rx="1.3" fill="currentColor"/><rect x="9.8" y="8" width="4.4" height="12.5" rx="1.3" fill="currentColor"/><rect x="16.1" y="3" width="4.4" height="17.5" rx="1.3" fill="currentColor"/></svg>`;
 const ICON_TRASH_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_CAMERA_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.1-1.65A1.5 1.5 0 0 1 9.85 4.5h4.3a1.5 1.5 0 0 1 1.25.85L16.5 7h2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" stroke="currentColor" stroke-width="1.9"/></svg>`;
+const ICON_CHECK_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5L10 17.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_SELECT_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M9 12.2l2.1 2.1L15.5 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5" stroke="currentColor" stroke-width="1.9"/></svg>`;
 const ICON_SWAP_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M7 4v13M7 4L4 7M7 4l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 20V7M17 20l3-3M17 20l-3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ICON_NOTE_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M6 3.5h9l3.5 3.5V19a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4.5 19V5A1.5 1.5 0 0 1 6 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M15 3.5V7a1 1 0 0 0 1 1h3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 12h8M8 15.5h5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const HB_TIMER_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 9v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 2h6M12 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 // A little spiral-bound notebook — distinct from the app's other icons.
 const HB_NOTES_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="15" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3v18M2 7h3M2 11h3M2 15h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
@@ -952,6 +1031,55 @@ function estimate1RM(weight, reps, rir, rpe) {
   const effReps = Math.min(reps + effort, 36);
   return Math.round(weight * (36 / (37 - effReps)) * 10) / 10;
 }
+/* estimate1RM is blind to bodyweight — it only sees the "weight" field, which
+   for a bodyweight-pattern exercise (pull-ups, dips, muscle-ups...) is just
+   the ADDED plate/belt weight, 0 on an unassisted set. Fed 0, estimate1RM
+   returns 0 flat (see the `!weight` guard above), which silently zeroed out
+   every unweighted bodyweight set: no e1RM, no PR, no trend arrow, and a
+   "vs last time" comparison that reads the entire lift as having gone to
+   nothing (a real 0kg×8 read as 0, so the very next weighted/lighter-weighted
+   session showed as -100%). ex.bodyweightExercise (a per-exercise toggle,
+   same shape as the existing unilateral L|R toggle) marks which exercises
+   actually work this way; when set, the session's logged bodyweight is
+   added to the typed weight before the estimate — that's the real load the
+   lifter's whole body was moved against. */
+/* Exercise names that are bodyweight-pattern movements by default — no
+   manual toggle needed for the common ones. Deliberately conservative
+   (movement, not equipment): matches the actual lift, not exercises that
+   merely mention weight equipment near a similar word. The BW toggle
+   always overrides this either direction; this is only the default for an
+   exercise that's never been explicitly toggled. */
+const BODYWEIGHT_EXERCISE_PATTERNS = [
+  /pull[\s-]?up/i, /chin[\s-]?up/i, /\bdip\b/i, /\bdips\b/i, /muscle[\s-]?up/i,
+  /push[\s-]?up/i, /handstand/i, /pistol squat/i, /shrimp squat/i, /\bl[\s-]?sit\b/i,
+  /toes?[\s-]?to[\s-]?bar/i, /hanging (knee|leg) raise/i, /inverted row/i,
+  /planche/i, /front lever/i, /back lever/i, /elbow lever/i, /human flag/i,
+  /dragon flag/i, /hollow body/i, /archer pull/i, /typewriter pull/i
+];
+function looksLikeBodyweightExercise(name) {
+  if (!name) return false;
+  return BODYWEIGHT_EXERCISE_PATTERNS.some(re => re.test(name));
+}
+/* Resolves whether an exercise's load should include bodyweight: an
+   explicit true/false toggle (ex.bodyweightExercise) always wins; an
+   exercise that's never been touched (field undefined — including every
+   session logged before this toggle existed) falls back to the name
+   heuristic. That fallback is what makes this retroactive: old Pull-Ups
+   sessions get folded into bodyweight-aware math automatically, with no
+   need to open every past log and flip a switch. */
+function isBodyweightExercise(ex) {
+  if (!ex) return false;
+  if (ex.bodyweightExercise === true || ex.bodyweightExercise === false) return ex.bodyweightExercise;
+  return looksLikeBodyweightExercise(ex.name);
+}
+function effectiveLoad(s, ex, bodyweight) {
+  const w = parseFloat(s.weight) || 0;
+  if (isBodyweightExercise(ex)) return w + (parseFloat(bodyweight) || 0);
+  return w;
+}
+function estimate1RMForSet(s, ex, bodyweight) {
+  return estimate1RM(effectiveLoad(s, ex, bodyweight), effectiveReps(s), s.rir, s.rpe);
+}
 /* A logged set can be a normal single-reps set, or a unilateral set with
    independent repsR/repsL. For anything treating "how many reps" as one
    number (1RM estimate, top-set comparisons), the limiting side is what
@@ -977,12 +1105,12 @@ function totalReps(s) {
    coaching tools (Boostcamp, RP, Juggernaut, etc.) use for exactly this
    reason: it's the one number that already fuses weight, reps, and effort
    (RIR/RPE) into a single comparable strength figure. */
-function topSetByEst(sets) {
+function topSetByEst(sets, ex, bodyweight) {
   let best = null;
   (sets || []).forEach(s => {
     if (s.isWarmup) return; // warmups don't count toward best-set/PR tracking
     const w = parseFloat(s.weight) || 0;
-    const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+    const est = estimate1RMForSet(s, ex, bodyweight);
     if (!best || est > best.est) best = { est, weight: w, reps: effectiveReps(s), set: s };
   });
   return best;
@@ -1068,22 +1196,23 @@ const EXERCISE_LIBRARY = {
   Chest: [
     'Dumbbell Press', 'Incline Dumbbell Press', 'Bench Press', 'Incline Bench Press',
     'Smith Machine Press', 'Smith Machine Incline Press', 'Machine Incline Press', 'Machine Flat Press',
-    'Pec Deck', 'Dips', 'Push-Ups', 'Low to High Cable Fly', 'Cable Fly'
+    'Pec Deck', 'Dips', 'Push-Ups', 'Low to High Cable Fly', 'Cable Fly', 'Planche'
   ],
   Shoulders: [
     'Dumbbell Shoulder Press', 'Barbell Shoulder Press', 'Smith Machine Shoulder Press', 'Machine Shoulder Press',
-    'Cable Lateral Raises', 'Machine Lateral Raises', 'Dumbbell Lateral Raises'
+    'Cable Lateral Raises', 'Machine Lateral Raises', 'Dumbbell Lateral Raises', 'Handstand Push-Ups', 'Elbow Lever'
   ],
   Triceps: [
     'Cable Tricep Pushdown', 'Cable Tricep Extension', 'Skullcrushers', 'JM Press', 'Machine Tricep Pushdown'
   ],
   Lats: [
     'Lat Pulldowns', 'Machine Lat Pullovers', 'Dumbbell Lat Pullovers', 'Cable Lat Pullovers',
-    'Keenan Flaps', 'Iso Lateral Pulldowns', 'Pull-Ups'
+    'Keenan Flaps', 'Iso Lateral Pulldowns', 'Pull-Ups', 'One Arm Pull-Up', 'Archer Pull-Up',
+    'Muscle-Up', 'Front Lever'
   ],
   Back: [
     'Iso Lateral High Row', 'Iso Lateral Low Row', 'Cable Row', 'Barbell Row', 'One Arm Dumbbell Row',
-    'Chest Supported Machine Row', 'Chest Supported T-Bar Row', 'Rear Delt Flyes', 'Reverse Pec Deck'
+    'Chest Supported Machine Row', 'Chest Supported T-Bar Row', 'Rear Delt Flyes', 'Reverse Pec Deck', 'Back Lever'
   ],
   Biceps: [
     'Dumbbell Hammer Curls', 'Cable Hammer Curls', 'EZ Bar Curls', 'Barbell Bicep Curls',
@@ -1094,7 +1223,8 @@ const EXERCISE_LIBRARY = {
     'Supination', "Devon's Pronation Lift", 'Rising', "Farmer's Walks", 'Dead Hangs', 'Grippers'
   ],
   Quads: [
-    'Pendulum Squats', 'Hack Squats', 'Barbell Squats', 'Smith Machine Squats', 'Leg Extension', 'Leg Press'
+    'Pendulum Squats', 'Hack Squats', 'Barbell Squats', 'Smith Machine Squats', 'Leg Extension', 'Leg Press',
+    'Pistol Squats', 'Shrimp Squats'
   ],
   Hamstrings: [
     'Barbell SLDL', 'Smith Machine SLDL', 'Hamstring Curl'
@@ -1103,7 +1233,8 @@ const EXERCISE_LIBRARY = {
     'Jefferson Curls', 'Back Extensions'
   ],
   Misc: [
-    'Neck Curls', 'Barbell Shrugs', 'Dumbbell Shrugs', 'Calf Raises', 'Leg Raises', 'Crunches', 'Sit-Ups'
+    'Neck Curls', 'Barbell Shrugs', 'Dumbbell Shrugs', 'Calf Raises', 'Leg Raises', 'Crunches', 'Sit-Ups',
+    'Dragon Flag', 'L-Sit', 'Human Flag', 'Hollow Body Hold'
   ]
 };
 const EXERCISE_LIBRARY_FLAT = Object.entries(EXERCISE_LIBRARY)
@@ -1790,8 +1921,9 @@ let rotationLength = null, rotationStartWeekday = null, rotationAnchorDate = nul
 // and follows the account across devices instead of resetting to A-Z
 // every time.
 let allExSortMode = loadJSON('allExSortMode', 'az'); // 'az' | 'recent' | 'sets' | 'volume'
+let allExSearchQuery = ''; // Progress History search box — not persisted, resets each visit
 let exercisesByDay = {};
-let settings = { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoStartOnAddSet: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, welcomeSeen: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], homeCardsOrder: ['start', 'sessions', 'weekPerf', 'bestPerf'], homeCardSizes: { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 } }, customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
+let settings = { units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, welcomeSeen: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], homeCardsOrder: ['start', 'sessions', 'weekPerf', 'bestPerf'], homeCardSizes: { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 } }, customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
 
 /* ---------- accent color palette (Settings > Appearance) ----------
    Only the hue shifts; saturation/lightness stay put, so every preset keeps
@@ -2101,12 +2233,6 @@ let editLogId = null;
 let exerciseHistoryName = null;
 let restInterval = null, restRemaining = 0, restBoundEls = [];
 let restEndTime = null, restAlarmFired = false, audioCtx = null;
-/* Timestamp of the most recent NATURAL rest-timer completion (i.e. it ran
-   out on its own — set inside fireRestAlarm(), not on a manual Stop/Skip).
-   Consumed once by the next set's reps entry to compute that set's
-   transitionSec (see renderSets) — the gap between rest ending and the
-   next set actually being logged — then cleared. */
-let restTimerEndedAt = null;
 let restPaused = false, restDuration = 120;
 let rwOpen = false;
 let rwPanelEl = null;
@@ -2143,7 +2269,7 @@ async function boot() {
     }
   } catch (e) {}
   const session = await getSessionResilient();
-  if (!session) { screen = 'register'; render(); return; }
+  if (!session) { screen = 'login'; render(); return; }
   account = { username: session.user.user_metadata.username, id: session.user.id };
   await continueBootAfterAuth();
 }
@@ -2207,7 +2333,7 @@ async function continueBootAfterAuth() {
                               // the cloud instead of the defaults
   // Settings are fully resolved (including anything the cloud pull above
   // just landed) *before* the hotbar is revealed a few lines down.
-  settings = await loadJSON('settings', { restDefault: 120, units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoStartOnAddSet: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, welcomeSeen: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], homeCardsOrder: ['start', 'sessions', 'weekPerf', 'bestPerf'], homeCardSizes: { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 } }, customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
+  settings = await loadJSON('settings', { units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, welcomeSeen: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], homeCardsOrder: ['start', 'sessions', 'weekPerf', 'bestPerf'], homeCardSizes: { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 } }, customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
   if (settings.accentHue === undefined) settings.accentHue = 170;
   if (settings.accentSat === undefined) settings.accentSat = 1;
   if (settings.customAccentColors === undefined) settings.customAccentColors = [];
@@ -2228,7 +2354,6 @@ async function continueBootAfterAuth() {
   if (settings.customAlarmName === undefined) settings.customAlarmName = null;
   if (settings.autoStartTimer === undefined) settings.autoStartTimer = true;
   if (settings.autoStartTarget === undefined) settings.autoStartTarget = 'timer';
-  if (settings.autoStartOnAddSet === undefined) settings.autoStartOnAddSet = true;
   if (settings.autoQueueExercises === undefined) settings.autoQueueExercises = false;
   if (settings.autoCarry === undefined) settings.autoCarry = true;
   if (settings.onboardingDone === undefined) settings.onboardingDone = true;
@@ -2305,7 +2430,7 @@ async function continueBootAfterAuth() {
   // A relaunch mid-onboarding (Android backgrounding the webview is common)
   // would otherwise land straight on Home once exercises are configured —
   // silently skipping the rest-timer/preferences steps and leaving
-  // restDefault stuck at the 120s fallback the user never actually chose.
+  // restDuration stuck at the fallback the user never actually chose.
   if (!settings.onboardingDone) {
     screen = 'setup-features'; render(); return;
   }
@@ -2328,7 +2453,7 @@ async function autoFinishStaleDraft() {
 
   const staleDay = draft.day;
   const cleanExercises = draft.exercises
-    .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, sets: ex.sets.filter(s => !setLacksPerformanceData(s, ex.unilateral)) }))
+    .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, bodyweightExercise: isBodyweightExercise(ex), sets: ex.sets.filter(s => !setLacksPerformanceData(s, ex.unilateral)) }))
     .filter(ex => ex.sets.length > 0);
 
   if (cleanExercises.length === 0) {
@@ -2348,8 +2473,7 @@ async function autoFinishStaleDraft() {
   const prevBest = await loadJSON('bestLifts', {});
   cleanExercises.forEach(ex => {
     ex.sets.forEach(s => {
-      const w = parseFloat(s.weight) || 0;
-      const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+      const est = estimate1RMForSet(s, ex, bodyweight);
       const key = nameKey(ex.name);
       if (!prevBest[key] || est > prevBest[key]) { prevBest[key] = est; prHit = ex.name; }
     });
@@ -2414,6 +2538,25 @@ const WIZARD_SCREENS = [
   'setup-exercises', 'setup-rotation', 'setup-features'
 ];
 async function goToTab(targetScreen) {
+  // Train tab with a session already in progress: resume the exact spot
+  // left, not the day picker. activeExerciseName (kept accurate by
+  // renderExerciseList's self-heal above and by the exercise-list tap
+  // handler / auto-queue reassignment) tells us whether that spot was a
+  // specific exercise's set-log or the exercise list itself. navStack is
+  // rebuilt to match the normal drill-down chain (mirrors startTrackingDay's
+  // `chain` logic) so Back/hardware-back from the resumed screen still walks
+  // exercise-list -> track-select -> home instead of jumping straight to home.
+  if (targetScreen === 'track-select' && draft) {
+    targetScreen = activeExerciseName ? 'set-log' : 'exercise-list';
+    if (screen === targetScreen) return;
+    stopSoundPreview();
+    currentDay = draft.day;
+    navStack = targetScreen === 'set-log' ? ['home', 'track-select', 'exercise-list'] : ['home', 'track-select'];
+    screen = targetScreen;
+    pushNavHistoryEntry();
+    render();
+    return;
+  }
   if (screen === targetScreen) return;
   stopSoundPreview();
   if (targetScreen === 'logs' || targetScreen === 'all-exercises') await loadHistory();
@@ -2732,6 +2875,15 @@ function renderRegister(root) {
     continueBootAfterAuth();
   };
   root.querySelector('#toLoginLink').onclick = () => { authError = ''; goToReplace('login'); };
+  // Physical/software keyboard Enter key submits the form — there's no
+  // native <form> here (everything's wired via onclick), so without this
+  // Enter does nothing and the button has to be tapped/clicked manually.
+  const regBtn = root.querySelector('#regBtn');
+  [root.querySelector('#regUser'), root.querySelector('#regPass')].forEach(inp => {
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); regBtn.click(); }
+    });
+  });
 }
 
 function renderLogin(root) {
@@ -2764,6 +2916,13 @@ function renderLogin(root) {
     continueBootAfterAuth();
   };
   root.querySelector('#toRegisterLink').onclick = () => { authError = ''; goToReplace('register'); };
+  // Same Enter-to-submit fix as the register form.
+  const logBtn = root.querySelector('#logBtn');
+  [root.querySelector('#logUser'), root.querySelector('#logPass')].forEach(inp => {
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); logBtn.click(); }
+    });
+  });
 }
 
 /* ---------- onboarding welcome ----------
@@ -2805,12 +2964,18 @@ function renderSelectProgram(root) {
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Setup</div>
     <h1 class="big">Select your program</h1>
-    <p class="sub">Choose how your training is structured. You can change this later in Settings.</p>
+    <p class="sub">This is the shape of your split — the list of distinct workout days you rotate through. You'll pick exercises for each one next, then set how the cycle repeats. You can change this later in Settings.</p>
     <div class="chip-grid" id="progGrid">
       <button class="chip wide" data-v="PPL">Push Pull Legs</button>
       <button class="chip wide" data-v="UL">Upper Lower</button>
       <button class="chip wide" data-v="FB">Full Body</button>
       <button class="chip wide" data-v="Custom">Custom</button>
+    </div>
+    <div style="background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-top:18px; font-size:13px; line-height:1.55; color:var(--text-dim);">
+      <b style="color:var(--text);">Push Pull Legs</b> — 3 days: push muscles (chest/shoulders/triceps), pull muscles (back/biceps), legs.<br>
+      <b style="color:var(--text);">Upper Lower</b> — 2 days: whole upper body, then whole lower body.<br>
+      <b style="color:var(--text);">Full Body</b> — 1+ days that each train your whole body.<br>
+      <b style="color:var(--text);">Custom</b> — name your own days (e.g. Arms, Cardio, Core) if none of these fit.
     </div>
   `;
   root.querySelector('#backBtn').onclick = () => goBack('onboarding-welcome');
@@ -2979,9 +3144,16 @@ function renderSetupRotation(root) {
   }
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Setup</div>
-    <h1 class="big">How often does this split rotate?</h1>
-    <p class="sub">Pick your rotation length and which day it starts on, then assign a workout to each day. You can change this later in Settings.</p>
+    <h1 class="big">Build your weekly cycle</h1>
+    <p class="sub">Your split repeats on a fixed cycle of days — not necessarily 7. "Days" below is how many days are in one full cycle before it loops back to Day 1 (workouts AND rest days both count). "Starting on" is just the real-world weekday that Day 1 of that cycle lands on, so the app knows what today actually is in your rotation.</p>
+    <div style="background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-bottom:18px; font-size:13px; line-height:1.55; color:var(--text-dim);">
+      <b style="color:var(--text);">Example:</b> Push/Pull/Legs with a rest day is a 4-day cycle (Push, Pull, Legs, Rest). If you set "Starting on" to Monday, Day 1 = Push falls on Monday, Day 2 = Pull on Tuesday, Day 3 = Legs on Wednesday, Day 4 = Rest on Thursday — then it loops: Day 1 = Push again on Friday, and so on, drifting through the calendar week after week instead of always landing on the same weekdays.
+    </div>
     <div style="display:flex; gap:14px; align-items:flex-start;">
+      <div style="flex:0 0 108px;">
+        <div class="section-label">Days</div>
+        <div class="field-block"><input type="number" id="rotationDaysInput" min="1" max="30" value="${rotTempLength || ''}" placeholder="1–30"></div>
+      </div>
       <div style="flex:1;">
         <div class="section-label">Starting on</div>
         <div class="select-wrap">
@@ -2992,11 +3164,8 @@ function renderSetupRotation(root) {
           <svg viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
-      <div style="flex:0 0 108px;">
-        <div class="section-label">Days</div>
-        <div class="field-block"><input type="number" id="rotationDaysInput" min="1" max="30" value="${rotTempLength || ''}" placeholder="1–30"></div>
-      </div>
     </div>
+    <p class="sub" style="margin-top:2px;">Now assign a workout — or Rest — to each day of the cycle below. You can change any of this later in Settings.</p>
     <div id="rotationDayList"></div>
     <button class="btn-primary" id="rotationContinueBtn" style="margin-top:16px;">Continue</button>
   `;
@@ -3189,7 +3358,7 @@ function renderExPickList(root, day) {
   // are correctly left out of this day-filtered view; they still surface
   // in the general autocomplete's "Your Exercises" bucket regardless.
   const catalogWithCategory = customExercises.length
-    ? [...EXERCISE_LIBRARY_FLAT, ...customExercises.filter(item => item.category).map(item => ({ name: item.name, category: item.category }))]
+    ? [...EXERCISE_LIBRARY_FLAT, ...customExercises.filter(item => item.category).map(item => ({ name: item.name, category: item.category, unilateral: item.unilateral, bodyweight_exercise: item.bodyweight_exercise }))]
     : EXERCISE_LIBRARY_FLAT;
   catalogWithCategory.filter(item => cats.includes(item.category)).forEach(item => {
     const k = nameKey(item.name);
@@ -3198,7 +3367,17 @@ function renderExPickList(root, day) {
   const selectedKeys = new Set(setupTemp.map(e => nameKey(e.name)));
   const matches = (name) => !q || name.toLowerCase().startsWith(q) ||
     name.toLowerCase().split(/[\s(),/-]+/).some(word => word.startsWith(q));
+  // Built first and rendered right under the search box (before "Selected"
+  // and before the category groups) — not appended after everything else.
+  // With even a handful of exercises already picked, "add as new" landing
+  // at the very bottom of the list meant scrolling past the whole Selected
+  // group just to reach it every time, which made it look broken/missing.
+  const showAddCustom = !!(q && !pool.some(item => nameKey(item.name) === nameKey(setupSearchQuery.trim())) &&
+    !selectedKeys.has(nameKey(setupSearchQuery.trim())));
   let html = '';
+  if (showAddCustom) {
+    html += `<div class="ex-pick-row ex-pick-add-row" data-act="add-custom">+ Add "${setupSearchQuery.trim()}" as a new exercise</div>`;
+  }
   if (setupTemp.length > 0) {
     html += `<div class="ex-pick-group-label">Selected</div>`;
     setupTemp.forEach(entry => {
@@ -3232,17 +3411,18 @@ function renderExPickList(root, day) {
       </div>`;
     });
   });
-  if (q && !pool.some(item => nameKey(item.name) === nameKey(setupSearchQuery.trim()))) {
-    html += `<div class="ex-pick-row ex-pick-add-row" data-act="add-custom">+ Add "${setupSearchQuery.trim()}" as a new exercise</div>`;
-  } else if (!anyAvailable && setupTemp.length === 0) {
+  if (!showAddCustom && !anyAvailable && setupTemp.length === 0) {
     html += `<div class="ex-pick-empty">No matching exercise</div>`;
   }
   listEl.innerHTML = html;
   listEl.querySelectorAll('[data-act="select"]').forEach(row => {
     row.onclick = () => {
       // Appended (not unshifted) so the first exercise tapped ends up first
-      // in the list — matching tap order — instead of last.
-      setupTemp.push({ name: row.dataset.name, unilateral: false });
+      // in the list — matching tap order — instead of last. If this name
+      // already has a saved catalog entry (personal or global), pick up its
+      // remembered unilateral default instead of always starting at false.
+      const known = pool.find(item => nameKey(item.name) === nameKey(row.dataset.name));
+      setupTemp.push({ name: row.dataset.name, unilateral: !!(known && known.unilateral) });
       renderExPickList(root, day);
     };
   });
@@ -3259,7 +3439,11 @@ function renderExPickList(root, day) {
     btn.onclick = (e) => {
       e.stopPropagation();
       const entry = setupTemp.find(x => sameExName(x.name, btn.dataset.name));
-      if (entry) { entry.unilateral = !entry.unilateral; btn.classList.toggle('on', entry.unilateral); }
+      if (entry) {
+        entry.unilateral = !entry.unilateral;
+        btn.classList.toggle('on', entry.unilateral);
+        syncExerciseCatalogSetting(entry.name, { unilateral: entry.unilateral });
+      }
     };
   });
   const addRow = listEl.querySelector('[data-act="add-custom"]');
@@ -3378,8 +3562,7 @@ async function renderHomeCardsRow(container) {
       if (todayEntry) return `
         <button class="home-card home-card-cta" data-card-key="start" data-mode="analyse">
           <div class="hc-text">
-            <div class="hc-label">Analyse</div>
-            <div class="hc-value">Today's Performance</div>
+            <div class="hc-value">Analyse Today's Performance</div>
           </div>
           <div class="hc-cta-arrow">›</div>
         </button>`;
@@ -3808,9 +3991,7 @@ async function renderHomeProgress(container) {
   const perfPct = overallPerformancePct(entry);
   const perfTxt = perfPct === null ? '—' : `${perfPct >= 0 ? '+' : ''}${Math.round(perfPct * 10) / 10}%`;
   const trend = recentPerformanceTrend(8);
-  const transitionStats = sessionTransitionStats(entry);
   const topEx = sessionTopExercises(entry, 4);
-  const ICON_CLOCK_SVG = `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.6V12l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
   container.innerHTML = `
     <div class="tap-heading" id="lastWorkoutCard" style="margin-bottom:14px;"><span class="th-title">${label}</span><span class="th-arrow">›</span></div>
@@ -3822,13 +4003,11 @@ async function renderHomeProgress(container) {
     </div>
     <div class="insight-card">
       <div class="cp-block" id="perfTrendChart"><div class="cp-block-head">${ICON_NAV_PROGRESS_SVG}<span>Performance Trend</span></div></div>
-      <div class="cp-block" id="transitionChart"><div class="cp-block-head">${ICON_CLOCK_SVG}<span>Time Between Sets</span></div></div>
       <div class="cp-block" id="topExChart"><div class="cp-block-head">${ICON_NAV_TRAIN_SVG}<span>Top Exercises</span></div></div>
     </div>
   `;
   container.querySelector('#lastWorkoutCard').onclick = () => { viewLogId = entry.id; goTo('workout-detail'); };
   renderPerfTrendChart(container.querySelector('#perfTrendChart'), trend, perfPct);
-  renderTransitionChart(container.querySelector('#transitionChart'), transitionStats);
   renderTopExChart(container.querySelector('#topExChart'), topEx);
 }
 /* Small SVG line chart plotting overallPerformancePct across the last few
@@ -3861,22 +4040,6 @@ function renderPerfTrendChart(el, trend, currentPct) {
     <div class="chart-caption" style="margin-top:6px;">Last ${trend.length} session${trend.length > 1 ? 's' : ''} vs. each exercise's own average · latest ${lastTxt}</div>
   `;
 }
-/* Bar list of how long it took to start logging each set after the rest
-   timer for the previous one ran out — see captureSetTransitionTime. */
-function renderTransitionChart(el, stats) {
-  const head = el.querySelector('.cp-block-head').outerHTML;
-  if (!stats) {
-    el.innerHTML = head + `<div class="chart-empty">Not tracked for this session — starts recording automatically once a rest timer finishes and you log the next set.</div>`;
-    return;
-  }
-  const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
-  const max = Math.max(...stats.secs, 1);
-  const rows = stats.secs.map((s, i) => {
-    const pct = Math.max(4, Math.round((s / max) * 100));
-    return `<div class="tb-row"><div class="tb-label">Gap ${i + 1}</div><div class="tb-track"><div class="tb-fill" style="width:${pct}%"></div></div><div class="tb-val mono">${fmt(s)}</div></div>`;
-  }).join('');
-  el.innerHTML = head + `<div class="chart-caption" style="margin-bottom:9px;">Avg ${fmt(stats.avg)} between rest ending and the next set logged</div>${rows}`;
-}
 /* Horizontal bar chart ranking this session's exercises by total volume. */
 function renderTopExChart(el, topEx) {
   const head = el.querySelector('.cp-block-head').outerHTML;
@@ -3901,7 +4064,7 @@ function exerciseStrengthTrend(name, currentEntryId) {
   const current = historyEntries.find(e => e.id === currentEntryId);
   if (!current) return null;
   const curEx = (current.exercises || []).find(e => sameExName(e.name, name));
-  const curTop = curEx ? topSetByEst(curEx.sets.filter(hasSetData)) : null;
+  const curTop = curEx ? topSetByEst(curEx.sets.filter(hasSetData), curEx, current.bodyweight) : null;
   if (!curTop || !curTop.est) return null;
   let prEst = 0;
   historyEntries.forEach(session => {
@@ -3909,8 +4072,7 @@ function exerciseStrengthTrend(name, currentEntryId) {
     const ex = (session.exercises || []).find(e => sameExName(e.name, name));
     if (!ex) return;
     (ex.sets || []).filter(hasSetData).forEach(s => {
-      const w = parseFloat(s.weight) || 0;
-      const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+      const est = estimate1RMForSet(s, ex, session.bodyweight);
       if (est > prEst) prEst = est;
     });
   });
@@ -3931,8 +4093,7 @@ function exerciseAverageEst(name, excludeEntryId) {
     const ex = (session.exercises || []).find(e => sameExName(e.name, name));
     if (!ex) return;
     ex.sets.filter(hasSetData).forEach(s => {
-      const w = parseFloat(s.weight) || 0;
-      const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+      const est = estimate1RMForSet(s, ex, session.bodyweight);
       if (est) { sum += est; count++; }
     });
   });
@@ -3946,7 +4107,7 @@ function exerciseAverageEst(name, excludeEntryId) {
 function overallPerformancePct(entry) {
   const pcts = [];
   (entry.exercises || []).forEach(ex => {
-    const top = topSetByEst((ex.sets || []).filter(hasSetData));
+    const top = topSetByEst((ex.sets || []).filter(hasSetData), ex, entry.bodyweight);
     if (!top || !top.est) return;
     const avg = exerciseAverageEst(ex.name, entry.id);
     if (avg && avg > 0) pcts.push(((top.est - avg) / avg) * 100);
@@ -3966,7 +4127,7 @@ function sessionSetCount(entry) {
 function sessionPRCount(entry) {
   let count = 0;
   (entry.exercises || []).forEach(ex => {
-    const top = topSetByEst((ex.sets || []).filter(hasSetData));
+    const top = topSetByEst((ex.sets || []).filter(hasSetData), ex, entry.bodyweight);
     if (!top || !top.est) return;
     let priorBest = 0, hadPrior = false;
     historyEntries.forEach(session => {
@@ -3975,52 +4136,13 @@ function sessionPRCount(entry) {
       if (!other) return;
       (other.sets || []).filter(hasSetData).forEach(s => {
         hadPrior = true;
-        const w = parseFloat(s.weight) || 0;
-        const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+        const est = estimate1RMForSet(s, other, session.bodyweight);
         if (est > priorBest) priorBest = est;
       });
     });
     if (hadPrior && top.est > priorBest) count++;
   });
   return count;
-}
-/* Average + per-transition seconds between a rest timer running out and
-   the next set's reps actually being logged (set.transitionSec, captured
-   live by captureSetTransitionTime during tracking). Sessions logged
-   before this was tracked simply have no values, so this returns null
-   rather than a misleading zero. */
-/* Average timePerSetSec (see captureTimePerSet) across every set in one
-   workout. Sets with no captured value (pre-feature logs, a broken
-   timestamp chain) are excluded rather than counted as zero. */
-function sessionAvgTimePerSet(entry) {
-  const secs = [];
-  (entry.exercises || []).forEach(ex => (ex.sets || []).forEach(s => {
-    if (typeof s.timePerSetSec === 'number' && s.timePerSetSec >= 0) secs.push(s.timePerSetSec);
-  }));
-  return secs.length ? secs.reduce((a, b) => a + b, 0) / secs.length : null;
-}
-/* Same average across every OTHER logged workout — the baseline the
-   recent-workout top card compares against (+/-% vs avg). */
-function historicalAvgTimePerSet(excludeEntryId) {
-  const secs = [];
-  historyEntries.forEach(entry => {
-    if (entry.id === excludeEntryId) return;
-    (entry.exercises || []).forEach(ex => (ex.sets || []).forEach(s => {
-      if (typeof s.timePerSetSec === 'number' && s.timePerSetSec >= 0) secs.push(s.timePerSetSec);
-    }));
-  });
-  return secs.length ? secs.reduce((a, b) => a + b, 0) / secs.length : null;
-}
-function sessionTransitionStats(entry) {
-  const secs = [];
-  (entry.exercises || []).forEach(ex => {
-    (ex.sets || []).forEach(s => {
-      if (typeof s.transitionSec === 'number' && s.transitionSec >= 0) secs.push(s.transitionSec);
-    });
-  });
-  if (!secs.length) return null;
-  const avg = secs.reduce((a, b) => a + b, 0) / secs.length;
-  return { avg, secs };
 }
 /* Top N exercises in a session by total volume (weight × reps summed
    across sets) — same volume math used everywhere else in the app. */
@@ -4058,7 +4180,7 @@ function topPerformancesThisWeek(n) {
   const byKey = {};
   weekEntries.forEach(entry => {
     (entry.exercises || []).forEach(ex => {
-      const top = topSetByEst((ex.sets || []).filter(hasSetData));
+      const top = topSetByEst((ex.sets || []).filter(hasSetData), ex, entry.bodyweight);
       if (!top || !top.est) return;
       let priorBest = 0, hadPrior = false;
       historyEntries.forEach(session => {
@@ -4067,8 +4189,7 @@ function topPerformancesThisWeek(n) {
         if (!other) return;
         (other.sets || []).filter(hasSetData).forEach(s => {
           hadPrior = true;
-          const w = parseFloat(s.weight) || 0;
-          const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+          const est = estimate1RMForSet(s, other, session.bodyweight);
           if (est > priorBest) priorBest = est;
         });
       });
@@ -4099,8 +4220,7 @@ function weekOverallPerformancePct() {
     (session.exercises || []).forEach(ex => {
       const key = nameKey(ex.name);
       (ex.sets || []).filter(hasSetData).forEach(s => {
-        const w = parseFloat(s.weight) || 0;
-        const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+        const est = estimate1RMForSet(s, ex, session.bodyweight);
         if (!est) return;
         if (!bucket[key]) bucket[key] = { sum: 0, count: 0 };
         bucket[key].sum += est; bucket[key].count++;
@@ -4146,6 +4266,9 @@ function renderAllExercises(root) {
           <button class="icon-square-btn" id="allExSortBtn" title="Sort">${ICON_SORT_SVG}</button>
         </div>
       </div>
+      <div class="ex-pick-search-wrap">
+        <input type="text" id="allExSearch" placeholder="Search exercises…" autocomplete="off" value="${allExSearchQuery.replace(/"/g,'&quot;')}">
+      </div>
       <div id="allExList"></div>
     </div>
   `;
@@ -4186,7 +4309,7 @@ function renderAllExercises(root) {
   historyEntries.forEach(e => (e.exercises || []).forEach(ex => {
     if (!ex.sets || ex.sets.length === 0) return;
     const key = nameKey(ex.name);
-    if (!byKey[key]) byKey[key] = { name: ex.name, lastDate: e.startTime, sessions: 0, totalSets: 0, totalVolume: 0, pr: null, prEst: 0 };
+    if (!byKey[key]) byKey[key] = { name: ex.name, lastDate: e.startTime, sessions: 0, totalSets: 0, totalVolume: 0, pr: null, prEst: 0, prEx: null, prBW: undefined };
     byKey[key].sessions += 1;
     byKey[key].totalSets += ex.sets.length;
     ex.sets.forEach(s => {
@@ -4195,29 +4318,45 @@ function renderAllExercises(root) {
       // All-time PR — same estimate1RM() (Brzycki + RIR/RPE effort) used
       // everywhere else in the app for "which set was actually the strongest",
       // not just whichever had the biggest weight or most reps on its own.
-      const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
-      if (est > byKey[key].prEst) { byKey[key].prEst = est; byKey[key].pr = s; }
+      const est = estimate1RMForSet(s, ex, e.bodyweight);
+      if (est > byKey[key].prEst) { byKey[key].prEst = est; byKey[key].pr = s; byKey[key].prEx = ex; byKey[key].prBW = e.bodyweight; }
     });
     if (e.startTime > byKey[key].lastDate) { byKey[key].lastDate = e.startTime; byKey[key].name = ex.name; }
   }));
-  const items = Object.values(byKey);
-  if (allExSortMode === 'recent') items.sort((a, b) => b.lastDate - a.lastDate);
-  else if (allExSortMode === 'sets') items.sort((a, b) => b.totalSets - a.totalSets);
-  else if (allExSortMode === 'volume') items.sort((a, b) => b.totalVolume - a.totalVolume);
-  else items.sort((a, b) => a.name.localeCompare(b.name));
-  if (items.length === 0) {
-    listEl.innerHTML = `<div class="history-empty">No exercises tracked yet.</div>`;
-    return;
-  }
-  items.forEach(item => {
-    const row = document.createElement('div');
-    row.className = 'list-item';
-    const vol = Math.round(item.totalVolume).toLocaleString();
-    const prLine = item.pr ? `<div class="li-pr mono">PR &nbsp;${formatSetLine(item.pr, item.name)}</div>` : '';
-    row.innerHTML = `<div><div class="li-name">${item.name}</div><div class="li-meta mono">${item.totalSets} set${item.totalSets !== 1 ? 's' : ''} · ${vol}${exerciseUnit(item.name)} volume · Last done ${fmtFullDate(new Date(item.lastDate).toISOString())}</div>${prLine}</div><div class="li-right">›</div>`;
-    row.onclick = () => { exerciseHistoryName = item.name; goTo('exercise-history'); };
-    listEl.appendChild(row);
-  });
+  const allItems = Object.values(byKey);
+  // Renders (or re-renders) just the list — called on load, on sort change,
+  // and on every search keystroke. Kept separate from the byKey build above
+  // (which scans every logged set across all history) so typing in the
+  // search box doesn't re-scan the entire workout history on each keystroke.
+  const renderList = () => {
+    let items = allItems.slice();
+    if (allExSortMode === 'recent') items.sort((a, b) => b.lastDate - a.lastDate);
+    else if (allExSortMode === 'sets') items.sort((a, b) => b.totalSets - a.totalSets);
+    else if (allExSortMode === 'volume') items.sort((a, b) => b.totalVolume - a.totalVolume);
+    else items.sort((a, b) => a.name.localeCompare(b.name));
+    const q = allExSearchQuery.trim().toLowerCase();
+    if (q) items = items.filter(item => item.name.toLowerCase().includes(q));
+    if (allItems.length === 0) {
+      listEl.innerHTML = `<div class="history-empty">No exercises tracked yet.</div>`;
+      return;
+    }
+    if (items.length === 0) {
+      listEl.innerHTML = `<div class="history-empty">No exercises match "${allExSearchQuery}".</div>`;
+      return;
+    }
+    listEl.innerHTML = '';
+    items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'list-item';
+      const vol = Math.round(item.totalVolume).toLocaleString();
+      const prLine = item.pr ? `<div class="li-pr mono">PR &nbsp;${formatSetLine(item.pr, item.name, item.prEx, item.prBW)}</div>` : '';
+      row.innerHTML = `<div><div class="li-name">${item.name}</div><div class="li-meta mono">${item.totalSets} set${item.totalSets !== 1 ? 's' : ''} · ${vol}${exerciseUnit(item.name)} volume · Last done ${fmtFullDate(new Date(item.lastDate).toISOString())}</div>${prLine}</div><div class="li-right">›</div>`;
+      row.onclick = () => { exerciseHistoryName = item.name; goTo('exercise-history'); };
+      listEl.appendChild(row);
+    });
+  };
+  root.querySelector('#allExSearch').oninput = (e) => { allExSearchQuery = e.target.value; renderList(); };
+  renderList();
 }
 /* Standalone read-only page showing everything logged in one session — the
    full per-exercise set breakdown and media, same content as the expanded
@@ -4231,10 +4370,6 @@ function renderWorkoutDetail(root) {
   const setCount = entry.exercises.reduce((a, ex) => a + ex.sets.length, 0);
   const perfPct = overallPerformancePct(entry);
   const perfTxt = perfPct === null ? '—' : `${perfPct >= 0 ? '+' : ''}${Math.round(perfPct * 10) / 10}%`;
-  const avgSetTime = sessionAvgTimePerSet(entry);
-  const histAvgSetTime = historicalAvgTimePerSet(entry.id);
-  const avgSetTimePct = (avgSetTime != null && histAvgSetTime) ? ((avgSetTime - histAvgSetTime) / histAvgSetTime) * 100 : null;
-  const avgSetTimeHtml = avgSetTime == null ? '' : `<div class="hd-meta mono" style="margin-top:10px;">Avg time/set: ${formatSetTime(avgSetTime)}${avgSetTimePct === null ? '' : ` ${badgeFor(avgSetTimePct)}`}</div>`;
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${entry.day}</div>
     <h1 class="big">${homeProgressLabel(entry.date)}</h1>
@@ -4246,14 +4381,13 @@ function renderWorkoutDetail(root) {
       <div class="stat-box"><div class="sv mono">${perfTxt}</div><div class="sk">Overall Performance</div></div>
     </div>
     ${entry.bodyweight ? `<div class="hd-meta mono" style="margin:12px 0 0;">Bodyweight: ${entry.bodyweight}${settings.units}</div>` : ''}
-    ${avgSetTimeHtml}
     ${entry.notes ? `<div class="field-block" style="margin-top:14px;"><div class="notes-lbl">Notes</div><div class="notes-text">${entry.notes}</div></div>` : ''}
     <div class="section-label" style="margin-top:18px;">Exercises</div>
     <div id="workoutDetailBody"></div>
   `;
   root.querySelector('#backBtn').onclick = () => goBack();
   const body = root.querySelector('#workoutDetailBody');
-  body.innerHTML = buildHistoryBodyHTML(entry, dayMedia, hasDayMedia, true);
+  body.innerHTML = buildHistoryBodyHTML(entry, dayMedia, hasDayMedia);
   wireHistoryExNameClicks(body);
   hydrateMediaEls(root);
 }
@@ -4347,6 +4481,13 @@ function renderTrackSelect(root) {
 }
 
 function renderExerciseList(root) {
+  // Self-healing, same pattern as updateHotbarVisibility(): landing on this
+  // screen — via Back, hardware back/edge-swipe, or a direct jump — always
+  // means "not currently viewing a specific exercise," so clear this here
+  // rather than at every possible exit point from set-log. Keeps
+  // activeExerciseName a reliable signal of the exact training view (used
+  // by goToTab's Train-tab resume logic below) no matter how we got here.
+  activeExerciseName = null;
   const list = exercisesByDay[currentDay] || [];
   draft.media = ensureMediaShape(draft.media);
   if (draft.bodyweight === undefined) draft.bodyweight = '';
@@ -4652,6 +4793,7 @@ function renderExerciseEdit(root) {
       persistEditList();
       e.currentTarget.classList.toggle('on', list[i].unilateral);
       syncDraftUnilateral(list[i]);
+      syncExerciseCatalogSetting(list[i].name, { unilateral: list[i].unilateral });
     };
     item.querySelector('[data-act="rename"]').onclick = () => {
       const nameDiv = item.querySelector('.li-name');
@@ -4678,6 +4820,7 @@ function renderExerciseEdit(root) {
           list[idx].name = v;
           syncDraftRename(oldName, v);
           captureNewExerciseIfUnknown(v, list[idx].unilateral, categoriesForDay(editingDay)[0]);
+          syncExerciseCatalogSetting(v, { unilateral: list[idx].unilateral });
         }
         persistEditList();
         nameDiv.innerHTML = `${list[idx].name}`;
@@ -4725,7 +4868,33 @@ function renderExerciseEdit(root) {
   newUniToggle.onclick = () => newUniToggle.classList.toggle('on');
   const newExInput = root.querySelector('#newExInput');
   const newExBtn = root.querySelector('#newExBtn');
-  attachExerciseAutocomplete(newExInput, root.querySelector('#newExDropdown'));
+  // Shared by both the Add button and tapping a suggestion in the
+  // autocomplete dropdown — previously only the button added the
+  // exercise, so picking a suggestion just filled the text box and left
+  // the user to press Add separately for no reason.
+  function addExercise(val) {
+    val = (val || '').trim();
+    if (!val) return;
+    if (list.some(other => sameExName(other.name, val))) {
+      showToast(`${val} is already in this day's list`);
+      return;
+    }
+    const entry = { name: val, unilateral: newUniToggle.classList.contains('on') };
+    list.push(entry);
+    persistEditList();
+    // Handles both cases: a genuinely new name gets captured fresh, and an
+    // already-known name (builtin or personal) still gets this L|R choice
+    // written back to the catalog rather than silently dropped.
+    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(editingDay)[0]);
+    syncExerciseCatalogSetting(val, { unilateral: entry.unilateral });
+    const item = buildItem(entry);
+    item.classList.add('item-entering');
+    editList.appendChild(item);
+    item.addEventListener('animationend', () => item.classList.remove('item-entering'), { once: true });
+    newExInput.value = '';
+    newUniToggle.classList.remove('on');
+  }
+  attachExerciseAutocomplete(newExInput, root.querySelector('#newExDropdown'), (name) => addExercise(name));
   // Same lingering-focus issue as the rename input above: dismissing the
   // on-screen keyboard via its own dismiss control (rather than tapping
   // elsewhere / blurring the field) doesn't always fire a blur event, so the
@@ -4749,24 +4918,8 @@ function renderExerciseEdit(root) {
   newExBtn.addEventListener('mousedown', () => { wasInputFocused = document.activeElement === newExInput; });
   newExBtn.addEventListener('touchstart', () => { wasInputFocused = document.activeElement === newExInput; });
   newExBtn.onclick = () => {
-    const input = newExInput;
-    const val = input.value.trim();
-    if (!val) return;
-    if (list.some(other => sameExName(other.name, val))) {
-      showToast(`${val} is already in this day's list`);
-      return;
-    }
-    const entry = { name: val, unilateral: newUniToggle.classList.contains('on') };
-    list.push(entry);
-    persistEditList();
-    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(editingDay)[0]);
-    const item = buildItem(entry);
-    item.classList.add('item-entering');
-    editList.appendChild(item);
-    item.addEventListener('animationend', () => item.classList.remove('item-entering'), { once: true });
-    input.value = '';
-    newUniToggle.classList.remove('on');
-    if (wasInputFocused) input.focus();
+    addExercise(newExInput.value);
+    if (wasInputFocused) newExInput.focus();
   };
 }
 
@@ -4776,7 +4929,8 @@ function renderExerciseEdit(root) {
    the reorder is committed. Rows are shifted with CSS transforms while
    dragging (no DOM moves) and the array + DOM are only reconciled on
    release, so it stays smooth and simple. */
-function makeReorderable(container, list, onDrop) {
+function makeReorderable(container, list, onDrop, itemSelector) {
+  itemSelector = itemSelector || '.list-item';
   let dragEl = null, dragHandle = null, startY = 0, startTop = 0, rowSpacing = 0;
   let order = null, dragPos = null, dragOriginalIdx = null, dragItems = null;
 
@@ -4794,7 +4948,7 @@ function makeReorderable(container, list, onDrop) {
   container.addEventListener('pointerdown', (e) => {
     const handle = e.target.closest('.drag-handle');
     if (!handle || !container.contains(handle)) return;
-    const item = handle.closest('.list-item');
+    const item = handle.closest(itemSelector);
     if (!item || item.parentElement !== container) return;
     const idx = Array.from(container.children).indexOf(item);
     if (idx === -1) return;
@@ -5028,13 +5182,29 @@ function findMostRecentExerciseSets(name, unilateral) {
     // empty and silently dropped real performance data — which is exactly
     // what broke the "vs last time" indicator after switching programs.
     const exUnilateral = !!ex.unilateral;
-    const sets = (ex.sets || []).filter(s => !setLacksPerformanceData(s, exUnilateral));
-    if (sets.length) return { sets, unilateral: exUnilateral };
+    // Warmup sets are excluded here — they're not part of the working-set
+    // index sequence (see setNumberLabel's separate W1/W2 counter, and
+    // topSetByEst which also skips them). Leaving them in threw off the
+    // index alignment: e.g. last session's [warmup, work1, work2] logged
+    // this session as [work1, work2, work3] would compare this session's
+    // work2 against last session's warmup at the same array index.
+    const sets = (ex.sets || []).filter(s => !s.isWarmup && !setLacksPerformanceData(s, exUnilateral));
+    if (sets.length) return { sets, unilateral: exUnilateral, bodyweightExercise: isBodyweightExercise(ex), bodyweight: entry.bodyweight };
   }
   return null;
 }
+/* draft.bodyweight is only entered on the Finish-workout screen, so it's
+   typically still blank while live-tracking sets — but a bodyweight-flagged
+   exercise's live trend arrow needs SOME bodyweight number to add to the
+   typed weight. Falls back to the most recent session that has one, same
+   fallback already used to prefill the Finish screen's bodyweight field. */
+function currentSessionBodyweight() {
+  if (draft && draft.bodyweight !== undefined && draft.bodyweight !== '') return draft.bodyweight;
+  const prior = historyEntries.find(e => e.bodyweight !== undefined && e.bodyweight !== '');
+  return prior ? prior.bodyweight : '';
+}
 function buildPrefilledSet(name, unilateral, setIndex, fallback) {
-  const rest = (fallback && fallback.rest) || settings.restDefault;
+  const rest = (fallback && fallback.rest) || restDuration;
   if (!settings.autoCarry) {
     return unilateral
       ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest, media: [] }
@@ -5075,8 +5245,8 @@ function buildPrefilledSet(name, unilateral, setIndex, fallback) {
     ? { weight: prior.weight ?? '', repsR, repsL, rir: prior.rir ?? '', rpe: prior.rpe ?? '', rest, media: [] }
     : { weight: prior.weight ?? '', reps, rir: prior.rir ?? '', rpe: prior.rpe ?? '', rest, media: [] };
   set.baseline = unilateral
-    ? { weight: set.weight, repsR: set.repsR, repsL: set.repsL, rir: set.rir, rpe: set.rpe }
-    : { weight: set.weight, reps: set.reps, rir: set.rir, rpe: set.rpe };
+    ? { weight: set.weight, repsR: set.repsR, repsL: set.repsL, rir: set.rir, rpe: set.rpe, bw: priorData.bodyweight }
+    : { weight: set.weight, reps: set.reps, rir: set.rir, rpe: set.rpe, bw: priorData.bodyweight };
   return set;
 }
 /* The old per-field arrows compared weight-vs-weight and reps-vs-reps in
@@ -5088,15 +5258,13 @@ function buildPrefilledSet(name, unilateral, setIndex, fallback) {
    comparable strength figure — same formula estimate1RM() already uses for
    the exercise-history PR trend. Both arrows on a row now report that same
    single verdict instead of two numbers that can (and did) disagree. */
-function estSetTrend(set, baseline) {
+function estSetTrend(set, baseline, ex, curBW, baseBW) {
   if (!baseline) return null;
-  const curW = parseFloat(set.weight) || 0;
   const curReps = effectiveReps(set);
-  const baseW = parseFloat(baseline.weight) || 0;
   const baseReps = effectiveReps(baseline);
-  if (!curW || !curReps || !baseW || !baseReps) return null;
-  const curEst = estimate1RM(curW, curReps, set.rir, set.rpe);
-  const baseEst = estimate1RM(baseW, baseReps, baseline.rir, baseline.rpe);
+  if (!curReps || !baseReps) return null;
+  const curEst = estimate1RMForSet(set, ex, curBW);
+  const baseEst = estimate1RMForSet(baseline, ex, baseBW !== undefined ? baseBW : curBW);
   if (!curEst || !baseEst) return null;
   // Deadzone matches badgeFor()'s ~1% — plate-math/rounding noise on an
   // essentially-unchanged set shouldn't flip an arrow either direction.
@@ -5115,11 +5283,20 @@ function applySetTrend(arrowEls, trend) {
 function renderSetLog(root) {
   let ex = draft.exercises.find(e => sameExName(e.name, activeExerciseName));
   if (!ex) {
+    const priorData = findMostRecentExerciseSets(activeExerciseName, activeExerciseUnilateral);
+    // Priority for the default BW flag on a brand-new exercise instance:
+    // 1) this device's own logged history for it (priorData), 2) an
+    // explicit choice saved to the exercise catalog (could've come from
+    // another device, or from setting it before ever logging a set here),
+    // 3) the name heuristic as a last resort.
+    const catalogEntry = customExercises.find(item => item.name_key === nameKey(activeExerciseName));
+    const catalogBW = catalogEntry && typeof catalogEntry.bodyweight_exercise === 'boolean' ? catalogEntry.bodyweight_exercise : null;
     ex = {
       name: activeExerciseName,
       unilateral: activeExerciseUnilateral,
+      bodyweightExercise: priorData ? priorData.bodyweightExercise : (catalogBW !== null ? catalogBW : looksLikeBodyweightExercise(activeExerciseName)),
       openedTs: Date.now(),
-      sets: [buildPrefilledSet(activeExerciseName, activeExerciseUnilateral, 0, { rest: settings.restDefault })]
+      sets: [buildPrefilledSet(activeExerciseName, activeExerciseUnilateral, 0, { rest: restDuration })]
     };
     draft.exercises.push(ex);
   }
@@ -5132,10 +5309,13 @@ function renderSetLog(root) {
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${ex.name}</div>
     <div class="section-header-row" style="justify-content:flex-end;">
       <div style="display:flex; align-items:center; gap:8px;">
+        <button class="uni-toggle no-pop${isBodyweightExercise(ex) ? ' on' : ''}" id="exBwBtn" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
+        <button class="uni-toggle no-pop${ex.unilateral ? ' on' : ''}" id="exUniBtn" title="One side at a time, tracked as separate R/L reps — applies to this session and future ones, past logs stay as recorded">L | R</button>
         <button class="unit-toggle-btn" id="exUnitBtn" title="Switch units for this exercise only">${ICON_SWAP_SVG}${exerciseUnit(ex.name)}</button>
         <button class="icon-square-btn danger${selecting ? ' text-mode' : ''}" id="clearExBtn" title="${selecting ? 'Cancel' : 'Select sets to delete'}">${selecting ? 'Cancel' : ICON_TRASH_SVG}</button>
       </div>
     </div>
+
     <div class="set-card">
       <div class="col-labels ${ex.unilateral ? 'uni' : ''}"><div>SET</div><div></div><div>Weight</div>${ex.unilateral ? '<div>Reps R</div><div>Reps L</div>' : '<div>Reps</div>'}<div>RIR</div><div>RPE</div><div></div></div>
       <div id="setsContainer"></div>
@@ -5170,6 +5350,40 @@ function renderSetLog(root) {
     const changed = await convertExerciseUnit(ex.name);
     if (changed) { persistDraft(); renderSetLog(root); }
   };
+  // Unilateral toggle right on the tracking screen — mirrors the one in
+  // Edit Exercises (syncDraftUnilateral) but runs the other direction:
+  // this screen owns the draft exercise, so it converts ex.sets itself,
+  // then pushes the new flag into exercisesByDay so the day's definition
+  // (and therefore future sessions) picks it up too. Already-completed
+  // logs are separate records and are never touched by this.
+  root.querySelector('#exUniBtn').onclick = () => {
+    const wasUnilateral = !!ex.unilateral;
+    const nowUnilateral = !wasUnilateral;
+    if (nowUnilateral) {
+      ex.sets.forEach(s => { s.repsR = s.reps ?? ''; s.repsL = s.reps ?? ''; delete s.reps; });
+    } else {
+      ex.sets.forEach(s => { s.reps = s.repsR ?? ''; delete s.repsR; delete s.repsL; });
+    }
+    ex.unilateral = nowUnilateral;
+    if (activeExerciseName === ex.name) activeExerciseUnilateral = nowUnilateral;
+    const dayList = exercisesByDay[draft.day] || [];
+    const entry = dayList.find(e => sameExName(e.name, ex.name));
+    if (entry) { entry.unilateral = nowUnilateral; saveJSON('exercisesByDay', exercisesByDay); }
+    syncExerciseCatalogSetting(ex.name, { unilateral: nowUnilateral });
+    persistDraft();
+    renderSetLog(root);
+  };
+  // Bodyweight toggle — just a flag flip, no set reshaping needed (unlike
+  // L|R). Applies to this session and carries forward to future ones via
+  // findMostRecentExerciseSets, and is now also saved to the exercise
+  // catalog so it's the default the next time this exercise is picked up
+  // fresh (new device, or before any history exists for it locally).
+  root.querySelector('#exBwBtn').onclick = () => {
+    ex.bodyweightExercise = !isBodyweightExercise(ex);
+    syncExerciseCatalogSetting(ex.name, { bodyweightExercise: ex.bodyweightExercise });
+    persistDraft();
+    renderSetLog(root);
+  };
   if (selecting) {
     root.querySelector('#deleteSelectedBtn').onclick = async () => {
       if (setLogSelected.size === 0) { showToast('No sets selected'); return; }
@@ -5183,8 +5397,8 @@ function renderSetLog(root) {
       }
       if (ex.sets.length === 0) {
         ex.sets.push(ex.unilateral
-          ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: settings.restDefault, media: [] }
-          : { weight: '', reps: '', rir: '', rpe: '', rest: settings.restDefault, media: [] });
+          ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: restDuration, media: [] }
+          : { weight: '', reps: '', rir: '', rpe: '', rest: restDuration, media: [] });
       }
       setLogSelectMode = false; setLogSelected = new Set();
       persistDraft();
@@ -5195,8 +5409,8 @@ function renderSetLog(root) {
       if (!ok) return;
       for (const s of ex.sets) { for (const m of (s.media || [])) { await deleteMediaFile(m); } }
       ex.sets = [ex.unilateral
-        ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: settings.restDefault, media: [] }
-        : { weight: '', reps: '', rir: '', rpe: '', rest: settings.restDefault, media: [] }];
+        ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: restDuration, media: [] }
+        : { weight: '', reps: '', rir: '', rpe: '', rest: restDuration, media: [] }];
       setLogSelectMode = false; setLogSelected = new Set();
       persistDraft();
       renderSetLog(root);
@@ -5209,21 +5423,10 @@ function renderSetLog(root) {
       showToast('Log reps, RIR, or RPE for this set first');
       return;
     }
-    // If reps were never typed into the set just finished (RIR/RPE alone
-    // satisfied the check above — e.g. weight and reps matched last time
-    // so there was nothing to retype), the reps-input oninput handler
-    // never ran and autoStartRestOrStopwatch never fired for it. Add Set
-    // is then the only signal that the set is done, so it takes over as
-    // the rest-timer trigger. If reps WERE entered, that already started
-    // the timer off the keystroke — firing it again here would reset the
-    // countdown and corrupt the next set's transition-time capture, so
-    // this only ever runs in the one case it's meant for. Gated by its
-    // own toggle (separate from "auto-start on reps") since some users
-    // want the reps-triggered autostart but not this Add-Set fallback.
-    const isEmpty = (v) => v === '' || v === undefined || v === null;
-    const repsWereEntered = last && (ex.unilateral ? !(isEmpty(last.repsR) && isEmpty(last.repsL)) : !isEmpty(last.reps));
-    if (last && !repsWereEntered && settings.autoStartOnAddSet) autoStartRestOrStopwatch(last);
-    const next = buildPrefilledSet(ex.name, ex.unilateral, ex.sets.length, { weight: last.weight, rest: last.rest });
+    // Timer auto-start no longer has an Add-Set fallback — it fires only
+    // off the per-set "mark done" checkmark now (see renderSets).
+    const workingCount = ex.sets.filter(s => !s.isWarmup).length;
+    const next = buildPrefilledSet(ex.name, ex.unilateral, workingCount, { weight: last.weight, rest: last.rest });
     ex.sets.push(next);
     persistDraft();
     renderSets(root, ex);
@@ -5287,22 +5490,30 @@ function setLacksPerformanceData(set, unilateral) {
     : isEmpty(set.reps);
   return repsEmpty && isEmpty(set.rir) && isEmpty(set.rpe);
 }
-/* True once an exercise has at least one set with real performance data
-   logged on it (see setLacksPerformanceData) — used to decide whether it
-   counts as "in progress"/"done" for the exercise-list sorting + markers,
-   and whether it should be saved at all when the workout is finished. */
+/* True once an exercise has at least one set actually checked off (the
+   set-done checkmark, set.done) — used to decide whether it counts as
+   "in progress"/"done" for the exercise-list sorting + markers. Typing
+   reps/RIR/RPE into a set's fields is NOT enough on its own; the set has
+   to be marked done. (Whether a set gets saved into history when the
+   workout is finished is a separate question — see setLacksPerformanceData
+   / the finishBtn handler, which still goes by whether real data was
+   entered rather than whether it was checked off.) */
 function exerciseHasLoggedData(ex) {
-  return !!(ex && ex.sets && ex.sets.some(s => !setLacksPerformanceData(s, ex.unilateral)));
+  return !!(ex && ex.sets && ex.sets.some(s => s.done));
 }
 /* Strips out any set that never got real performance data (weight typed in
    alone doesn't count) — called whenever the user leaves an exercise's
    screen, so a blank/half-filled row never lingers or gets saved. Any media
-   attached to a stripped set is deleted along with it. */
+   attached to a stripped set is deleted along with it. A set that's been
+   toggled to Warmup is exempt even with zero data entered yet — that
+   toggle is a deliberate action, and stripping the row on the next Back
+   tap silently threw away both the row and the warmup flag before the
+   user had a chance to fill in numbers. */
 async function pruneEmptySets(ex) {
   const kept = [];
   const removed = [];
   for (const s of (ex.sets || [])) {
-    if (setLacksPerformanceData(s, ex.unilateral)) removed.push(s); else kept.push(s);
+    if (!s.isWarmup && setLacksPerformanceData(s, ex.unilateral)) removed.push(s); else kept.push(s);
   }
   for (const s of removed) {
     for (const m of (s.media || [])) { await deleteMediaFile(m); }
@@ -5325,6 +5536,7 @@ function renderSets(root, ex) {
     if (!set.media) set.media = [];
     if (set.rpe === undefined) set.rpe = '';
     if (set.isWarmup === undefined) set.isWarmup = false;
+    if (set.done === undefined) set.done = false;
     const row = document.createElement('div');
     row.className = 'set-row' + (ex.unilateral ? ' uni' : '') + (set.isWarmup ? ' is-warmup' : '');
     const repsInputs = ex.unilateral
@@ -5346,7 +5558,7 @@ function renderSets(root, ex) {
     const numCell = `<div class="set-num mono set-cell-trend">${displayNum}<span class="trend-arrow" data-trend="set"></span></div>`;
     const actionCell = setLogSelectMode
       ? `<button class="set-select-circle ${checked ? 'checked' : ''}" data-select-set title="Select this set"></button>`
-      : `<button class="set-media-btn ${set.media.length ? 'has-media' : ''}" data-set-media title="Attach photo or video">${ICON_CAMERA_SVG}${set.media.length ? '<span class="dot"></span>' : ''}</button>`;
+      : `<button class="set-done-btn ${set.done ? 'done' : ''}" data-set-done title="${set.done ? 'Set done' : 'Mark set done'}">${ICON_CHECK_SVG}</button>`;
     const warmupCell = setLogSelectMode ? `<div></div>` : `<button class="warmup-toggle${set.isWarmup ? ' active' : ''}" data-warmup-toggle title="Warmup">Warmup</button>`;
     row.innerHTML = `
       ${numCell}
@@ -5372,59 +5584,31 @@ function renderSets(root, ex) {
     row.querySelectorAll('input[type="number"]').forEach(inp => { inp.onfocus = (e) => e.target.select(); });
     const baseline = set.baseline || {};
     const setArrow = row.querySelector('[data-trend="set"]');
-    const refreshTrend = () => applySetTrend([setArrow], estSetTrend(set, baseline));
+    const refreshTrend = () => applySetTrend([setArrow], estSetTrend(set, baseline, ex, currentSessionBodyweight(), baseline.bw));
     refreshTrend();
     row.querySelector('.w').oninput = (e) => {
       set.weight = e.target.value; ex.lastTouched = Date.now(); if (!ex.firstTouched) ex.firstTouched = ex.lastTouched; persistDraftDebounced();
-      // Only the first edit counts as the "weight was manually entered"
-      // moment for time-per-set purposes (see captureTimePerSet) — further
-      // edits to the same set shouldn't push the start point later.
-      if (set.weightEntryTs == null) set.weightEntryTs = Date.now();
       refreshTrend();
     };
-    // Auto-start arming: comparing against the live previous value (the old
-    // "wasEmpty" check) can't tell a fresh entry from an edit once a reps
-    // field already holds something — the onfocus handler above selects the
-    // existing text, so typing over a carried-over/already-entered value
-    // replaces it in a single oninput event and never passes through an
-    // empty intermediate state for that check to catch. Arm explicitly on
-    // focus instead (every time the field is entered, whatever it holds),
-    // and fire auto-start once on the very next change, then disarm — so
-    // re-typing a value still starts the timer, but further keystrokes
-    // while still editing that same value don't restart it repeatedly.
+    // Timer auto-start no longer fires off reps entry — it fires off the
+    // "mark set done" checkmark instead (see the data-set-done handler
+    // below). These handlers just record the value and the timing stats.
     if (ex.unilateral) {
       const rlInput = row.querySelector('.rl');
       const rr2Input = row.querySelector('.rr2');
-      let rlAutoStartArmed = false, rr2AutoStartArmed = false;
-      rlInput.addEventListener('focus', () => { rlAutoStartArmed = true; });
       rlInput.oninput = (e) => {
         set.repsR = e.target.value; ex.lastTouched = Date.now(); if (!ex.firstTouched) ex.firstTouched = ex.lastTouched; ex.done = false; persistDraftDebounced();
         refreshTrend();
-        if (rlAutoStartArmed && set.repsR) autoStartRestOrStopwatch(set);
-        captureTimePerSet(ex, set, i);
-        captureSetTransitionTime(set);
-        rlAutoStartArmed = false;
       };
-      rr2Input.addEventListener('focus', () => { rr2AutoStartArmed = true; });
       rr2Input.oninput = (e) => {
         set.repsL = e.target.value; ex.lastTouched = Date.now(); if (!ex.firstTouched) ex.firstTouched = ex.lastTouched; ex.done = false; persistDraftDebounced();
         refreshTrend();
-        if (rr2AutoStartArmed && set.repsL) autoStartRestOrStopwatch(set);
-        captureTimePerSet(ex, set, i);
-        captureSetTransitionTime(set);
-        rr2AutoStartArmed = false;
       };
     } else {
       const rInput = row.querySelector('.r');
-      let rAutoStartArmed = false;
-      rInput.addEventListener('focus', () => { rAutoStartArmed = true; });
       rInput.oninput = (e) => {
         set.reps = e.target.value; ex.lastTouched = Date.now(); if (!ex.firstTouched) ex.firstTouched = ex.lastTouched; ex.done = false; persistDraftDebounced();
         refreshTrend();
-        if (rAutoStartArmed && set.reps) autoStartRestOrStopwatch(set);
-        captureTimePerSet(ex, set, i);
-        captureSetTransitionTime(set);
-        rAutoStartArmed = false;
       };
     }
     row.querySelector('.rr').oninput = (e) => { set.rir = e.target.value; ex.lastTouched = Date.now(); if (!ex.firstTouched) ex.firstTouched = ex.lastTouched; ex.done = false; persistDraftDebounced(); refreshTrend(); };
@@ -5435,17 +5619,82 @@ function renderSets(root, ex) {
         e.currentTarget.classList.toggle('checked');
       };
     } else {
-      row.querySelector('[data-set-media]').onclick = () => root._triggerSetMedia(i);
+      // Marking a set done is now the rest-timer trigger (replaces the old
+      // reps-entry / Add-Set auto-start mechanisms). Un-marking never
+      // re-fires the timer — only the off-to-on transition does.
+      row.querySelector('[data-set-done]').onclick = () => {
+        const wasDone = set.done;
+        set.done = !set.done;
+        ex.lastTouched = Date.now();
+        if (!ex.firstTouched) ex.firstTouched = ex.lastTouched;
+        persistDraftDebounced();
+        if (!wasDone && set.done) autoStartRestOrStopwatch(set);
+        renderSets(root, ex);
+      };
     }
     container.appendChild(row);
 
-    // Per-set media: only shown once something's actually attached — view
-    // existing thumbs and remove any of them. Adding more happens via the
-    // camera button on the row above, not a dashed box taking up space
-    // on every set. Stays visible in select mode too — selecting sets for
-    // deletion shouldn't hide what's already attached to them.
-    const mediaStrip = renderEditableMediaStrip(set.media, { noAdd: true });
-    if (mediaStrip) {
+    // Camera/media + note live in one row directly under each set row.
+    // Empty state: two equal-width bars side by side. Once media exists,
+    // the camera bar is replaced in-place by the thumbnail strip (with its
+    // own "+" tile to add more) and the note button sits beside it on the
+    // same line, instead of dropping to a row of its own. Hidden in select
+    // mode — adding media/notes mid-selection doesn't make sense.
+    if (!setLogSelectMode) {
+      const actionsRow = document.createElement('div');
+      actionsRow.className = 'set-actions-row' + (set.media.length ? ' has-media' : '');
+
+      if (set.media.length) {
+        const mediaStrip = renderEditableMediaStrip(set.media, { noAdd: false });
+        mediaStrip.className += ' set-media-inline';
+        mediaStrip.querySelectorAll('[data-rm-media]').forEach(btn => {
+          btn.onclick = async () => {
+            const idx = parseInt(btn.dataset.rmMedia, 10);
+            const ok = await appConfirmDelete('Remove this media?');
+            if (!ok) return;
+            const item = set.media[idx];
+            if (item) await deleteMediaFile(item);
+            set.media.splice(idx, 1);
+            persistDraft();
+            renderSets(root, ex);
+          };
+        });
+        const addBtn = mediaStrip.querySelector('[data-add-media]');
+        if (addBtn) addBtn.onclick = () => root._triggerSetMedia(i);
+        const mediaHalf = document.createElement('div');
+        mediaHalf.className = 'set-media-half';
+        mediaHalf.appendChild(mediaStrip);
+        actionsRow.appendChild(mediaHalf);
+      } else {
+        const mediaBar = document.createElement('button');
+        mediaBar.className = 'set-media-bar';
+        mediaBar.title = 'Attach photo or video';
+        mediaBar.innerHTML = ICON_CAMERA_SVG + `<span>Add media</span>`;
+        mediaBar.onclick = () => root._triggerSetMedia(i);
+        actionsRow.appendChild(mediaBar);
+      }
+
+      const noteBar = document.createElement('button');
+      noteBar.className = 'set-media-bar set-note-bar' + (set.note ? ' has-note' : '');
+      noteBar.title = set.note ? 'Edit note for this set' : 'Add note for this set';
+      noteBar.innerHTML = ICON_NOTE_SVG + `<span>${set.note ? 'Note' : 'Add note'}</span>`;
+      noteBar.onclick = async () => {
+        const result = await showAppTextPrompt('Note for this set', 'e.g. felt heavy on the last rep', set.note ? 'Save' : 'Add', set.note || '');
+        if (result === undefined) return; // cancelled
+        set.note = result; // '' clears it
+        ex.lastTouched = Date.now();
+        if (!ex.firstTouched) ex.firstTouched = ex.lastTouched;
+        persistDraftDebounced();
+        renderSets(root, ex);
+      };
+      actionsRow.appendChild(noteBar);
+
+      container.appendChild(actionsRow);
+    } else if (set.media.length) {
+      // Select mode: no add controls, but keep existing media visible and
+      // removable — selecting sets for deletion shouldn't hide what's
+      // already attached to them.
+      const mediaStrip = renderEditableMediaStrip(set.media, { noAdd: true });
       mediaStrip.style.margin = '4px 0 12px 0';
       mediaStrip.querySelectorAll('[data-rm-media]').forEach(btn => {
         btn.onclick = async () => {
@@ -5494,47 +5743,11 @@ function persistDraftDebounced() {
 function autoStartRestOrStopwatch(set) {
   if (!settings.autoStartTimer) return;
   const target = settings.autoStartTarget || 'timer';
-  if (target === 'timer' || target === 'both') startRestTimer(set.rest || settings.restDefault);
+  if (target === 'timer' || target === 'both') startRestTimer(restDuration);
   // Stopwatch only starts if it isn't already running — it's meant to
   // accumulate for the whole session, not restart on every set the way
   // the countdown intentionally re-arms each time.
   if (target === 'stopwatch' || target === 'both') { if (!swStartTimestamp) startStopwatch(); }
-}
-/* Records how long it took to log this set's reps after the rest timer
-   for the previous set naturally ran out (restTimerEndedAt, set once by
-   fireRestAlarm). Fires on every reps keystroke but only actually records
-   once per rest — the moment it does, restTimerEndedAt is cleared, so
-   further edits to the same or a later set don't re-trigger it. If the
-   rest timer was never running (or was stopped manually) this is a no-op,
-   so a set only carries a transitionSec when there's something real to
-   measure. */
-function captureSetTransitionTime(set) {
-  if (restTimerEndedAt == null) return;
-  set.transitionSec = Math.max(0, Math.round((Date.now() - restTimerEndedAt) / 1000));
-  restTimerEndedAt = null;
-  persistDraftDebounced();
-}
-/* "Time per set" — the number shown on Today's/Yesterday's/Last Tracked
-   Workout next to each set, and averaged for that screen's top card.
-   Set 1 of an exercise: from the first manual weight edit (weightEntryTs)
-   to reps being logged — or, if weight was left at its carried-over value
-   and never touched, from the moment the exercise was opened (openedTs)
-   instead. Set 2 onward: from the PREVIOUS set's rest timer ending
-   (restTimerEndedAt) to this set's reps being logged — never from the
-   previous set's reps-entry, which would fold the entire rest period into
-   the measurement. Must run before captureSetTransitionTime() clears
-   restTimerEndedAt, since it reads (not clears) the same value — the two
-   are independent stats and this one shouldn't affect the other. A set
-   with no valid start point (e.g. the very first rest of the workout
-   never finished, mid-session exercise edits broke the chain) is left
-   without a timePerSetSec rather than recording a misleading value; it's
-   simply skipped everywhere the stat is displayed or averaged. */
-function captureTimePerSet(ex, set, i) {
-  if (set.repsEntryTs == null) set.repsEntryTs = Date.now();
-  const start = i === 0 ? (set.weightEntryTs != null ? set.weightEntryTs : ex.openedTs) : restTimerEndedAt;
-  if (start == null) return;
-  set.timePerSetSec = Math.max(0, Math.round((set.repsEntryTs - start) / 1000));
-  persistDraftDebounced();
 }
 function startRestTimer(seconds) {
   stopRestTimer();
@@ -5666,9 +5879,7 @@ function updateStopwatchDisplay() {
   if (restEndTime == null && !restPaused && (swStartTimestamp != null || swElapsedMs > 0)) updateHotbarTimerLabel();
 }
 function fireRestAlarm() {
-  restTimerEndedAt = Date.now();
   playAlarmBeeps();
-  try { if (navigator.vibrate) navigator.vibrate([250,120,250,120,250]); } catch(e){}
   try {
     if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
       new Notification('Rest complete', { body: 'Time for your next set' });
@@ -5699,6 +5910,7 @@ function ensureAudioCtx() {
    which screen the user is on when they tap it. */
 let activeAlarmAudio = null;
 let activeBeepOscillators = [];
+let activeVibrateTimeouts = [];
 let alarmAutoHideTimeout = null;
 function showAlarmStopBanner() {
   const el = document.getElementById('alarmStopBanner');
@@ -5713,6 +5925,8 @@ function hideAlarmStopBanner() {
 }
 function stopAlarmSound() {
   if (alarmAutoHideTimeout) { clearTimeout(alarmAutoHideTimeout); alarmAutoHideTimeout = null; }
+  activeVibrateTimeouts.forEach(t => clearTimeout(t));
+  activeVibrateTimeouts = [];
   if (activeAlarmAudio) {
     try { activeAlarmAudio.pause(); activeAlarmAudio.currentTime = 0; } catch (e) {}
     activeAlarmAudio = null;
@@ -5730,35 +5944,62 @@ function playAlarmBeeps() {
       const audio = new Audio(settings.customAlarmData);
       activeAlarmAudio = audio;
       audio.addEventListener('ended', () => { if (activeAlarmAudio === audio) { activeAlarmAudio = null; hideAlarmStopBanner(); } });
-      audio.play().catch(() => { activeAlarmAudio = null; playDefaultBeeps(); });
+      audio.play().then(() => {
+        try { if (navigator.vibrate) navigator.vibrate(200); } catch(e){}
+      }).catch(() => { activeAlarmAudio = null; playDefaultBeeps(); });
       return;
     } catch (e) { activeAlarmAudio = null; /* fall through to default */ }
   }
   playDefaultBeeps();
 }
+/* Soft two-note "bloop" chime — replaces the old single 880Hz sine beep,
+   which cut on/off with a hard linear ramp and read as piercing at 0.35
+   gain. This is lower-gain, uses a proper exponential decay tail (how
+   real bells/notification chimes actually die out, instead of an abrupt
+   cutoff), and pairs a low note with a soft higher note a beat later for
+   that gentle "console notification" character rather than a single flat
+   tone. Shared by both the real alarm and the Settings preview so they
+   always sound identical. Returns the chime's own duration in seconds so
+   callers can space repeats correctly. */
+function scheduleCozyChime(ctx, start, oscArray) {
+  const notes = [
+    { freq: 587.33, delay: 0,    dur: 0.30, peak: 0.16 }, // D5 — soft low note
+    { freq: 880.00, delay: 0.10, dur: 0.38, peak: 0.14 }  // A5 — softer, slightly higher, arrives just after
+  ];
+  notes.forEach(n => {
+    const t0 = start + n.delay;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = n.freq;
+    gain.gain.setValueAtTime(0, t0);
+    gain.gain.linearRampToValueAtTime(n.peak, t0 + 0.035); // soft, unhurried attack
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + n.dur); // natural fade instead of a hard cutoff
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(t0); osc.stop(t0 + n.dur + 0.02);
+    oscArray.push(osc);
+  });
+  const last = notes[notes.length - 1];
+  return last.delay + last.dur;
+}
 function playDefaultBeeps() {
   try {
     const ctx = ensureAudioCtx();
     if (!ctx) { hideAlarmStopBanner(); return; }
-    const dur = 0.66;   // was 0.22 — each beep now lasts 3x as long
-    const gap = 0.9;    // was 0.38 — silence between beeps increased 50% (0.16s -> 0.24s)
+    const gap = 0.8085;   // silence between chime repeats — 10% slower than the 0.735 cut
     const count = 3;
     activeBeepOscillators = [];
+    activeVibrateTimeouts = [];
+    let chimeDur = 0;
     for (let i = 0; i < count; i++) {
       const start = ctx.currentTime + i * gap;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = 880; // lowered from 2637 (E7) to 880 (A5) — less piercing
-      gain.gain.setValueAtTime(0, start);
-      gain.gain.linearRampToValueAtTime(0.35, start + 0.03);
-      gain.gain.setValueAtTime(0.35, start + dur - 0.08);
-      gain.gain.linearRampToValueAtTime(0, start + dur);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(start); osc.stop(start + dur + 0.02);
-      activeBeepOscillators.push(osc);
+      chimeDur = scheduleCozyChime(ctx, start, activeBeepOscillators);
+      if (navigator.vibrate) {
+        const vt = setTimeout(() => { try { navigator.vibrate(140); } catch(e){} }, i * gap * 1000);
+        activeVibrateTimeouts.push(vt);
+      }
     }
-    const totalMs = ((count - 1) * gap + dur + 0.05) * 1000;
+    const totalMs = ((count - 1) * gap + chimeDur + 0.05) * 1000;
     alarmAutoHideTimeout = setTimeout(() => { activeBeepOscillators = []; alarmAutoHideTimeout = null; hideAlarmStopBanner(); }, totalMs);
   } catch (e) { hideAlarmStopBanner(); }
 }
@@ -5797,22 +6038,13 @@ function toggleSoundPreview(key) {
     try {
       const ctx = ensureAudioCtx();
       if (!ctx) { previewingKey = null; render(); return; }
-      const dur = 0.66, gap = 0.9, count = 3;
+      const gap = 0.8085, count = 3;
+      let chimeDur = 0;
       for (let i = 0; i < count; i++) {
         const start = ctx.currentTime + i * gap;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = 880;
-        gain.gain.setValueAtTime(0, start);
-        gain.gain.linearRampToValueAtTime(0.35, start + 0.03);
-        gain.gain.setValueAtTime(0.35, start + dur - 0.08);
-        gain.gain.linearRampToValueAtTime(0, start + dur);
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(start); osc.stop(start + dur + 0.02);
-        previewBeepOscillators.push(osc);
+        chimeDur = scheduleCozyChime(ctx, start, previewBeepOscillators);
       }
-      const totalMs = ((count - 1) * gap + dur + 0.05) * 1000;
+      const totalMs = ((count - 1) * gap + chimeDur + 0.05) * 1000;
       previewAutoStopTimeout = setTimeout(() => { previewBeepOscillators = []; previewAutoStopTimeout = null; previewingKey = null; render(); }, totalMs);
     } catch (e) { previewingKey = null; }
   }
@@ -6054,7 +6286,8 @@ async function syncWorkoutToCloud(log) {
           reps_r: numOrNull(s.repsR),
           rir: numOrNull(s.rir),
           rpe: numOrNull(s.rpe),
-          rest_seconds: numOrNull(s.rest)
+          rest_seconds: numOrNull(s.rest),
+          is_warmup: !!s.isWarmup
         });
       });
     });
@@ -6210,7 +6443,8 @@ async function pullCloudWorkouts() {
         const repsFields = s.unilateral ? { repsL: s.reps_l, repsR: s.reps_r } : { reps: s.reps };
         exMap[s.exercise_name].sets.push({
           weight: s.weight, ...repsFields,
-          rir: s.rir, rpe: s.rpe, rest: s.rest_seconds, media: (localSet && localSet.media) || []
+          rir: s.rir, rpe: s.rpe, rest: s.rest_seconds, isWarmup: !!s.is_warmup,
+          media: (localSet && localSet.media) || []
         });
       });
       const log = {
@@ -6265,7 +6499,7 @@ async function finishWorkout() {
   if (draft.bodyweight === undefined || draft.bodyweight === '') { showToast('Enter your bodyweight before finishing'); return; }
   const endTime = Date.now();
   const cleanExercises = draft.exercises
-    .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, sets: ex.sets.filter(s => !setLacksPerformanceData(s, ex.unilateral)) }))
+    .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, bodyweightExercise: isBodyweightExercise(ex), sets: ex.sets.filter(s => !setLacksPerformanceData(s, ex.unilateral)) }))
     .filter(ex => ex.sets.length > 0);
   if (cleanExercises.length === 0) { showToast('Log at least one set before finishing'); return; }
 
@@ -6275,7 +6509,7 @@ async function finishWorkout() {
   const summary = [];
   cleanExercises.forEach(ex => {
     const exU = exerciseUnit(ex.name);
-    const topSet = topSetByEst(ex.sets);
+    const topSet = topSetByEst(ex.sets, ex, draft.bodyweight);
     const topEst = topSet ? topSet.est : 0, topWeight = topSet ? topSet.weight : 0, topReps = topSet ? topSet.reps : 0;
     const bestKey = nameKey(ex.name);
     const hadPrevBest = prevBest[bestKey] !== undefined;
@@ -6291,7 +6525,7 @@ async function finishWorkout() {
       status = 'pr'; detail = `New estimated 1RM: ${Math.round(topEst)}${exU} (${topWeight}${exU}×${topReps})`;
     } else {
       const priorEx = priorLog.exercises.find(x => sameExName(x.name, ex.name));
-      const priorTop = topSetByEst(priorEx.sets);
+      const priorTop = topSetByEst(priorEx.sets, priorEx, priorLog.bodyweight);
       const priorTopEst = priorTop ? priorTop.est : 0;
       const priorVol = exerciseVolume(priorEx.sets);
       // e1RM (weight+reps+effort combined) drives up/down/flat, not raw
@@ -6358,8 +6592,7 @@ async function recomputeBestLiftsFromHistory() {
     (entry.exercises || []).forEach(ex => {
       const key = nameKey(ex.name);
       (ex.sets || []).filter(hasSetData).forEach(s => {
-        const w = parseFloat(s.weight) || 0;
-        const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+        const est = estimate1RMForSet(s, ex, entry.bodyweight);
         if (!best[key] || est > best[key]) best[key] = est;
       });
     });
@@ -6371,7 +6604,7 @@ function renderMediaItem(item) {
   const playBadge = item.type === 'video' ? `<div class="thumb-play-badge">▶</div>` : '';
   if (item.idbKey) {
     return item.type === 'photo'
-      ? `<div class="log-media-thumb" data-media-idx="${idx}"><img data-media-key="${item.idbKey}"></div>`
+      ? `<div class="log-media-thumb" data-media-idx="${idx}"><img data-media-key="${item.idbKey}" alt="Workout progress photo"></div>`
       : `<div class="log-media-thumb" data-media-idx="${idx}"><video data-media-key="${item.idbKey}" muted playsinline preload="metadata"></video>${playBadge}</div>`;
   }
   const src = getMediaSrc(item);
@@ -6379,7 +6612,7 @@ function renderMediaItem(item) {
     // Has a Filesystem path but no immediately-usable uri (write_blob bug,
     // or a stale/rotated uri) — resolve async instead of writing it off.
     return item.type === 'photo'
-      ? `<div class="log-media-thumb" data-media-idx="${idx}"><img data-media-fspath="${item.path}" data-media-fsdir="${item.dir || 'DATA'}"></div>`
+      ? `<div class="log-media-thumb" data-media-idx="${idx}"><img data-media-fspath="${item.path}" data-media-fsdir="${item.dir || 'DATA'}" alt="Workout progress photo"></div>`
       : `<div class="log-media-thumb" data-media-idx="${idx}"><video data-media-fspath="${item.path}" data-media-fsdir="${item.dir || 'DATA'}" muted playsinline preload="metadata"></video>${playBadge}</div>`;
   }
   if (!src) return `<div class="log-media-tag">${item.type === 'video' ? '🎥' : '🖼️'} ${item.name || 'media'} (unavailable)</div>`;
@@ -6423,17 +6656,28 @@ function fmtRestShort(secs) {
   return `${s}s`;
 }
 /* Shared line formatter for a single logged set — used anywhere a set needs
-   to be displayed (Logs, Exercise History). RIR and RPE are independent
-   optional fields (a user only has to enter one), so both are shown only
-   when present. Rest duration is intentionally never shown here. */
-function formatSetLine(s, exName) {
+   to be displayed (Logs, Exercise History, Progress, All Exercises). RIR and
+   RPE are independent optional fields (a user only has to enter one), so
+   both are shown only when present. Rest duration is intentionally never
+   shown here.
+   ex + bodyweight are optional — pass them for a bodyweight-tracked
+   exercise (see isBodyweightExercise) to show "20kg (@80kg BW) x 4" instead
+   of just "20kg x 4", so the actual total load moved is visible at a
+   glance, not just the added-weight sliver. Bodyweight itself only shows
+   when it's actually known (some old sessions never had it entered) —
+   falls back to a plain line rather than showing "(@? BW)". */
+function formatSetLine(s, exName, ex, bodyweight) {
   const nz = (v) => (v === undefined || v === null || v === '') ? '?' : v;
   const nzWeight = (v) => (v === undefined || v === null || v === '') ? 0 : v;
   const repsTxt = (s.repsR !== undefined || s.repsL !== undefined)
     ? `R${nz(s.repsR)} / L${nz(s.repsL)}`
     : nz(s.reps);
   const unit = exName ? exerciseUnit(exName) : settings.units;
-  const parts = [`${nzWeight(s.weight)} ${unit} × ${repsTxt}`];
+  const bwOn = ex && isBodyweightExercise(ex) && bodyweight !== undefined && bodyweight !== '';
+  const weightTxt = bwOn
+    ? `${nzWeight(s.weight)} ${unit} (@${bodyweight} ${unit} BW)`
+    : `${nzWeight(s.weight)} ${unit}`;
+  const parts = [`${weightTxt} × ${repsTxt}`];
   const effort = [];
   if (s.rir !== '' && s.rir !== undefined && s.rir !== null) effort.push(`${s.rir} RIR`);
   if (s.rpe !== '' && s.rpe !== undefined && s.rpe !== null) effort.push(`${s.rpe} RPE`);
@@ -6452,6 +6696,36 @@ function setNumberLabel(sets, i) {
   for (let j = 0; j <= i; j++) { if (!!sets[j].isWarmup === isWarmup) n++; }
   return isWarmup ? `Warmup Set ${n}` : `Set ${n}`;
 }
+/* Same-exercise working sets from the most recent PRIOR session relative to
+   a given entry — historyEntries is sorted newest-first (see loadHistory),
+   so this walks forward from the entry's own position. Warmups excluded,
+   matching findMostRecentExerciseSets' indexing so "set 2" here always
+   means the same thing "set 2" means everywhere else (Today's Workout,
+   Progress, the live tracking screen). Used to show a per-set ▲/▼ in Logs
+   and Today's Performance next to each set, not just the single top-set
+   comparison those screens already show per exercise. */
+function findPrevSessionSets(name, beforeEntryId) {
+  const idx = historyEntries.findIndex(e => e.id === beforeEntryId);
+  if (idx === -1) return null;
+  for (let i = idx + 1; i < historyEntries.length; i++) {
+    const entry = historyEntries[i];
+    const ex = (entry.exercises || []).find(e => sameExName(e.name, name));
+    if (!ex) continue;
+    const sets = (ex.sets || []).filter(s => !s.isWarmup && hasSetData(s));
+    if (sets.length) return { sets, bodyweight: entry.bodyweight };
+  }
+  return null;
+}
+/* Small inline ▲/▼ for a single logged set line — same up/down verdict
+   (estSetTrend, e1RM-based, RIR/RPE-aware) the live tracking screen shows,
+   just computed after the fact from history instead of a stored draft
+   baseline. */
+function setLineTrendHtml(trend) {
+  if (!trend) return '';
+  return trend === 'up'
+    ? `<span class="set-line-trend up" title="Stronger than this set last session">▲</span>`
+    : `<span class="set-line-trend down" title="Weaker than this set last session">▼</span>`;
+}
 /* Builds the exercise/set/media markup for one log's expanded body. Kept
    out of renderLogs' upfront loop and called lazily on first open — a
    history screen with a lot of logged workouts used to build and insert
@@ -6462,28 +6736,32 @@ function setNumberLabel(sets, i) {
    real weight on the accordion's own expand animation for whichever entry
    actually gets opened — both of which read as "throttling when opening a
    log with lots of content". */
-function formatSetTime(sec) {
-  return `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, '0')}`;
-}
-/* showSetTimes gates the per-set time-per-set label (see captureTimePerSet)
-   — on for Today's/Yesterday's/Last Tracked Workout (renderWorkoutDetail),
-   off for History/Logs, per spec: that stat belongs on the recent-workout
-   view only, not the log list. */
-function buildHistoryBodyHTML(e, dayMedia, hasDayMedia, showSetTimes) {
+function buildHistoryBodyHTML(e, dayMedia, hasDayMedia) {
   return `
     ${e.exercises.map(ex => {
-      const top = topSetByEst(ex.sets.filter(hasSetData));
+      const top = topSetByEst(ex.sets.filter(hasSetData), ex, e.bodyweight);
       const pct = top && top.est ? exerciseStrengthTrend(ex.name, e.id) : null;
       const pctTxt = pct === null ? '' : ` (${pct >= 0 ? '+' : ''}${Math.round(pct * 10) / 10}%)`;
       const prHtml = top && top.est ? `<span class="hex-pr">Est. PR ${top.est}${exerciseUnit(ex.name)}${pctTxt}</span>` : '';
+      const prevData = findPrevSessionSets(ex.name, e.id);
+      const prevSets = prevData ? prevData.sets : null;
+      let workingIdx = 0;
       return `
       <div class="hex">
         <div class="hex-name" data-ex="${ex.name}"><span>${ex.name}</span>${prHtml}</div>
-        ${ex.sets.map((s,i) => `
+        ${ex.sets.map((s,i) => {
+          let trendHtml = '';
+          if (!s.isWarmup) {
+            const baseline = prevSets && prevSets.length ? prevSets[Math.min(workingIdx, prevSets.length - 1)] : null;
+            trendHtml = setLineTrendHtml(estSetTrend(s, baseline, ex, e.bodyweight, prevData ? prevData.bodyweight : undefined));
+            workingIdx++;
+          }
+          return `
           <div style="margin-bottom:10px;">
-            <div class="hex-sets mono">${setNumberLabel(ex.sets, i)}: ${formatSetLine(s, ex.name)}${showSetTimes && typeof s.timePerSetSec === 'number' ? ` <span class="hex-pr">${formatSetTime(s.timePerSetSec)}</span>` : ''}</div>
+            <div class="hex-sets mono">${setNumberLabel(ex.sets, i)}: ${formatSetLine(s, ex.name, ex, e.bodyweight)} ${trendHtml}</div>
             ${s.media && s.media.length ? `<div class="media-strip">${s.media.map(renderMediaItem).join('')}</div>` : ''}
-          </div>`).join('')}
+          </div>`;
+        }).join('')}
       </div>`;
     }).join('')}
     ${hasDayMedia ? `
@@ -6598,8 +6876,7 @@ function renderExerciseHistory(root) {
     const ex = e.exercises.find(x => sameExName(x.name, exerciseHistoryName));
     ex.sets.forEach((s, i) => {
       if (s.isWarmup) return;
-      const w = parseFloat(s.weight) || 0;
-      const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+      const est = estimate1RMForSet(s, ex, e.bodyweight);
       if (est > prEst) { prEst = est; prEntryId = e.id; prSetIdx = i; }
     });
   });
@@ -6614,7 +6891,7 @@ function renderExerciseHistory(root) {
     if (idx === 0 && relevant.length > 1) {
       const prevEntry = relevant[1];
       const prevEx = prevEntry.exercises.find(x => sameExName(x.name, exerciseHistoryName));
-      const top = topSetByEst(ex.sets), prevTop = topSetByEst(prevEx.sets);
+      const top = topSetByEst(ex.sets, ex, e.bodyweight), prevTop = topSetByEst(prevEx.sets, prevEx, prevEntry.bodyweight);
       if (top && prevTop) {
         const estPct = prevTop.est > 0 ? ((top.est - prevTop.est) / prevTop.est) * 100 : null;
         compareHtml = `<div class="ex-hist-compare"><span class="ex-hist-compare-label">vs last time</span>${badgeFor(estPct, 'Strength')}</div>`;
@@ -6627,7 +6904,7 @@ function renderExerciseHistory(root) {
       const row = document.createElement('div');
       row.className = 'ex-hist-set-row' + (isPR ? ' pr' : '');
       row.innerHTML = `
-        <div class="ex-hist-set-line mono">${isPR ? '<span class="pr-badge">PR</span>' : ''}${setNumberLabel(ex.sets, i)}: ${formatSetLine(s, exerciseHistoryName)}</div>
+        <div class="ex-hist-set-line mono">${isPR ? '<span class="pr-badge">PR</span>' : ''}${setNumberLabel(ex.sets, i)}: ${formatSetLine(s, exerciseHistoryName, ex, e.bodyweight)}</div>
         ${s.media && s.media.length ? `<div class="media-strip">${s.media.map(renderMediaItem).join('')}</div>` : ''}
       `;
       setsWrap.appendChild(row);
@@ -6668,6 +6945,7 @@ function renderEditLog(root) {
     </div>
     <div class="section-label">Bodyweight (${settings.units})</div>
     <div class="field-block"><input type="number" step="0.1" id="bwInput" value="${w.bodyweight ?? ''}"></div>
+    <p class="sub" style="margin:-4px 0 13.8px;">Drag the handle to reorder exercises.</p>
     <div id="exEditList"></div>
     <input type="file" id="editMediaInput" accept="image/*,video/*" multiple style="display:none;">
     <button class="btn-primary" id="saveEditBtn" style="margin-top:14px;">Save Changes</button>
@@ -6711,20 +6989,36 @@ function renderEditLog(root) {
     renderEditLog(root);
   };
   const exList = root.querySelector('#exEditList');
+  const exBlocksWrap = document.createElement('div');
+  exBlocksWrap.id = 'exBlocksList';
+  exList.appendChild(exBlocksWrap);
   w.exercises.forEach((ex, exIdx) => {
     const selecting = editLogSelectExIdx === exIdx;
     const block = document.createElement('div');
     block.className = 'hex';
     block.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <div class="hex-name" style="cursor:default;">${ex.name}</div>
+        <div style="display:flex; align-items:center; min-width:0;">
+          <button class="drag-handle" title="Drag to reorder">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="hex-name" style="cursor:default;">${ex.name}</div>
+        </div>
         <div style="display:flex; gap:8px; flex-shrink:0;">
+          <button class="uni-toggle no-pop${isBodyweightExercise(ex) ? ' on' : ''}" data-ex-bw title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight for this workout is folded into every strength calculation and trend arrow for this exercise">BW</button>
+          <button class="uni-toggle no-pop${ex.unilateral ? ' on' : ''}" data-ex-uni title="One side at a time, tracked as separate R/L reps — applies to this log and future sessions, other past logs stay as recorded">L | R</button>
           <button class="icon-edit-btn danger${selecting ? ' text-mode' : ''}" data-del-ex title="${selecting ? 'Cancel' : 'Select sets to delete'}">${selecting ? 'Cancel' : ICON_TRASH_SVG}</button>
         </div>
       </div>
       <div class="col-labels ${ex.unilateral ? 'uni' : ''}"><div>SET</div><div></div><div>Weight</div>${ex.unilateral ? '<div>Reps R</div><div>Reps L</div>' : '<div>Reps</div>'}<div>RIR</div><div>RPE</div><div></div></div>
       <div class="setsEditContainer"></div>
     `;
+    block.querySelector('[data-ex-bw]').onclick = () => {
+      ex.bodyweightExercise = !isBodyweightExercise(ex);
+      syncExerciseCatalogSetting(ex.name, { bodyweightExercise: ex.bodyweightExercise });
+      persistEditDraft();
+      renderEditLog(root);
+    };
     const setsWrap = block.querySelector('.setsEditContainer');
     let editWarmupCount = 0, editWorkingCount = 0;
     ex.sets.forEach((s, sIdx) => {
@@ -6801,13 +7095,34 @@ function renderEditLog(root) {
       }
       const carryFrom = (settings.autoCarry && last) ? last : null;
       const next = ex.unilateral
-        ? { weight: carryFrom ? carryFrom.weight : '', repsR: '', repsL: '', rir: '', rpe: '', rest: carryFrom ? carryFrom.rest : settings.restDefault, media: [] }
-        : { weight: carryFrom ? carryFrom.weight : '', reps: '', rir: '', rpe: '', rest: carryFrom ? carryFrom.rest : settings.restDefault, media: [] };
+        ? { weight: carryFrom ? carryFrom.weight : '', repsR: '', repsL: '', rir: '', rpe: '', rest: carryFrom ? carryFrom.rest : restDuration, media: [] }
+        : { weight: carryFrom ? carryFrom.weight : '', reps: '', rir: '', rpe: '', rest: carryFrom ? carryFrom.rest : restDuration, media: [] };
       ex.sets.push(next);
       persistEditDraft();
       renderEditLog(root);
     };
     block.appendChild(addSetBtn);
+    // Unilateral toggle for this exercise within this historic log — mirrors
+    // the same control on the live tracking screen (renderSetLog). Converts
+    // this log's own sets in place (reps <-> repsR/repsL), then pushes the
+    // new flag into exercisesByDay so the day's definition — and therefore
+    // future sessions — picks it up too. Only this log entry is touched;
+    // every other already-saved log keeps whatever shape it was recorded in.
+    block.querySelector('[data-ex-uni]').onclick = () => {
+      const nowUnilateral = !ex.unilateral;
+      if (nowUnilateral) {
+        ex.sets.forEach(s => { s.repsR = s.reps ?? ''; s.repsL = s.reps ?? ''; delete s.reps; });
+      } else {
+        ex.sets.forEach(s => { s.reps = s.repsR ?? ''; delete s.repsR; delete s.repsL; });
+      }
+      ex.unilateral = nowUnilateral;
+      const dayList = exercisesByDay[w.day] || [];
+      const entry = dayList.find(e => sameExName(e.name, ex.name));
+      if (entry) { entry.unilateral = nowUnilateral; saveJSON('exercisesByDay', exercisesByDay); }
+      syncExerciseCatalogSetting(ex.name, { unilateral: nowUnilateral });
+      persistEditDraft();
+      renderEditLog(root);
+    };
     // The trash button just toggles select mode: tap once to enter it (camera
     // icons on each row swap for a selectable circle), tap again — now
     // showing "Cancel" — to back out without deleting anything. Actual
@@ -6855,8 +7170,9 @@ function renderEditLog(root) {
       };
       block.appendChild(delRow);
     }
-    exList.appendChild(block);
+    exBlocksWrap.appendChild(block);
   });
+  makeReorderable(exBlocksWrap, w.exercises, () => { persistEditDraft(); renderEditLog(root); }, '.hex');
 
   // Add a new exercise to this historic workout.
   const addExWrap = document.createElement('div');
@@ -6895,8 +7211,8 @@ function renderEditLog(root) {
         w.exercises.push({
           name, unilateral: uni,
           sets: [ uni
-            ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: settings.restDefault, media: [] }
-            : { weight: '', reps: '', rir: '', rpe: '', rest: settings.restDefault, media: [] } ]
+            ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: restDuration, media: [] }
+            : { weight: '', reps: '', rir: '', rpe: '', rest: restDuration, media: [] } ]
         });
         persistEditDraft();
         renderEditLog(root);
@@ -6998,9 +7314,9 @@ function renderProgress(root) {
   historyEntries.forEach(e => e.exercises.forEach(ex => ex.sets.forEach(s => {
     if (s.isWarmup) return;
     const w=parseFloat(s.weight)||0;
-    const est = estimate1RM(w, effectiveReps(s), s.rir, s.rpe);
+    const est = estimate1RMForSet(s, ex, e.bodyweight);
     const key = nameKey(ex.name);
-    if (!prMap[key] || est > prMap[key].est) prMap[key] = { est, weight:w, set:s, bw:e.bodyweight, name: ex.name };
+    if (!prMap[key] || est > prMap[key].est) prMap[key] = { est, weight:w, set:s, bw:e.bodyweight, name: ex.name, ex };
   })));
 
   content.innerHTML = `
@@ -7019,8 +7335,8 @@ function renderProgress(root) {
     const pr = prMap[key];
     const row = document.createElement('div');
     row.className = 'list-item';
-    const bwTxt = pr.bw ? ` · BW ${pr.bw}${settings.units}` : '';
-    row.innerHTML = `<div><div class="li-name">${pr.name}</div><div class="li-meta mono">${formatSetLine(pr.set, pr.name)} · est. 1RM ${pr.est}${exerciseUnit(pr.name)}${bwTxt}</div></div><div class="li-right">›</div>`;
+    const bwTxt = (pr.bw && !isBodyweightExercise(pr.ex)) ? ` · BW ${pr.bw}${settings.units}` : '';
+    row.innerHTML = `<div><div class="li-name">${pr.name}</div><div class="li-meta mono">${formatSetLine(pr.set, pr.name, pr.ex, pr.bw)} · est. 1RM ${pr.est}${exerciseUnit(pr.name)}${bwTxt}</div></div><div class="li-right">›</div>`;
     row.onclick = () => { exerciseHistoryName = pr.name; goTo('exercise-history'); };
     prList.appendChild(row);
   });
@@ -7219,17 +7535,16 @@ function renderSettings(root) {
     <div class="section-label">Exercises</div>
     <div id="exerciseDayList"></div>
     <div class="section-label">Preferences</div>
-    <div class="list-item"><div><div class="li-name">Auto-start timer on reps</div><div class="li-meta">Starts the rest timer as soon as you enter reps for a set</div></div><button class="uni-toggle ${settings.autoStartTimer ? 'on' : ''}" id="toggleAutoStartTimer">${settings.autoStartTimer ? 'On' : 'Off'}</button></div>
+    <div class="list-item"><div><div class="li-name">Auto-start timer on set done</div><div class="li-meta">Starts the rest timer as soon as you tap the checkmark to mark a set done</div></div><button class="uni-toggle ${settings.autoStartTimer ? 'on' : ''}" id="toggleAutoStartTimer">${settings.autoStartTimer ? 'On' : 'Off'}</button></div>
     <div class="chip-grid" id="autoStartTargetGrid" style="margin-bottom:14px;">
       <button class="chip ${(settings.autoStartTarget||'timer')==='timer'?'selected':''}" data-v="timer">Timer</button>
       <button class="chip ${(settings.autoStartTarget||'timer')==='stopwatch'?'selected':''}" data-v="stopwatch">Stopwatch</button>
       <button class="chip ${(settings.autoStartTarget||'timer')==='both'?'selected':''}" data-v="both">Both</button>
     </div>
-    <div class="list-item"><div><div class="li-name">Auto-start timer on Add Set</div><div class="li-meta">If you skip logging reps for a set and tap Add Set, starts the timer then instead — only when reps weren't entered</div></div><button class="uni-toggle ${settings.autoStartOnAddSet ? 'on' : ''}" id="toggleAutoStartOnAddSet">${settings.autoStartOnAddSet ? 'On' : 'Off'}</button></div>
     <div class="list-item"><div><div class="li-name">Auto-carry set data</div><div class="li-meta">Pre-fills weight/reps/RIR/RPE from your last set and exercise history</div></div><button class="uni-toggle ${settings.autoCarry ? 'on' : ''}" id="toggleAutoCarry">${settings.autoCarry ? 'On' : 'Off'}</button></div>
     <div class="list-item"><div><div class="li-name">Auto-queue next exercise</div><div class="li-meta">Tapping Done jumps straight into the next exercise, in this split's list order, instead of back to the list</div></div><button class="uni-toggle ${settings.autoQueueExercises ? 'on' : ''}" id="toggleAutoQueueExercises">${settings.autoQueueExercises ? 'On' : 'Off'}</button></div>
-    <div class="section-label">Rest Timer Default</div>
-    <div class="field-block"><input type="number" id="restDefaultInput" value="${settings.restDefault}"></div>
+    <div class="section-label">Rest Timer Duration</div>
+    <div class="field-block"><input type="number" id="restDefaultInput" value="${restDuration}"></div>
     <div class="section-label">Timer Sound</div>
     <div class="chip-grid" style="margin-bottom:9px;">
       <button class="chip ${settings.alarmSound!=='custom'?'selected':''} ${previewingKey==='default'?'previewing':''}" id="soundDefault">Default <span class="preview-ind">${previewingKey==='default' ? '❚❚' : '▶'}</span></button>
@@ -7266,6 +7581,7 @@ function renderSettings(root) {
     <div class="section-label">Data</div>
     <button class="btn-secondary" id="backupBtn">Backup & Restore</button>
     <button class="btn-secondary btn-danger" id="logoutBtn">Log Out</button>
+    <button class="btn-secondary btn-danger" id="deleteAccountBtn" style="margin-top:8px;">Delete Account</button>
   `;
   root.querySelector('#backBtn').onclick = () => goBack();
   root.querySelector('#paletteEditToggle').onclick = () => {
@@ -7422,12 +7738,6 @@ function renderSettings(root) {
       renderSettings(root);
     };
   });
-  root.querySelector('#toggleAutoStartOnAddSet').onclick = async (e) => {
-    settings.autoStartOnAddSet = !settings.autoStartOnAddSet;
-    await saveJSON('settings', settings);
-    e.currentTarget.classList.toggle('on', settings.autoStartOnAddSet);
-    e.currentTarget.textContent = settings.autoStartOnAddSet ? 'On' : 'Off';
-  };
   root.querySelector('#toggleAutoQueueExercises').onclick = async (e) => {
     settings.autoQueueExercises = !settings.autoQueueExercises;
     await saveJSON('settings', settings);
@@ -7441,8 +7751,8 @@ function renderSettings(root) {
     e.currentTarget.textContent = settings.autoCarry ? 'On' : 'Off';
   };
   root.querySelector('#restDefaultInput').onchange = async (e) => {
-    settings.restDefault = parseInt(e.target.value,10) || 120;
-    await saveJSON('settings', settings);
+    restDuration = parseInt(e.target.value,10) || 120;
+    await saveJSON('restDurationPref', restDuration);
   };
   root.querySelector('#soundDefault').onclick = async () => {
     settings.alarmSound = 'default';
@@ -7536,6 +7846,27 @@ function renderSettings(root) {
     loggedIn = false;
     updateHotbarVisibility();
     goTo('login');
+  };
+  root.querySelector('#deleteAccountBtn').onclick = async () => {
+    const ok = await appConfirmDelete('This permanently deletes your account and all workouts, logs, and settings. This cannot be undone.');
+    if (!ok) return;
+    const typed = await showAppPrompt('Type DELETE to confirm account deletion.', 'DELETE', 'Delete Account');
+    if (typed !== 'DELETE') { showToast('Account deletion cancelled'); return; }
+    try {
+      const { error } = await supabase.rpc('delete_account');
+      if (error) throw error;
+    } catch (e) {
+      console.error('delete_account failed', e);
+      showToast('Could not delete account — try again or contact support');
+      return;
+    }
+    teardownRealtimeSync();
+    await supabase.auth.signOut();
+    account = null;
+    loggedIn = false;
+    updateHotbarVisibility();
+    goTo('login');
+    showToast('Account deleted');
   };
 }
 
@@ -7637,10 +7968,10 @@ function renderSetupFeatures(root) {
       <button class="chip wide add-custom-color-btn" id="setupAddCustomColorBtn">+ Add as custom color</button>
     </div>
 
-    <div class="section-label">Rest Timer Default</div>
+    <div class="section-label">Rest Timer Duration</div>
     <div class="field-block">
       <label class="lbl" for="setupRestTimerInput">Rest time (seconds)</label>
-      <input type="number" id="setupRestTimerInput" inputmode="numeric" value="${settings.restDefault || 120}">
+      <input type="number" id="setupRestTimerInput" inputmode="numeric" value="${restDuration || 120}">
     </div>
 
     <div class="section-label">Timer Sound</div>
@@ -7677,8 +8008,7 @@ function renderSetupFeatures(root) {
     </div>
 
     <div class="section-label">Preferences</div>
-    <div class="list-item"><div><div class="li-name">Auto-start timer on reps</div><div class="li-meta">Starts the rest timer as soon as you enter reps for a set</div></div><button class="uni-toggle ${settings.autoStartTimer ? 'on' : ''}" id="setupToggleAutoStartTimer">${settings.autoStartTimer ? 'On' : 'Off'}</button></div>
-    <div class="list-item"><div><div class="li-name">Auto-start timer on Add Set</div><div class="li-meta">If you skip logging reps for a set and tap Add Set, starts the timer then instead — only when reps weren't entered</div></div><button class="uni-toggle ${settings.autoStartOnAddSet ? 'on' : ''}" id="setupToggleAutoStartOnAddSet">${settings.autoStartOnAddSet ? 'On' : 'Off'}</button></div>
+    <div class="list-item"><div><div class="li-name">Auto-start timer on set done</div><div class="li-meta">Starts the rest timer as soon as you tap the checkmark to mark a set done</div></div><button class="uni-toggle ${settings.autoStartTimer ? 'on' : ''}" id="setupToggleAutoStartTimer">${settings.autoStartTimer ? 'On' : 'Off'}</button></div>
     <div class="list-item"><div><div class="li-name">Auto-carry set data</div><div class="li-meta">Pre-fills weight/reps/RIR/RPE from your last set and exercise history</div></div><button class="uni-toggle ${settings.autoCarry ? 'on' : ''}" id="setupToggleAutoCarry">${settings.autoCarry ? 'On' : 'Off'}</button></div>
     <div class="list-item"><div><div class="li-name">Auto-queue next exercise</div><div class="li-meta">Tapping Done jumps straight into the next exercise, in this split's list order, instead of back to the list</div></div><button class="uni-toggle ${settings.autoQueueExercises ? 'on' : ''}" id="setupToggleAutoQueueExercises">${settings.autoQueueExercises ? 'On' : 'Off'}</button></div>
 
@@ -7777,8 +8107,8 @@ function renderSetupFeatures(root) {
   /* -- rest timer -- */
   root.querySelector('#setupRestTimerInput').onchange = async () => {
     const val = parseInt(root.querySelector('#setupRestTimerInput').value, 10);
-    settings.restDefault = (Number.isFinite(val) && val > 0) ? val : 120;
-    await saveJSON('settings', settings);
+    restDuration = (Number.isFinite(val) && val > 0) ? val : 120;
+    await saveJSON('restDurationPref', restDuration);
   };
 
   /* -- timer sound -- */
@@ -7874,12 +8204,6 @@ function renderSetupFeatures(root) {
     e.currentTarget.textContent = settings.autoStartTimer ? 'On' : 'Off';
     await saveJSON('settings', settings);
   };
-  root.querySelector('#setupToggleAutoStartOnAddSet').onclick = async (e) => {
-    settings.autoStartOnAddSet = !settings.autoStartOnAddSet;
-    e.currentTarget.classList.toggle('on', settings.autoStartOnAddSet);
-    e.currentTarget.textContent = settings.autoStartOnAddSet ? 'On' : 'Off';
-    await saveJSON('settings', settings);
-  };
   root.querySelector('#setupToggleAutoCarry').onclick = async (e) => {
     settings.autoCarry = !settings.autoCarry;
     e.currentTarget.classList.toggle('on', settings.autoCarry);
@@ -7898,7 +8222,8 @@ function renderSetupFeatures(root) {
     // straight from the input to Done — read it fresh rather than relying
     // on the onchange handler having already fired.
     const val = parseInt(root.querySelector('#setupRestTimerInput').value, 10);
-    settings.restDefault = (Number.isFinite(val) && val > 0) ? val : 120;
+    restDuration = (Number.isFinite(val) && val > 0) ? val : 120;
+    await saveJSON('restDurationPref', restDuration);
     settings.onboardingDone = true;
     await saveJSON('settings', settings);
     justFinishedOnboarding = true;
@@ -8187,24 +8512,33 @@ function rwRenderPanel() {
     restBoundEls.push(displayEl);
     syncRestDisplayText();
     if (idleOrStopped) displayEl.textContent = '--:--';
+    const commitDurFromInput = () => {
+      const inp = rwPanelEl.querySelector('#rwDurInput');
+      const v = parseInt(inp.value, 10);
+      if (Number.isFinite(v) && v > 0) {
+        restDuration = v;
+        saveJSON('restDurationPref', restDuration);
+      }
+    };
     rwPanelEl.querySelector('#rwDurMinus').onclick = () => {
       const inp = rwPanelEl.querySelector('#rwDurInput');
       inp.value = Math.max(5, (parseInt(inp.value,10) || restDuration) - 15);
+      commitDurFromInput();
     };
     rwPanelEl.querySelector('#rwDurPlus').onclick = () => {
       const inp = rwPanelEl.querySelector('#rwDurInput');
       inp.value = (parseInt(inp.value,10) || restDuration) + 15;
+      commitDurFromInput();
     };
+    rwPanelEl.querySelector('#rwDurInput').oninput = commitDurFromInput;
     rwPanelEl.querySelector('#rwActionBtn').onclick = () => {
       ensureAudioCtx();
       requestNotifPermission();
       if (running) { pauseRestTimer(); }
       else if (restPaused) { resumeRestTimer(); }
       else {
-        const secs = parseInt(rwPanelEl.querySelector('#rwDurInput').value, 10) || restDuration;
-        settings.restDefault = secs;
-        saveJSON('settings', settings);
-        startRestTimer(secs);
+        commitDurFromInput();
+        startRestTimer(restDuration);
       }
       rwRenderPanel();
     };
@@ -8280,28 +8614,40 @@ function rwClosePanel() {
 }
 
 /* ---------- bench angle finder (hotbar) ----------
-   How real bubble-level / angle-finder apps do this (iHandy Level,
-   Clinometer, Bubble Level, etc.): they don't assume the phone is lying
-   flat. The accelerometer's gravity vector has three components (x, y, z
-   in the phone's own frame), and whichever axis gravity is most aligned
-   with tells you how the phone is currently resting — flat on its back
-   (z dominant), propped up in portrait (y dominant, e.g. leaned against
-   an incline bench's backrest), or propped up in landscape (x dominant).
-   The other two axes, the ones roughly perpendicular to gravity, are the
-   "pivot" plane the tilt actually needs measuring in — so which pair of
-   axes feeds the atan2() call switches with the dominant one. That's the
-   whole trick: pick the dominant axis, measure tilt off the OTHER two,
-   and you get one continuous, correct reading whether the phone is lying
-   on the seat or held/propped against the backrest, with no separate
-   "vertical mode" toggle for the user to flip themselves.
+   The bench-angle use case is narrower than a general-purpose bubble
+   level: the phone stays resting flat against whichever surface it's on
+   the whole time — the horizontal seat at 0°, all the way up to the
+   backrest standing at 90° — it's never stood up on its bottom edge like
+   a book. That means the phone's own Z axis (the screen's normal) is the
+   one axis that's always meaningfully rotating away from "straight up"
+   as the bench inclines, and X/Y just split gravity's in-plane component
+   between them however the phone happens to be yawed on the pad — turned
+   left, right, diagonally, doesn't matter.
 
-   Two more things real implementations do that a naive atan2() doesn't:
-   - Low-pass filter the raw x/y/z components themselves (not the derived
-     angle) — filtering the vector avoids the jumps you'd get smoothing an
-     angle across the axis boundaries where it can wrap.
-   - Make the dominant-axis switch "sticky" (require a margin, not just
-     "greater than") — otherwise, right around the 45° boundary between
-     two planes, the reading flickers back and forth between them.
+   The previous version treated X, Y and Z as three competing "modes" and
+   picked whichever was momentarily most gravity-aligned as the
+   "dominant" axis to measure off of, switching formulas as that pick
+   changed. That's the right approach for a general orientation-agnostic
+   level, but for this use case it's what caused the reading to flip:
+   any time the phone wasn't held at an exact 0°/90°/180°/270° yaw (i.e.
+   almost always, since a backrest doesn't care how you turned the phone
+   on it), X and Y end up close in magnitude, and ordinary sensor noise
+   was enough to keep tipping which one "won" — each pick feeding a
+   different formula, so the displayed number jumped between two
+   different values instead of holding steady.
+
+   The fix: never pick a dominant axis at all. Combine X and Y with
+   sqrt(x²+y²) into one "how far off the Z axis is gravity" quantity and
+   run a single atan2() against Z — that's the same math as the z-branch
+   below always used, it's just no longer competing with an x- or
+   y-branch. That one call is already exactly correct and continuous
+   across the entire 0°(flat)→90°(vertical) sweep on its own, for any
+   yaw, with nothing left to switch between.
+
+   Low-pass filtering the raw x/y/z components (not the derived angle)
+   is still done before this runs, same as before — smooths sensor noise
+   without introducing the wrap-around jumps you'd get filtering an
+   angle instead of a vector.
 
    iOS requires an explicit one-tap permission grant
    (DeviceMotionEvent.requestPermission()) before devicemotion fires at
@@ -8311,7 +8657,6 @@ function rwClosePanel() {
 let angleOpen = false, anglePanelEl = null;
 let angleListening = false, angleMotionHandler = null;
 let angleFilt = null;          // { x, y, z } — low-pass filtered gravity vector
-let angleActiveAxis = null;    // 'x' | 'y' | 'z' — sticky dominant axis
 let angleReading = null;       // latest computeAngleReading() result
 let angleZeroOffset = 0; // single calibration applied to the final unified angleDeg — see block comment below
 let anglePermissionGranted = (typeof DeviceMotionEvent === 'undefined' || typeof DeviceMotionEvent.requestPermission !== 'function');
@@ -8319,67 +8664,31 @@ let anglePermissionGranted = (typeof DeviceMotionEvent === 'undefined' || typeof
 function angleNeedsPermissionPrompt() {
   return typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function' && !anglePermissionGranted;
 }
-/* Picks the dominant (gravity-aligned) axis and measures tilt off the
-   other two — see the block comment above for why. offAxisADeg/offAxisBDeg
-   are that pair broken into individual signed angles (each axis's own
-   atan2 against the dominant one), which is what the 2D bubble dot uses
-   to show *which direction* it's off, not just by how much.
+/* angleDeg: the angle between gravity and the phone's Z axis (screen
+   normal) — 0° lying flat, 90° standing on its long edge — computed the
+   same way regardless of which way the phone is yawed (see block comment
+   above), so there's no axis to switch and nothing to flicker between.
 
-   angleDeg itself is already ONE continuous physical quantity across the
-   whole 0-90° sweep — the z-dominant and y/x-dominant formulas below both
-   solve for the same tilt angle, just off different reference axes, and
-   agree exactly at the crossover (verified: atan2(other-two, dom) on one
-   side, 90-that on the other, meet at 45°). Real accelerometers do carry
-   a small, DIFFERENT bias on each physical axis though, so calibration
-   (angleZeroOffset) is applied once to this final unified value, not
-   per-axis — zeroing per-axis meant Zero only corrected whichever axis was
-   dominant at that instant, and the reading would drift/jump right at the
-   crossover once the sweep continued into the other axis's uncorrected
-   bias, which is what read as the reading "getting stuck" mid-sweep. */
+   offAxisADeg/offAxisBDeg break the in-plane (X/Y) component of gravity
+   into individual signed angles, purely for the 2D bubble dot to show
+   *which direction* it's off — not used for the main reading. Computed
+   against total gravity magnitude rather than fz so they stay well-
+   defined even as fz approaches 0 near 90°. */
 function computeAngleReading(fx, fy, fz) {
-  const absX = Math.abs(fx), absY = Math.abs(fy), absZ = Math.abs(fz);
-  const mags = { x: absX, y: absY, z: absZ };
-  const trueDominant = absX >= absY && absX >= absZ ? 'x' : (absY >= absZ ? 'y' : 'z');
-  // Stickiness: keep the currently-active axis unless a different one now
-  // exceeds it by a real margin (15%), so the reading doesn't flicker
-  // between "flat" and "vertical" right at the crossover point.
-  const dominant = (angleActiveAxis && mags[angleActiveAxis] * 1.15 >= mags[trueDominant]) ? angleActiveAxis : trueDominant;
-  angleActiveAxis = dominant;
-
-  let rawDeg, angleDeg, offA, offB, offAxisADeg, offAxisBDeg, label;
-  const domAbs = mags[dominant];
-  if (dominant === 'z') {
-    rawDeg = Math.atan2(Math.sqrt(fx * fx + fy * fy), domAbs) * (180 / Math.PI);
-    offA = fx; offB = fy;
-    label = fz >= 0 ? 'Flat — screen up' : 'Flat — screen down';
-  } else if (dominant === 'y') {
-    rawDeg = Math.atan2(Math.sqrt(fx * fx + fz * fz), domAbs) * (180 / Math.PI);
-    offA = fx; offB = fz;
-    label = fy >= 0 ? 'Vertical — portrait' : 'Vertical — portrait, upside down';
-  } else {
-    rawDeg = Math.atan2(Math.sqrt(fy * fy + fz * fz), domAbs) * (180 / Math.PI);
-    offA = fy; offB = fz;
-    label = fx >= 0 ? 'Vertical — landscape' : 'Vertical — landscape, flipped';
-  }
-  // rawDeg is the angle away from whichever axis is dominant, which is
-  // mathematically capped at 45° — the instant the true tilt passes 45°,
-  // a different axis becomes more gravity-aligned and takes over as
-  // dominant (see stickiness above), and rawDeg starts counting back DOWN
-  // from 45° toward 0° instead of continuing toward 90°. That's why the
-  // reading used to appear stuck around 45° for an incline bench. Once a
-  // non-flat axis is dominant we're past the 45° crossover, so flip the
-  // reading (90° minus the away-from-axis angle) to keep it climbing
-  // toward 90° as the bench actually goes more upright. Both halves agree
-  // exactly at 45°, so the stitched result is one continuous scale.
-  angleDeg = dominant === 'z' ? rawDeg : (90 - rawDeg);
-  offAxisADeg = Math.atan2(offA, domAbs) * (180 / Math.PI);
-  offAxisBDeg = Math.atan2(offB, domAbs) * (180 / Math.PI);
-  return { dominant, angleDeg, offAxisADeg, offAxisBDeg, label };
+  const planar = Math.sqrt(fx * fx + fy * fy);
+  const angleDeg = Math.atan2(planar, fz) * (180 / Math.PI);
+  const g = Math.sqrt(fx * fx + fy * fy + fz * fz) || 1;
+  const offAxisADeg = Math.asin(Math.max(-1, Math.min(1, fx / g))) * (180 / Math.PI);
+  const offAxisBDeg = Math.asin(Math.max(-1, Math.min(1, fy / g))) * (180 / Math.PI);
+  let label;
+  if (angleDeg < 4) label = fz >= 0 ? 'Flat — screen up' : 'Flat — screen down';
+  else if (angleDeg > 86) label = 'Vertical';
+  else label = 'Tilting';
+  return { angleDeg, offAxisADeg, offAxisBDeg, label };
 }
 function startAngleSensor() {
   if (angleListening) return;
   angleFilt = null;
-  angleActiveAxis = null;
   angleReading = null;
   angleMotionHandler = (e) => {
     const g = e.accelerationIncludingGravity;
@@ -8400,7 +8709,6 @@ function stopAngleSensor() {
   angleMotionHandler = null;
   angleListening = false;
   angleFilt = null;
-  angleActiveAxis = null;
   angleReading = null;
 }
 function updateAngleDisplay() {
@@ -8537,9 +8845,10 @@ function initRestWidget() {
   });
 
   // Restore any timer that was running or paused before the app closed.
+  const savedDurationPref = loadJSON('restDurationPref', null);
   const saved = loadJSON('restTimer', null);
   if (saved) {
-    restDuration = saved.duration || settings.restDefault || 120;
+    restDuration = saved.duration || savedDurationPref || 120;
     if (saved.paused) {
       restPaused = true;
       restRemaining = saved.remaining || 0;
@@ -8553,7 +8862,7 @@ function initRestWidget() {
       deleteKey('restTimer');
     }
   } else {
-    restDuration = settings.restDefault || 120;
+    restDuration = savedDurationPref || 120;
   }
 
   // Restore any stopwatch that was running or paused before the app closed.
