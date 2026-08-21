@@ -53,7 +53,7 @@
     padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }#app *{ min-width: 0; }.screen{ flex: 1; display: flex; flex-direction: column; padding: 0 18px 34.5px; }.screen.centered{ justify-content: center; }.screen.anim-default{ animation: fadeIn 0.56s var(--ease-glide); }.screen.anim-slide-back{ animation: slideBack 0.62s var(--ease-glide); }.screen.anim-slide-forward{ animation: slideForward 0.62s var(--ease-glide); }@keyframes fadeIn{ from { opacity: 0; } to { opacity: 1; } }@keyframes slideBack{ from { opacity: 0; transform: translateX(-9%); } to { opacity: 1; transform: translateX(0); } }@keyframes slideForward{ from { opacity: 0; transform: translateX(9%); } to { opacity: 1; transform: translateX(0); } }button{ touch-action: manipulation; transition: transform .48s var(--ease-bounce), opacity .38s var(--ease-glide), box-shadow .42s var(--ease-glide), border-color .38s var(--ease-glide), background-color .38s var(--ease-glide); }button:active{ transform: scale(0.895); transition: transform .14s var(--ease-press), opacity .14s var(--ease-press), box-shadow .14s var(--ease-press), border-color .14s var(--ease-press), background-color .14s var(--ease-press); }.eyebrow{ font-size: 23.01px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--teal); font-weight: 800;
     text-shadow: 0 0 14px var(--teal-glow);
     padding-top: max(env(safe-area-inset-top), 28px); margin-bottom: 6.9px; display: flex; align-items: center; gap: 13.8px; padding-bottom: 9.2px;
-    min-height: calc(max(env(safe-area-inset-top), 28px) + 9.2px + 47.8px); }.back-btn{ background: none; border: none; color: var(--teal); cursor: pointer; padding: 6.9px 16px 6.9px 0;
+    min-height: calc(max(env(safe-area-inset-top), 28px) + 9.2px + 47.8px); }.eyebrow-name-col{ display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }.eyebrow-name-col .rename-link-btn{ margin: 0; font-size: 11.5px; text-transform: none; letter-spacing: normal; }.back-btn{ background: none; border: none; color: var(--teal); cursor: pointer; padding: 6.9px 16px 6.9px 0;
     display: inline-flex; align-items: center; justify-content: center;
     filter: drop-shadow(0 0 8px var(--teal-glow));
     transition: transform .48s var(--ease-bounce), opacity .38s var(--ease-glide); }.back-btn svg{ width: 34px; height: 34px; }.back-btn:active, .back-btn.is-pressed{ transform: scale(0.79); opacity: 0.7; transition: transform .14s var(--ease-press), opacity .14s var(--ease-press); }.gear-btn{ background: var(--btn-bg); border: none; color: var(--teal); font-size: 15.88px; border-radius: 14px; width: 42px; height: 42px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: none; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), color .38s var(--ease-glide); }.gear-btn:active, .gear-btn.is-pressed{ border-color: var(--border); color: var(--teal); transform: scale(0.82) rotate(-27deg); transition: transform .14s var(--ease-press), border-color .14s var(--ease-press), color .14s var(--ease-press); }.home-topbar{ display: flex; justify-content: space-between; align-items: center;
@@ -61,7 +61,7 @@
     min-height: calc(max(env(safe-area-inset-top), 28px) + 9.2px + 47.8px); }.home-greeting{ font-size: 22.94px; font-weight: 800; color: var(--text); letter-spacing: -0.01em; line-height: 1.2; margin: 23px 0 3.5px; }.home-greeting b{ color: var(--teal); font-weight: 800; }.date-readout{ color: var(--text-dim); font-size: 14.57px; margin-bottom: 27.6px; }/* Windows-8-Start-screen-style tile block: a pinned, full-width "Start
      Tracking" bar on top (its own row), then the three stat tiles as an
      even 3-across row underneath — no scrolling, nothing gets cut off. */
-  .home-cards-row{ display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 92px; gap: 10px; margin: 0 0 27.6px; align-items: stretch; }.home-cards-row:has(.home-card-cta){ grid-template-rows: 54px; }.home-card{ touch-action: pan-y; grid-column: span 1; grid-row: span 1; min-width: 0; min-height: 92px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; padding: 9.6px 15px 22.4px; display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box; text-align: left; box-shadow: none; position: relative; overflow: hidden; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide); }/* Single-value cards (sessions, weekPerf) still look best vertically
+  .home-cards-row{ display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 92px; grid-auto-flow: dense; gap: 10px; margin: 0 0 27.6px; align-items: stretch; }.home-cards-row:has(.home-card-cta){ grid-template-rows: 54px; }.home-card{ touch-action: pan-y; grid-column: span 1; grid-row: span 1; min-width: 0; min-height: 92px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; padding: 9.6px 15px 22.4px; display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box; text-align: left; box-shadow: none; position: relative; overflow: hidden; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide); }/* Single-value cards (sessions, weekPerf) still look best vertically
      centered, but the list card (bestPerf) must anchor to the top —
      otherwise, if its content is ever taller than the card (e.g. resized
      small), centering clips the heading off the top instead of just the
@@ -78,7 +78,7 @@
      a card's grid-column/grid-row span (1-3 each way), like an Android
      home-screen widget. Hidden-ish until touched/hovered so it doesn't
      clutter the tile visually. */
-  .hc-resize-handle{ position: absolute; right: 1px; bottom: 1px; width: 24px; height: 24px; padding: 7px; box-sizing: border-box; cursor: se-resize; touch-action: none; opacity: 0.28; color: var(--text-dim); transition: opacity .2s var(--ease-glide); z-index: 3; }.hc-resize-handle svg{ width: 100%; height: 100%; display: block; }.home-card:hover .hc-resize-handle, .home-card.hc-resizing .hc-resize-handle{ opacity: 0.8; }.home-card.hc-resizing{ transition: none !important; box-shadow: 0 12px 30px -8px rgba(0,0,0,0.5), 0 0 0 2px var(--teal); }.hc-resize-placeholder{ visibility: hidden; pointer-events: none; }.yn-row{ display: flex; gap: 13.8px; margin-top: 4.6px; margin-bottom: 9.2px; }#resumeBtn{ margin-bottom: 25.3px; }.yn-btn{ flex: 1; height: 54px; padding: 0 12px; border-radius: 14px; border: 1.75px solid var(--border); background: var(--panel); color: var(--text); font-size: 14.12px; font-weight: 700; cursor: pointer; transition: transform .48s var(--ease-bounce), box-shadow .42s var(--ease-glide), border-color .38s var(--ease-glide); display: flex; align-items: center; justify-content: center; gap: 9.2px; }.yn-btn svg{ width: 18px; height: 18px; flex-shrink: 0; }.yn-btn.yes{ border-color: var(--border); color: var(--teal); box-shadow: none; }.yn-btn.yes:active{ box-shadow: none; transform: scale(0.91); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }.progress-card{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 11.5px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14.95px 15px; margin-bottom: 10.35px; cursor: pointer; transition: transform .38s var(--ease-bounce), border-color .3s var(--ease-glide); }.progress-card:active{ transform: scale(0.97); transition: transform .14s var(--ease-press); }.progress-card .pc-name{ font-size: 13.23px; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px; }.progress-card .pc-right{ display: flex; align-items: center; gap: 9.2px; flex-shrink: 0; }.progress-card .pc-arrow{ color: var(--text-dim); font-size: 15px; }.progress-help{ font-size: 11.02px; color: var(--text-dim); margin: -4.6px 0 13.8px; line-height: 1.667; }.insight-card{ background: var(--panel-2); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 10.35px; }.cp-block{ padding: 15.5px 16px; }.cp-block + .cp-block{ border-top: 1px solid var(--border); }.cp-block-head{ display: flex; align-items: center; gap: 8.5px; font-size: 12.56px; font-weight: 800; color: var(--text); margin-bottom: 12px; }.cp-block-head svg{ width: 15px; height: 15px; color: var(--teal); flex-shrink: 0; }.chart-caption{ font-size: 10.92px; color: var(--text-dim); letter-spacing: 0.02em; }.chart-empty{ font-size: 11.91px; color: var(--text-dim); line-height: 1.5; }.tb-row{ display: flex; align-items: center; gap: 9.2px; margin-top: 9.2px; }.tb-row:first-child{ margin-top: 0; }.tb-row.clickable{ cursor: pointer; touch-action: manipulation; transition: opacity .3s var(--ease-glide); }.tb-row.clickable:active{ opacity: 0.6; transition: opacity .14s var(--ease-press); }.tb-label{ font-size: 11.52px; font-weight: 600; color: var(--text-dim); width: 68px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.tb-track{ flex: 1; height: 8px; background: var(--panel); border-radius: 5px; overflow: hidden; }.tb-fill{ height: 100%; background: var(--teal); border-radius: 5px; transition: width .5s var(--ease-glide); }.tb-fill.gold{ background: var(--gold); box-shadow: 0 0 10px -3px var(--gold-glow); }.tb-val{ font-size: 11.52px; color: var(--text); width: 46px; text-align: right; flex-shrink: 0; }.badge{ font-family: "SF Mono", ui-monospace, monospace; font-size: 11.02px; font-weight: 700; padding: 3.45px 8px; border-radius: 9px; white-space: nowrap; }.badge.up{ color: var(--teal); background: var(--teal-a16); box-shadow: 0 0 10px -4px var(--teal-glow); }.badge.down{ color: var(--danger); background: rgba(229,72,77,0.14); }.badge.flat{ color: var(--text-dim); background: var(--panel-2); }.palette-grid{ display: flex; flex-wrap: wrap; gap: 16.1px; margin-bottom: 18.4px; }.palette-swatch{ position: relative; width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer;
+  .hc-resize-handle{ position: absolute; right: 1px; bottom: 1px; width: 24px; height: 24px; padding: 7px; box-sizing: border-box; cursor: se-resize; touch-action: none; opacity: 0.28; color: var(--text-dim); transition: opacity .2s var(--ease-glide); z-index: 3; }.hc-resize-handle svg{ width: 100%; height: 100%; display: block; }.home-card:hover .hc-resize-handle, .home-card.hc-resizing .hc-resize-handle{ opacity: 0.8; }.home-card.hc-resizing{ transition: none !important; box-shadow: 0 12px 30px -8px rgba(0,0,0,0.5), 0 0 0 2px var(--teal); }.hc-resize-placeholder{ visibility: hidden; pointer-events: none; }.yn-row{ display: flex; gap: 13.8px; margin-top: 4.6px; margin-bottom: 9.2px; }#resumeBtn{ margin-bottom: 25.3px; }.yn-btn{ flex: 1; height: 54px; padding: 0 12px; border-radius: 14px; border: 1.75px solid var(--border); background: var(--panel); color: var(--text); font-size: 14.12px; font-weight: 700; cursor: pointer; transition: transform .48s var(--ease-bounce), box-shadow .42s var(--ease-glide), border-color .38s var(--ease-glide); display: flex; align-items: center; justify-content: center; gap: 9.2px; }.yn-btn svg{ width: 18px; height: 18px; flex-shrink: 0; }.yn-btn.yes{ border-color: var(--border); color: var(--teal); box-shadow: none; }.yn-btn.yes:active{ box-shadow: none; transform: scale(0.91); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }.progress-card{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 11.5px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14.95px 15px; margin-bottom: 10.35px; cursor: pointer; transition: transform .38s var(--ease-bounce), border-color .3s var(--ease-glide); }.progress-card:active{ transform: scale(0.97); transition: transform .14s var(--ease-press); }.progress-card .pc-name{ font-size: 13.23px; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px; }.progress-card .pc-right{ display: flex; align-items: center; gap: 9.2px; flex-shrink: 0; }.progress-card .pc-arrow{ color: var(--text-dim); font-size: 15px; }.progress-help{ font-size: 11.02px; color: var(--text-dim); margin: -4.6px 0 13.8px; line-height: 1.667; }.insight-card{ background: var(--panel-2); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 10.35px; }.cp-block{ padding: 15.5px 16px; }.cp-block + .cp-block{ border-top: 1px solid var(--border); }.cp-block-head{ display: flex; align-items: center; gap: 8.5px; font-size: 12.56px; font-weight: 800; color: var(--text); margin-bottom: 12px; }.cp-block-head svg{ width: 15px; height: 15px; color: var(--teal); flex-shrink: 0; }.chart-caption{ font-size: 10.92px; color: var(--text-dim); letter-spacing: 0.02em; }.chart-empty{ font-size: 11.91px; color: var(--text-dim); line-height: 1.5; }.tb-row{ display: flex; align-items: center; gap: 9.2px; margin-top: 9.2px; }.tb-row:first-child{ margin-top: 0; }.tb-row.clickable{ cursor: pointer; touch-action: manipulation; transition: opacity .3s var(--ease-glide); }.tb-row.clickable:active{ opacity: 0.6; transition: opacity .14s var(--ease-press); }.tb-label{ font-size: 11.52px; font-weight: 600; color: var(--text-dim); flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.tb-track{ flex: 1.4 1.4 0; min-width: 40px; height: 8px; background: var(--panel); border-radius: 5px; overflow: hidden; }.tb-fill{ height: 100%; background: var(--teal); border-radius: 5px; transition: width .5s var(--ease-glide); }.tb-fill.gold{ background: var(--gold); box-shadow: 0 0 10px -3px var(--gold-glow); }.tb-val{ font-size: 11.52px; color: var(--text); width: 64px; text-align: right; flex-shrink: 0; white-space: nowrap; }.badge{ font-family: "SF Mono", ui-monospace, monospace; font-size: 11.02px; font-weight: 700; padding: 3.45px 8px; border-radius: 9px; white-space: nowrap; }.badge.up{ color: var(--teal); background: var(--teal-a16); box-shadow: 0 0 10px -4px var(--teal-glow); }.badge.down{ color: var(--danger); background: rgba(229,72,77,0.14); }.badge.flat{ color: var(--text-dim); background: var(--panel-2); }#dayPRsCard.cp-block{ padding: 17px 16px 15px; }#dayPRsCard .cp-block-head{ font-size: 13.6px; margin-bottom: 14px; }#dayPRsCard .cp-block-head span:first-child{ font-size: 17px; filter: drop-shadow(0 0 8px var(--gold-glow)); }.pr-list{ display: flex; flex-direction: column; gap: 10px; }.tb-row.pr-item{ display: flex; align-items: center; gap: 12px; margin-top: 0; background: linear-gradient(135deg, hsla(calc(var(--hue) + 216), calc(85% * var(--sat-mult)), 70%, 0.12), transparent 65%); border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: 13px; padding: 12px 14px; box-shadow: 0 6px 18px -12px var(--gold-glow); }.pr-item-body{ flex: 1 1 auto; min-width: 0; }.pr-item-name{ font-size: 14.5px; font-weight: 800; color: var(--text); margin-bottom: 4px; letter-spacing: -0.01em; }.pr-item-set{ font-size: 12.2px; color: var(--text-dim); margin-bottom: 8px; }.pr-item-compare{ display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }.pr-item-compare:first-of-type{ margin-top: 4px; }.pr-item-compare-detail{ font-size: 11px; color: var(--text-dim); padding-left: 2px; }.pr-item-compare .badge{ font-size: 11.4px; padding: 4px 9px; align-self: flex-start; }.palette-grid{ display: flex; flex-wrap: wrap; gap: 16.1px; margin-bottom: 18.4px; }.palette-swatch{ position: relative; width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer;
     display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }.palette-swatch.selected{ border-color: var(--text); }.palette-swatch svg{ width: 20px; height: 20px; color: #0a0f0f; filter: drop-shadow(0 0 2px rgba(255,255,255,0.5)); }.wheel-toggle-swatch{ background: none; box-shadow: none; overflow: hidden; border: none; }.wheel-toggle-swatch.selected{ outline: 2.5px solid var(--text); outline-offset: -2.5px; }.wheel-toggle-swatch canvas{ width: 100%; height: 100%; border-radius: 50%; display: block; }.appearance-label-row{ display: flex; align-items: center; gap: 9.2px; }.appearance-label-row::after{ content: ""; flex: 1; height: 1px; background: var(--border); }.palette-edit-btn{ flex: none; background: none; border: 1.5px solid var(--border); color: var(--teal); font-size: 10.92px;
     letter-spacing: normal; text-transform: none; font-weight: 700; padding: 5.75px 13px; border-radius: 999px; cursor: pointer; }.palette-swatch.editing-jiggle{ animation: swatchJiggle 0.28s ease-in-out infinite alternate; }.palette-swatch.dragging{ animation: none !important; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25), 0 10px 20px rgba(0,0,0,0.5); }@keyframes swatchJiggle{ from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }.swatch-del-btn{ position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%;
     background: var(--danger); color: #fff; border: 2px solid var(--bg); display: flex; align-items: center; justify-content: center;
@@ -180,10 +180,34 @@
     border-bottom: 1.75px solid var(--border); box-shadow: 0 10px 26px -8px rgba(0,0,0,0.55);
     transform: translateY(-100%); transition: transform .42s var(--ease-glide); pointer-events: none; }.alarm-stop-banner.show{ transform: translateY(0); pointer-events: auto; }.alarm-stop-banner .asb-text{ color: var(--text); font-size: 12.78px; font-weight: 700; }.alarm-stop-banner .asb-stop{ flex-shrink: 0; background: var(--danger); border: none; color: #2a0708; font-size: 12.34px; font-weight: 800; padding: 11.5px 18px; border-radius: 11px; cursor: pointer; box-shadow: 0 6px 18px -6px var(--danger-glow); transition: transform .38s var(--ease-bounce); }.alarm-stop-banner .asb-stop:active{ transform: scale(0.92); transition: transform .14s var(--ease-press); }.err-text{ color: var(--danger); font-size: 11.47px; margin-top: -6.9px; margin-bottom: 11.5px; min-height: 16px; }.ex-ac-wrap{ position: relative; flex: 1 1 auto; min-width: 0; }.ex-ac-dropdown{ position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--panel);
     border: 1px solid var(--border); border-radius: 12px; max-height: 240px; overflow-y: auto; z-index: 60;
-    box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); }.ex-ac-item{ padding: 13.8px 14px; font-size: 12.78px; color: var(--text); cursor: pointer; }.ex-ac-item:active{ background: var(--panel-2); }.ex-ac-item .uni-tag{ margin-left: 8px; }.ex-ac-empty{ padding: 14px; font-size: 11.47px; color: var(--text-dim); text-align: center; }.ex-ac-item.ex-pick-add-row{ color: var(--teal-dim); font-style: italic; }.ex-name-editable{ border: 1.5px dashed var(--border); border-radius: 9px; padding: 6px 9px; margin: -6px -9px; cursor: pointer; transition: border-color .3s var(--ease-glide), background-color .3s var(--ease-glide); }.ex-name-editable:active{ border-color: var(--teal); background: var(--panel-2); }.sb-name-editable{ border: 1.5px dashed rgba(0,0,0,0.32); border-radius: 8px; padding: 2px 7px; margin: -2px -7px; cursor: pointer; }.select-btn .sb-name-editable:active{ background: rgba(0,0,0,0.1); }h1.big .sb-name-editable{ border-color: var(--border); }h1.big .sb-name-editable:active{ background: var(--panel-2); }.ex-search-btn{ width: 100%; justify-content: flex-start; gap: 9.2px; color: var(--text-dim); margin-bottom: 20.7px; padding: 13.8px 16px; }.ex-search-btn svg{ width: 17px; height: 17px; flex-shrink: 0; }#exSearchRow{ margin-bottom: 20.7px; }.sort-menu-wrap{ position: relative; flex-shrink: 0; }.sort-menu{ position: absolute; top: calc(100% + 8px); right: 0; min-width: 208px; width: max-content; background: var(--panel);
-    border: 1px solid var(--border); border-radius: 14px; padding: 6px; z-index: 60;
+    box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); }.ex-ac-item{ padding: 13.8px 14px; font-size: 12.78px; color: var(--text); cursor: pointer; }.ex-ac-item:active{ background: var(--panel-2); }.ex-ac-item .uni-tag{ margin-left: 8px; }.ex-ac-empty{ padding: 14px; font-size: 11.47px; color: var(--text-dim); text-align: center; }.ex-ac-item.ex-pick-add-row{ color: var(--teal-dim); font-style: italic; }.li-name-col{ display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; min-width: 0; }.li-name-col .li-name{ flex: none; }
+    /* Small standalone "Rename session" link — replaces the old pattern of
+       wrapping the session/day name itself in a dashed box with a cramped
+       inline icon. The name now renders as plain text; this sits just below
+       it as its own tappable affordance, sized like a caption rather than a
+       button, so it never fights the heading for space. */
+    .rename-link-btn{ -webkit-appearance: none; appearance: none; display: inline-flex; align-items: center; gap: 5px; width: auto; background: none; border: none; padding: 0; margin: 4px 0 0; font-size: 12.3px; font-weight: 600; color: var(--teal); cursor: pointer; text-align: left; }
+    .rename-link-btn svg{ width: 13px; height: 13px; flex-shrink: 0; }
+    .rename-link-btn:active{ opacity: 0.6; transform: none; transition: opacity .14s var(--ease-press); }.ex-search-btn{ width: 100%; justify-content: flex-start; gap: 9.2px; color: var(--text-dim); margin-bottom: 20.7px; padding: 13.8px 16px; }.ex-search-btn svg{ width: 17px; height: 17px; flex-shrink: 0; }#exSearchRow{ margin-bottom: 20.7px; }.sort-menu-wrap{ position: relative; flex-shrink: 0; }.sort-menu{ position: absolute; top: calc(100% + 8px); right: 0; min-width: 208px; width: max-content; background: var(--panel);    border: 1px solid var(--border); border-radius: 14px; padding: 6px; z-index: 60;
     box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); animation: rwPanelIn .18s var(--ease-glide); }.sort-menu-item{ display: block; width: 100%; text-align: left; background: none; border: none; color: var(--teal);
-    font-size: 12.78px; font-weight: 700; padding: 13.8px 16px; border-radius: 10px; cursor: pointer; white-space: nowrap; }.sort-menu-item.active{ background: var(--teal-a14); }.sort-menu-item:active{ background: var(--panel-2); }.sort-menu-item.danger{ color: var(--danger); }/* ---------- in-app media lightbox (custom player, no native popups) ---------- */
+    font-size: 12.78px; font-weight: 700; padding: 13.8px 16px; border-radius: 10px; cursor: pointer; white-space: nowrap; }.sort-menu-item.active{ background: var(--teal-a14); }.sort-menu-item:active{ background: var(--panel-2); }.sort-menu-item.danger{ color: var(--danger); }
+/* #savedProgramsList rows: the pencil's dropdown (.sort-menu) is appended as
+   a DOM child of the row it belongs to, escaping the row's box visually via
+   position:absolute — but with no z-index set on .list-item, nothing
+   guarantees it paints above a LATER row in the list; mid-repaint a row
+   further down can end up on top, making the open menu look transparent and
+   swallowing taps meant for it into whatever's underneath. .menu-open lifts
+   the row that currently owns an open menu above every other row.
+   Separately, :active bubbles to ancestors in CSS — so pressing the pencil,
+   or anything inside its open menu, was ALSO triggering the row's own
+   scale(0.955) press animation on top of the pencil's own scale+rotate,
+   which read as a double/weird bounce. :has() suppresses the row's press
+   animation specifically while the pencil or its menu is what's pressed. */
+#savedProgramsList .list-item{ position: relative; z-index: 1; }
+#savedProgramsList .list-item.menu-open{ z-index: 30; }
+#savedProgramsList .list-item:has(.sort-menu-wrap:active){ transform: none; }
+#savedProgramsList .icon-edit-btn:active, #savedProgramsList .icon-edit-btn.is-pressed{ transform: scale(0.85); }
+/* ---------- in-app media lightbox (custom player, no native popups) ---------- */
   .log-media-thumb, .media-thumb{ cursor: pointer; position: relative; }.thumb-play-badge{ position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     color: #fff; font-size: 15.88px; text-shadow: 0 1px 6px rgba(0,0,0,0.8); pointer-events: none; }.thumb-play-badge::before{ content: ''; position: absolute; width: 26px; height: 26px; border-radius: 50%;
     background: rgba(0,0,0,0.38); }.lightbox-overlay{ position: fixed; inset: 0; background: rgba(4,8,8,0.94); z-index: 200;
@@ -457,7 +481,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.3.4';
+const APP_VERSION = '1.3.5';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -823,7 +847,7 @@ function appConfirmDelete(message) {
    bodyweight/notes, no media) isn't worth interrupting the user over. */
 function draftHasData(d) {
   if (!d) return false;
-  if (Array.isArray(d.exercises) && d.exercises.some(ex => Array.isArray(ex.sets) && ex.sets.some(hasSetData))) return true;
+  if (Array.isArray(d.exercises) && d.exercises.some(exerciseHasLoggedData)) return true;
   if (d.bodyweight) return true;
   if (d.notes && d.notes.trim()) return true;
   if (d.media && ((d.media.photos && d.media.photos.length) || (d.media.videos && d.media.videos.length))) return true;
@@ -892,6 +916,11 @@ function showAppTextPrompt(message, placeholder, submitLabel, initialValue) {
   });
 }
 const ICON_EDIT_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ICON_COPY_SVG = `<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+/* Same pencil artwork as ICON_EDIT_SVG (same path data, same 1.6 stroke-width)
+   so it reads as the same edit icon everywhere. Used inside .rename-link-btn,
+   which sizes/colors it via its own `svg` child selector. */
+const ICON_RENAME_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 /* ---------- legal: terms, privacy, viewer modal ----------
    Plain constants (not fetched files) so they work offline and inside a
    packaged APK with no bundler for markdown. Kept short/readable rather
@@ -968,6 +997,11 @@ const ICON_LOGO_SVG = `<svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="13"
 const ICON_TRASH_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_CAMERA_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.1-1.65A1.5 1.5 0 0 1 9.85 4.5h4.3a1.5 1.5 0 0 1 1.25.85L16.5 7h2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" stroke="currentColor" stroke-width="1.9"/></svg>`;
 const ICON_CHECK_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5L10 17.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+/* Matches ICON_CHECK_SVG's stroke-width (2.6), viewBox, and visual weight so
+   the two sit as a true pair wherever they're used as Cancel/Save (X/✓)
+   buttons side by side — was previously a plain "✕" text glyph, which
+   renders thinner and in a different bounding box than the SVG checkmark. */
+const ICON_X_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_SELECT_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M9 12.2l2.1 2.1L15.5 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5" stroke="currentColor" stroke-width="1.9"/></svg>`;
 const ICON_SWAP_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M7 4v13M7 4L4 7M7 4l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 20V7M17 20l3-3M17 20l-3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_NOTE_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M6 3.5h9l3.5 3.5V19a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4.5 19V5A1.5 1.5 0 0 1 6 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M15 3.5V7a1 1 0 0 0 1 1h3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 12h8M8 15.5h5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
@@ -1970,7 +2004,7 @@ let editWizardOriginalDays = null;
 let allExSortMode = loadJSON('allExSortMode', 'az'); // 'az' | 'recent' | 'sets' | 'volume'
 let allExSearchQuery = ''; // Progress History search box — not persisted, resets each visit
 let exercisesByDay = {};
-let settings = { units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, welcomeSeen: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], homeCardsOrder: ['start', 'sessions', 'weekPerf', 'bestPerf'], homeCardSizes: { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 } }, customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
+let settings = { units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, welcomeSeen: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], homeCardsOrder: ['start', 'sessions', 'weekPerf', 'prsWeek', 'bestPerf'], homeCardSizes: { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 }, prsWeek: { w: 1, h: 1 } }, customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' };
 
 /* ---------- accent color palette (Settings > Appearance) ----------
    Only the hue shifts; saturation/lightness stay put, so every preset keeps
@@ -2380,7 +2414,7 @@ async function continueBootAfterAuth() {
                               // the cloud instead of the defaults
   // Settings are fully resolved (including anything the cloud pull above
   // just landed) *before* the hotbar is revealed a few lines down.
-  settings = await loadJSON('settings', { units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, welcomeSeen: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], homeCardsOrder: ['start', 'sessions', 'weekPerf', 'bestPerf'], homeCardSizes: { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 } }, customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
+  settings = await loadJSON('settings', { units: 'kg', alarmSound: 'default', customAlarmData: null, customAlarmName: null, autoStartTimer: true, autoCarry: true, autoQueueExercises: false, onboardingDone: false, welcomeSeen: false, timerEnabled: true, notesEnabled: true, angleFinderEnabled: false, timerDisplay: 'hotbar', notesDisplay: 'hotbar', accentHue: 170, accentSat: 1, hotbarOrder: ['timer', 'notes', 'angle'], homeCardsOrder: ['start', 'sessions', 'weekPerf', 'prsWeek', 'bestPerf'], homeCardSizes: { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 }, prsWeek: { w: 1, h: 1 } }, customAccentColors: [], deletedDefaultHues: [], paletteOrder: null, activeSwatchId: 'd:170' });
   if (settings.accentHue === undefined) settings.accentHue = 170;
   if (settings.accentSat === undefined) settings.accentSat = 1;
   if (settings.customAccentColors === undefined) settings.customAccentColors = [];
@@ -2426,8 +2460,18 @@ async function continueBootAfterAuth() {
   else ['timer', 'notes', 'angle'].forEach(k => { if (!settings.hotbarOrder.includes(k)) settings.hotbarOrder.push(k); });
   // Same append-missing-key migration as hotbarOrder above, for the
   // reorderable home-screen stat cards.
-  if (!Array.isArray(settings.homeCardsOrder)) settings.homeCardsOrder = ['start', 'sessions', 'weekPerf', 'bestPerf'];
-  else ['start', 'sessions', 'bestPerf', 'weekPerf'].forEach(k => { if (!settings.homeCardsOrder.includes(k)) settings.homeCardsOrder.push(k); });
+  if (!Array.isArray(settings.homeCardsOrder)) settings.homeCardsOrder = ['start', 'sessions', 'weekPerf', 'prsWeek', 'bestPerf'];
+  else {
+    // prsWeek is new: insert it right after weekPerf (its "just below
+    // Performance This Week" spec) instead of appending to the end like a
+    // plain missing-key migration would.
+    if (!settings.homeCardsOrder.includes('prsWeek')) {
+      const wIdx = settings.homeCardsOrder.indexOf('weekPerf');
+      if (wIdx === -1) settings.homeCardsOrder.push('prsWeek');
+      else settings.homeCardsOrder.splice(wIdx + 1, 0, 'prsWeek');
+    }
+    ['start', 'sessions', 'bestPerf', 'weekPerf', 'prsWeek'].forEach(k => { if (!settings.homeCardsOrder.includes(k)) settings.homeCardsOrder.push(k); });
+  }
   // Widget-style resizable home cards: each stat tile gets a saved
   // grid-column/grid-row span (1-3 each way), like an Android home-screen
   // widget. isFirstLoad is true only for installs that predate this
@@ -2438,7 +2482,7 @@ async function continueBootAfterAuth() {
   // this version) is left alone.
   const isFirstLoadUnderWidgetGrid = !settings.homeCardSizes;
   if (!settings.homeCardSizes || typeof settings.homeCardSizes !== 'object') settings.homeCardSizes = {};
-  const HOME_CARD_SIZE_DEFAULTS = { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 } };
+  const HOME_CARD_SIZE_DEFAULTS = { sessions: { w: 1, h: 1 }, bestPerf: { w: 3, h: 1 }, weekPerf: { w: 1, h: 1 }, prsWeek: { w: 1, h: 1 } };
   Object.keys(HOME_CARD_SIZE_DEFAULTS).forEach(k => {
     const cur = settings.homeCardSizes[k];
     if (!cur || typeof cur.w !== 'number' || typeof cur.h !== 'number') settings.homeCardSizes[k] = { ...HOME_CARD_SIZE_DEFAULTS[k] };
@@ -3463,6 +3507,10 @@ async function promptRenameDay(oldName) {
 function attachSavedProgramsListHandlers(root) {
   const list = root.querySelector('#savedProgramsList');
   if (!list) return;
+  const closeMenu = () => {
+    list.querySelectorAll('.sort-menu').forEach(m => m.remove());
+    list.querySelectorAll('.list-item.menu-open').forEach(r => r.classList.remove('menu-open'));
+  };
   list.querySelectorAll('[data-saved-id]').forEach(row => {
     row.onclick = (e) => {
       if (e.target.closest('[data-prog-menu]') || e.target.closest('.sort-menu')) return; // handled below
@@ -3477,9 +3525,15 @@ function attachSavedProgramsListHandlers(root) {
     btn.onclick = (e) => {
       e.stopPropagation();
       const existing = wrap.querySelector('.sort-menu');
-      if (existing) { existing.remove(); return; }
+      if (existing) { closeMenu(); return; }
       // Close any other row's open menu before opening this one.
-      list.querySelectorAll('.sort-menu').forEach(m => m.remove());
+      closeMenu();
+      row.classList.add('menu-open'); // lifts this row's z-index above every
+      // other row — otherwise, mid-repaint, a row further down the list can
+      // paint on top of this dropdown (it's just an absolutely-positioned
+      // child escaping this row's box, with nothing forcing it above later
+      // siblings), making it look see-through and swallowing taps meant for
+      // the menu into whatever row ended up on top instead.
       const menu = document.createElement('div');
       menu.className = 'sort-menu';
       menu.innerHTML = `
@@ -3488,11 +3542,11 @@ function attachSavedProgramsListHandlers(root) {
         <button class="sort-menu-item danger" data-menu-act="delete">Delete</button>
       `;
       wrap.appendChild(menu);
-      menu.querySelector('[data-menu-act="edit"]').onclick = (ev) => { ev.stopPropagation(); menu.remove(); editSavedProgram(id); };
-      menu.querySelector('[data-menu-act="rename"]').onclick = (ev) => { ev.stopPropagation(); menu.remove(); renameSavedProgram(id, nameEl); };
-      menu.querySelector('[data-menu-act="delete"]').onclick = (ev) => { ev.stopPropagation(); menu.remove(); deleteSavedProgram(id, row); };
+      menu.querySelector('[data-menu-act="edit"]').onclick = (ev) => { ev.stopPropagation(); closeMenu(); editSavedProgram(id); };
+      menu.querySelector('[data-menu-act="rename"]').onclick = (ev) => { ev.stopPropagation(); closeMenu(); renameSavedProgram(id, nameEl); };
+      menu.querySelector('[data-menu-act="delete"]').onclick = (ev) => { ev.stopPropagation(); closeMenu(); deleteSavedProgram(id, row); };
       const closeOnOutsideClick = (ev) => {
-        if (!wrap.contains(ev.target)) { menu.remove(); document.removeEventListener('click', closeOnOutsideClick); }
+        if (!wrap.contains(ev.target)) { closeMenu(); document.removeEventListener('click', closeOnOutsideClick); }
       };
       setTimeout(() => document.addEventListener('click', closeOnOutsideClick), 0);
     };
@@ -3720,8 +3774,9 @@ function renderSetupExercises(root) {
   const day = setupDays[setupIndex];
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Setup ${setupDays.length > 1 ? `(${setupIndex+1}/${setupDays.length})` : ''}</div>
-    <h1 class="big">What exercises do you do on <span class="sb-name-editable" id="setupDayRename" title="Tap to rename this day">${day}</span>?</h1>
-    <p class="sub">Tap to select. You can edit this list anytime.</p>
+    <h1 class="big">What exercises do you do on ${day}?</h1>
+    <button class="rename-link-btn" id="setupDayRename">${ICON_RENAME_SVG}<span>Rename session</span></button>
+    <p class="sub" style="margin-top:10px;">Tap to select. You can edit this list anytime.</p>
     <div class="ex-pick-search-wrap">
       <input type="text" id="exPickSearch" placeholder="Search exercises…" autocomplete="off" value="${setupSearchQuery.replace(/"/g,'&quot;')}">
     </div>
@@ -4060,6 +4115,7 @@ async function renderHomeCardsRow(container) {
   const totalSessions = historyEntries.length;
   const top3 = topPerformancesThisWeek(12);
   const weekPct = weekOverallPerformancePct();
+  const prsWeek = weekPRCount();
   const cardBuilders = {
     start: () => {
       if (draftActive) return '';
@@ -4107,9 +4163,15 @@ async function renderHomeCardsRow(container) {
         <div class="hc-sub">${weekPct === null ? 'Not enough data yet' : 'Performance This Week vs Average'}</div>
         <div class="hc-value${weekPct !== null && weekPct < 0 ? ' hc-down' : ''}">${weekPct === null ? '—' : `${weekPct >= 0 ? '+' : ''}${Math.round(weekPct * 10) / 10}%`}</div>
         ${HC_RESIZE_HANDLE('weekPerf')}
+      </div>`,
+    prsWeek: () => `
+      <div class="home-card home-card-tap home-card-center" data-card-key="prsWeek">
+        <div class="hc-label">PRs This Week</div>
+        <div class="hc-value">${prsWeek}</div>
+        ${HC_RESIZE_HANDLE('prsWeek')}
       </div>`
   };
-  const savedOrder = (settings.homeCardsOrder || ['start', 'sessions', 'bestPerf', 'weekPerf']).filter(k => cardBuilders[k]);
+  const savedOrder = (settings.homeCardsOrder || ['start', 'sessions', 'bestPerf', 'weekPerf', 'prsWeek']).filter(k => cardBuilders[k]);
   // Start Tracking is always the pinned, full-width bar up top (Windows-8
   // wide-tile style) — only the three stat tiles beneath it are reorderable.
   const order = ['start', ...savedOrder.filter(k => k !== 'start')];
@@ -4129,6 +4191,8 @@ async function renderHomeCardsRow(container) {
   });
   const weekCard = container.querySelector('[data-card-key="weekPerf"]');
   if (weekCard) weekCard.onclick = () => goToTab('progress');
+  const prsWeekCard = container.querySelector('[data-card-key="prsWeek"]');
+  if (prsWeekCard) prsWeekCard.onclick = () => goToTab('progress');
   initHomeCardsReorder(container);
   initHomeCardsResize(container);
 }
@@ -4495,7 +4559,7 @@ async function renderHomeProgress(container) {
   const perfPct = overallPerformancePct(entry);
   const perfTxt = perfPct === null ? '—' : `${perfPct >= 0 ? '+' : ''}${Math.round(perfPct * 10) / 10}%`;
   const trend = recentPerformanceTrend(8);
-  const topEx = sessionTopExercises(entry, 4);
+  const dayPRs = sessionDayPRs(entry);
 
   container.innerHTML = `
     <div class="tap-heading" id="lastWorkoutCard" style="margin-bottom:14px;"><span class="th-title">${label}</span><span class="th-arrow">›</span></div>
@@ -4507,12 +4571,12 @@ async function renderHomeProgress(container) {
     </div>
     <div class="insight-card">
       <div class="cp-block" id="perfTrendChart"><div class="cp-block-head">${ICON_NAV_PROGRESS_SVG}<span>Performance Trend</span></div></div>
-      <div class="cp-block" id="topExChart"><div class="cp-block-head">${ICON_NAV_TRAIN_SVG}<span>Top Exercises</span></div></div>
+      <div class="cp-block" id="dayPRsCard"><div class="cp-block-head"><span>🏆</span><span>PRs This Session</span></div></div>
     </div>
   `;
   container.querySelector('#lastWorkoutCard').onclick = () => { viewLogId = entry.id; goTo('workout-detail'); };
   renderPerfTrendChart(container.querySelector('#perfTrendChart'), trend, perfPct);
-  renderTopExChart(container.querySelector('#topExChart'), topEx);
+  renderDayPRsCard(container.querySelector('#dayPRsCard'), dayPRs);
 }
 /* Small SVG line chart plotting overallPerformancePct across the last few
    sessions (oldest -> newest), so a single "+4%" stat also reads as part
@@ -4523,7 +4587,7 @@ function renderPerfTrendChart(el, trend, currentPct) {
     el.innerHTML = head + `<div class="chart-empty">Not enough sessions yet to chart a trend — this fills in as you log more workouts.</div>`;
     return;
   }
-  const W = 300, H = 84, PADX = 6, PADY = 12;
+  const W = 300, H = 84, PADX = 16, PADY = 12;
   const maxAbs = Math.max(8, ...trend.map(p => Math.abs(p.pct)));
   const xFor = (i) => trend.length === 1 ? W / 2 : PADX + (i * (W - PADX * 2) / (trend.length - 1));
   const yFor = (v) => H / 2 - (v / maxAbs) * (H / 2 - PADY);
@@ -4535,27 +4599,47 @@ function renderPerfTrendChart(el, trend, currentPct) {
   }).join('');
   const last = trend[trend.length - 1];
   const lastTxt = `${last.pct >= 0 ? '+' : ''}${Math.round(last.pct * 10) / 10}%`;
+  const maxTxt = `${maxAbs.toFixed(maxAbs < 10 ? 1 : 0)}%`;
   el.innerHTML = head + `
     <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block;">
       <line x1="0" y1="${H / 2}" x2="${W}" y2="${H / 2}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" />
       <polyline points="${linePts}" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.85" />
       ${dots}
+      <text x="2" y="${PADY}" text-anchor="start" font-size="9" fill="var(--text-dim)">+${maxTxt}</text>
+      <text x="2" y="${H - 2}" text-anchor="start" font-size="9" fill="var(--text-dim)">-${maxTxt}</text>
     </svg>
-    <div class="chart-caption" style="margin-top:6px;">Last ${trend.length} session${trend.length > 1 ? 's' : ''} vs. each exercise's own average · latest ${lastTxt}</div>
+    <div class="chart-caption" style="margin-top:6px;">Each point: that session's top set vs. this exercise's own historical average, averaged across exercises. Last ${trend.length} session${trend.length > 1 ? 's' : ''} · latest ${lastTxt}</div>
   `;
 }
-/* Horizontal bar chart ranking this session's exercises by total volume. */
-function renderTopExChart(el, topEx) {
+/* Card listing each all-time PR from this session (see sessionDayPRs),
+   with today's set line plus its vs-last-time-on-this-day and
+   vs-previous-best-on-this-day badges — either of which may read "—" if
+   there's no prior session on this program day to compare against yet. */
+function renderDayPRsCard(el, prs) {
   const head = el.querySelector('.cp-block-head').outerHTML;
-  if (!topEx.length) {
-    el.innerHTML = head + `<div class="chart-empty">No volume data for this session.</div>`;
+  if (!prs.length) {
+    el.innerHTML = head + `<div class="chart-empty">No PRs this session.</div>`;
     return;
   }
-  const max = Math.max(...topEx.map(e => e.volume), 1);
-  el.innerHTML = head + topEx.map((ex, i) => {
-    const pct = Math.max(4, Math.round((ex.volume / max) * 100));
-    return `<div class="tb-row clickable" data-ex="${ex.name}"><div class="tb-label" title="${ex.name}">${ex.name}</div><div class="tb-track"><div class="tb-fill${i === 0 ? ' gold' : ''}" style="width:${pct}%"></div></div><div class="tb-val mono">${Math.round(ex.volume).toLocaleString()}</div></div>`;
-  }).join('');
+  el.innerHTML = head + `<div class="pr-list">` + prs.map(p => {
+    const setLine = formatSetLine(p.set, p.name, p.ex, undefined);
+    const lastLine = p.lastSet ? formatSetLine(p.lastSet, p.name, p.ex, p.lastSession && p.lastSession.bodyweight) : null;
+    const prLine = p.prSet ? formatSetLine(p.prSet, p.name, p.ex, p.prSession && p.prSession.bodyweight) : null;
+    return `<div class="tb-row clickable pr-item" data-ex="${p.name}">` +
+      `<div class="pr-item-body">` +
+        `<div class="pr-item-name" title="${p.name}">${p.name}</div>` +
+        `<div class="pr-item-set mono">${setLine} · est. ${Math.round(p.todayEst)}${exerciseUnit(p.name)}</div>` +
+        `<div class="pr-item-compare">` +
+          `${badgeFor(p.vsLastPct, 'vs last')}` +
+          `${lastLine ? `<div class="pr-item-compare-detail mono">${lastLine}</div>` : ''}` +
+        `</div>` +
+        `<div class="pr-item-compare">` +
+          `${badgeFor(p.vsPrevPRPct, 'vs last PR')}` +
+          `${prLine ? `<div class="pr-item-compare-detail mono">${prLine}</div>` : ''}` +
+        `</div>` +
+      `</div>` +
+    `</div>`;
+  }).join('') + `</div>`;
   el.querySelectorAll('[data-ex]').forEach(row => {
     row.onclick = () => { exerciseHistoryName = row.dataset.ex; goTo('exercise-history'); };
   });
@@ -4648,18 +4732,53 @@ function sessionPRCount(entry) {
   });
   return count;
 }
-/* Top N exercises in a session by total volume (weight × reps summed
-   across sets) — same volume math used everywhere else in the app. */
-function sessionTopExercises(entry, n) {
-  const list = (entry.exercises || []).map(ex => {
-    const sets = (ex.sets || []).filter(hasSetData);
-    if (!sets.length) return null;
-    let volume = 0;
-    sets.forEach(s => { volume += (parseFloat(s.weight) || 0) * totalReps(s); });
-    return { name: ex.name, volume, setCount: sets.length };
-  }).filter(Boolean);
-  list.sort((a, b) => b.volume - a.volume);
-  return list.slice(0, n || 4);
+/* PRs hit THIS session. Eligibility deliberately mirrors sessionPRCount and
+   exerciseStrengthTrend exactly — an all-time PR (this session's top set
+   beating every OTHER session's best for that exercise, any day) — so this
+   list's count always matches the home screen's "New PRs" stat and the
+   "Est. PR" badge shown in the log itself. Day-scoping only applies to the
+   two comparison numbers shown per row (vs the last time this exercise was
+   trained on THIS program day, and vs the best it had done on THIS day
+   before today) — those are context, not the eligibility test, so a PR
+   that happened to be this exercise's first time on this particular day
+   still shows up, just with "—" for whichever day-specific number doesn't
+   have a prior session to compare against yet. */
+function sessionDayPRs(entry) {
+  // historyEntries is sorted newest-first (see loadHistory), so the first
+  // OTHER session containing this exercise, in iteration order, is simply
+  // the last time it was actually trained — no same-day match required.
+  const priorSessions = historyEntries.filter(e => e.id !== entry.id);
+  const results = [];
+  (entry.exercises || []).forEach(ex => {
+    const top = topSetByEst((ex.sets || []).filter(hasSetData), ex, entry.bodyweight);
+    if (!top || !top.est) return;
+    let allTimeBest = 0, hadAnyPrior = false;
+    let lastEst = null, lastTop = null, lastSession = null;
+    let prTop = null, prSession = null;
+    priorSessions.forEach(session => {
+      const other = (session.exercises || []).find(e => sameExName(e.name, ex.name));
+      if (!other) return;
+      const otherTop = topSetByEst((other.sets || []).filter(hasSetData), other, session.bodyweight);
+      if (!otherTop || !otherTop.est) return;
+      hadAnyPrior = true;
+      if (lastEst === null) { lastEst = otherTop.est; lastTop = otherTop; lastSession = session; } // first match = most recent
+      if (otherTop.est > allTimeBest) { allTimeBest = otherTop.est; prTop = otherTop; prSession = session; }
+    });
+    if (!hadAnyPrior || top.est <= allTimeBest) return;
+    results.push({
+      name: ex.name,
+      ex,
+      set: top.set,
+      todayEst: top.est,
+      vsLastPct: lastEst ? ((top.est - lastEst) / lastEst) * 100 : null,
+      vsPrevPRPct: ((top.est - allTimeBest) / allTimeBest) * 100,
+      lastSet: lastTop ? lastTop.set : null,
+      lastSession,
+      prSet: prTop ? prTop.set : null,
+      prSession
+    });
+  });
+  return results;
 }
 /* Overall-performance % (see overallPerformancePct) for up to the last n
    sessions, oldest -> newest so the most recent session lands last —
@@ -4709,6 +4828,16 @@ function topPerformancesThisWeek(n) {
     });
   });
   return Object.values(byKey).sort((a, b) => b.pct - a.pct).slice(0, n || 3);
+}
+/* Total all-time PRs hit across every session in the last 7 days — sum of
+   sessionPRCount per session, not deduped per exercise (unlike
+   topPerformancesThisWeek, which keeps only each exercise's best %). This
+   is the "how many PRs this week" count, mirroring the single "New PR(s)"
+   stat already shown per-session on the home screen. */
+function weekPRCount() {
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const weekEntries = historyEntries.filter(e => new Date(e.date).getTime() >= cutoff);
+  return weekEntries.reduce((sum, entry) => sum + sessionPRCount(entry), 0);
 }
 /* Overall performance this week: per exercise, the average est. 1RM across
    every set logged in the last 7 days vs. the average across every set
@@ -5024,7 +5153,12 @@ function renderExerciseList(root) {
   let reorderAttached = false;
 
   root.innerHTML = `
-    <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span id="sessionDayLabel">${day}</span></div>
+    <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="eyebrow-name-col">
+        <span id="sessionDayLabel">${day}</span>
+        <button class="rename-link-btn" id="sessionDayRename" style="display:none;">${ICON_RENAME_SVG}<span>Rename session</span></button>
+      </div>
+    </div>
     <div class="section-header-row">
       <h1 class="big">Exercises</h1>
       <div style="display:flex; align-items:center; gap:8px;">
@@ -5044,6 +5178,7 @@ function renderExerciseList(root) {
   `;
   const exList = root.querySelector('#exList');
   const dayLabelEl = root.querySelector('#sessionDayLabel');
+  const renameBtn = root.querySelector('#sessionDayRename');
   function persistEditList() { exercisesByDay[day] = list; saveJSON('exercisesByDay', exercisesByDay); }
   function indexOfItem(item) { return Array.from(exList.children).indexOf(item); }
 
@@ -5116,7 +5251,10 @@ function renderExerciseList(root) {
       <button class="drag-handle" title="Drag to reorder">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-      <div class="li-name ex-name-editable" data-act="rename" title="Tap to rename">${entry.name}</div>
+      <div class="li-name-col">
+        <div class="li-name">${entry.name}</div>
+        <button class="rename-link-btn" data-act="rename" title="Rename">${ICON_RENAME_SVG}<span>Rename</span></button>
+      </div>
       <div class="li-right">
         <button class="uni-toggle no-pop ${bw ? 'on' : ''}" data-act="bw" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
         <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
@@ -5137,8 +5275,10 @@ function renderExerciseList(root) {
       syncDraftUnilateral(list[i]);
       syncExerciseCatalogSetting(list[i].name, { unilateral: list[i].unilateral });
     };
-    item.querySelector('[data-act="rename"]').onclick = () => {
+    item.querySelector('[data-act="rename"]').onclick = (e) => {
+      const renameBtnEl = e.currentTarget;
       const nameDiv = item.querySelector('.li-name');
+      renameBtnEl.style.display = 'none';
       const i = indexOfItem(item);
       const current = list[i].name;
       nameDiv.innerHTML = `<input type="text" class="rename-input" value="${current.replace(/"/g,'&quot;')}" style="width:100%; background:var(--panel-2); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius: 9px; font-size: 14.12px; font-weight:700; font-family:inherit;">`;
@@ -5171,6 +5311,7 @@ function renderExerciseList(root) {
           committed = true;
           if (vvCleanup) vvCleanup();
           nameDiv.innerHTML = `${oldName}`;
+          renameBtnEl.style.display = '';
           return;
         }
         commitInFlight = true;
@@ -5183,12 +5324,13 @@ function renderExerciseList(root) {
           true
         );
         commitInFlight = false;
-        if (choice === null) { nameDiv.innerHTML = `${oldName}`; return; }
+        if (choice === null) { nameDiv.innerHTML = `${oldName}`; renameBtnEl.style.display = ''; return; }
         committed = true;
         if (vvCleanup) vvCleanup();
         list[idx].name = v;
         persistEditList();
         nameDiv.innerHTML = `${v}`;
+        renameBtnEl.style.display = '';
         syncDraftRename(oldName, v);
         if (choice === 'overwrite') {
           pendingRenames.push({ oldName, newName: v, unilateral: list[idx].unilateral, bodyweightExercise: catalogIsBodyweight(oldName) });
@@ -5200,7 +5342,7 @@ function renderExerciseList(root) {
       inp.onblur = commit;
       inp.onkeydown = (e) => {
         if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
-        else if (e.key === 'Escape') { committed = true; if (vvCleanup) vvCleanup(); nameDiv.innerHTML = `${current}`; }
+        else if (e.key === 'Escape') { committed = true; if (vvCleanup) vvCleanup(); nameDiv.innerHTML = `${current}`; renameBtnEl.style.display = ''; }
       };
     };
     item.querySelector('[data-act="del"]').onclick = async () => {
@@ -5233,7 +5375,7 @@ function renderExerciseList(root) {
     const wrap = root.querySelector('#exListHeaderBtns');
     if (editMode) {
       wrap.innerHTML = `
-        <button class="icon-edit-btn" id="editCancelBtn" title="Cancel">✕</button>
+        <button class="icon-edit-btn" id="editCancelBtn" title="Cancel">${ICON_X_SVG}</button>
         <button class="icon-edit-btn" id="editSaveBtn" title="Save">${ICON_CHECK_SVG}</button>`;
       wrap.querySelector('#editCancelBtn').onclick = cancelEdits;
       wrap.querySelector('#editSaveBtn').onclick = commitEdits;
@@ -5252,17 +5394,14 @@ function renderExerciseList(root) {
   // creeping back in.)
   function refreshChrome() {
     renderHeaderBtns();
-    if (editMode) {
-      dayLabelEl.innerHTML = `<span class="ex-name-editable" id="sessionDayRename" title="Tap to rename this session">${day}</span>`;
-      dayLabelEl.querySelector('#sessionDayRename').onclick = async () => {
-        const renamed = await promptRenameDay(day);
-        if (!renamed) return;
-        day = currentDay; // renameProgramDay() already updated the global
-        refreshChrome(); // rebuilds the label + rebinds this handler under the new name
-      };
-    } else {
-      dayLabelEl.textContent = day;
-    }
+    dayLabelEl.textContent = day;
+    renameBtn.style.display = editMode ? 'inline-flex' : 'none';
+    renameBtn.onclick = editMode ? async () => {
+      const renamed = await promptRenameDay(day);
+      if (!renamed) return;
+      day = currentDay; // renameProgramDay() already updated the global
+      refreshChrome(); // relabels + rebinds under the new name
+    } : null;
     refreshRows();
   }
 
@@ -5714,7 +5853,10 @@ function renderExerciseEdit(root) {
       <button class="drag-handle" title="Drag to reorder">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-      <div class="li-name ex-name-editable" data-act="rename" title="Tap to rename">${entry.name}</div>
+      <div class="li-name-col">
+        <div class="li-name">${entry.name}</div>
+        <button class="rename-link-btn" data-act="rename" title="Rename">${ICON_RENAME_SVG}<span>Rename</span></button>
+      </div>
       <div class="li-right">
         <button class="uni-toggle no-pop ${bw ? 'on' : ''}" data-act="bw" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
         <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
@@ -5735,8 +5877,10 @@ function renderExerciseEdit(root) {
       syncDraftUnilateral(list[i]);
       syncExerciseCatalogSetting(list[i].name, { unilateral: list[i].unilateral });
     };
-    item.querySelector('[data-act="rename"]').onclick = () => {
+    item.querySelector('[data-act="rename"]').onclick = (e) => {
+      const renameBtnEl = e.currentTarget;
       const nameDiv = item.querySelector('.li-name');
+      renameBtnEl.style.display = 'none';
       const i = indexOfItem(item);
       const current = list[i].name;
       nameDiv.innerHTML = `<input type="text" class="rename-input" value="${current.replace(/"/g,'&quot;')}" style="width:100%; background:var(--panel-2); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius: 9px; font-size: 14.12px; font-weight:700; font-family:inherit;">`;
@@ -5783,6 +5927,7 @@ function renderExerciseEdit(root) {
           committed = true;
           if (vvCleanup) vvCleanup();
           nameDiv.innerHTML = `${oldName}`;
+          renameBtnEl.style.display = '';
           return;
         }
         commitInFlight = true;
@@ -5795,12 +5940,13 @@ function renderExerciseEdit(root) {
           true
         );
         commitInFlight = false;
-        if (choice === null) { nameDiv.innerHTML = `${oldName}`; return; }
+        if (choice === null) { nameDiv.innerHTML = `${oldName}`; renameBtnEl.style.display = ''; return; }
         committed = true;
         if (vvCleanup) vvCleanup();
         list[idx].name = v;
         persistEditList();
         nameDiv.innerHTML = `${v}`;
+        renameBtnEl.style.display = '';
         syncDraftRename(oldName, v);
         if (choice === 'overwrite') {
           pendingRenames.push({ oldName, newName: v, unilateral: list[idx].unilateral, bodyweightExercise: catalogIsBodyweight(oldName) });
@@ -5812,7 +5958,7 @@ function renderExerciseEdit(root) {
       inp.onblur = commit;
       inp.onkeydown = (e) => {
         if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
-        else if (e.key === 'Escape') { committed = true; if (vvCleanup) vvCleanup(); nameDiv.innerHTML = `${current}`; }
+        else if (e.key === 'Escape') { committed = true; if (vvCleanup) vvCleanup(); nameDiv.innerHTML = `${current}`; renameBtnEl.style.display = ''; }
       };
     };
     item.querySelector('[data-act="del"]').onclick = async () => {
@@ -5841,7 +5987,7 @@ function renderExerciseEdit(root) {
     const wrap = root.querySelector('#editHeaderBtns');
     if (exEditMode) {
       wrap.innerHTML = `
-        <button class="icon-edit-btn" id="editCancelBtn" title="Cancel">✕</button>
+        <button class="icon-edit-btn" id="editCancelBtn" title="Cancel">${ICON_X_SVG}</button>
         <button class="icon-edit-btn" id="editSaveBtn" title="Save">${ICON_CHECK_SVG}</button>`;
       wrap.querySelector('#editCancelBtn').onclick = cancelEdits;
       wrap.querySelector('#editSaveBtn').onclick = commitEdits;
@@ -7727,6 +7873,82 @@ function fmtRestShort(secs) {
    glance, not just the added-weight sliver. Bodyweight itself only shows
    when it's actually known (some old sessions never had it entered) —
    falls back to a plain line rather than showing "(@? BW)". */
+/* Plain-text export of one full log entry — date, bodyweight, duration,
+   volume, set count, then every exercise with every set's weight/reps/RIR/
+   RPE (reusing formatSetLine, the same per-set formatting Logs already
+   displays) and any session notes. Built fresh from the entry's live data
+   rather than scraping the rendered accordion DOM, so it's correct even for
+   sets/exercises that used compact combined formatting on screen. */
+function buildLogCopyText(e) {
+  const setCount = e.exercises.reduce((a, ex) => a + ex.sets.length, 0);
+  let elapsedTxt = '—';
+  if (e.endTime && e.startTime && e.endTime > e.startTime) {
+    elapsedTxt = formatStopwatch(e.endTime - e.startTime);
+  } else if (typeof e.durationMin === 'number' && e.durationMin > 0) {
+    elapsedTxt = formatStopwatch(e.durationMin * 60000);
+  }
+  const lines = [];
+  lines.push(fmtLogTitle(e.date, e.day));
+  if (e.bodyweight) lines.push(`Bodyweight: ${e.bodyweight}${settings.units}`);
+  lines.push(`Volume: ${e.totalVolume}${settings.units}  ·  Sets: ${setCount}  ·  Elapsed: ${elapsedTxt}`);
+  lines.push('');
+  e.exercises.forEach(ex => {
+    if (!ex.sets || !ex.sets.length) return;
+    lines.push(ex.name);
+    // All-time best est. 1RM for this exercise from every OTHER logged
+    // session (same PR definition the Progress screen uses) — computed once
+    // per exercise so each set's line below can show how it stacks up
+    // against the exercise's actual PR, not just against this session.
+    let priorBest = 0, hadPrior = false;
+    historyEntries.forEach(session => {
+      if (session.id === e.id) return;
+      const other = (session.exercises || []).find(oe => sameExName(oe.name, ex.name));
+      if (!other) return;
+      (other.sets || []).filter(hasSetData).forEach(s => {
+        if (s.isWarmup) return;
+        hadPrior = true;
+        const est = estimate1RMForSet(s, other, session.bodyweight);
+        if (est > priorBest) priorBest = est;
+      });
+    });
+    ex.sets.forEach((s, i) => {
+      let prTxt = '';
+      if (hadPrior && !s.isWarmup && hasSetData(s)) {
+        const est = estimate1RMForSet(s, ex, e.bodyweight);
+        const pct = ((est - priorBest) / priorBest) * 100;
+        const rounded = Math.round(pct * 10) / 10;
+        prTxt = `  (est. ${Math.round(est)}${exerciseUnit(ex.name)}, PR ${rounded >= 0 ? '+' : ''}${rounded}%)`;
+      }
+      lines.push(`  ${setNumberLabel(ex.sets, i)}: ${formatSetLine(s, ex.name, ex, e.bodyweight)}${prTxt}`);
+    });
+    lines.push('');
+  });
+  if (e.notes) { lines.push('Notes:'); lines.push(e.notes); }
+  return lines.join('\n').trim();
+}
+/* Copies text to the clipboard, with a fallback for contexts where the
+   async Clipboard API isn't available (e.g. no secure context) — a hidden
+   textarea + execCommand('copy') covers those. */
+async function copyTextToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (err2) {
+      return false;
+    }
+  }
+}
 function formatSetLine(s, exName, ex, bodyweight) {
   const nz = (v) => (v === undefined || v === null || v === '') ? '?' : v;
   const nzWeight = (v) => (v === undefined || v === null || v === '') ? 0 : v;
@@ -7868,6 +8090,7 @@ function renderLogs(root) {
       <div class="history-head">
         <div class="hd-left"><div class="hd-date">${fmtLogTitle(e.date, e.day)}</div>${e.bodyweight ? `<div class="hd-meta mono">BW ${e.bodyweight}${settings.units}</div>` : ''}</div>
         <div class="hd-right">
+          ${isOpen ? `<button class="icon-edit-btn" data-log-copy="${e.id}" title="Copy log">${ICON_COPY_SVG}</button>` : ''}
           <button class="icon-edit-btn" data-log-edit="${e.id}" title="Edit">${ICON_EDIT_SVG}</button>
           <div class="hd-arrow" style="color:var(--text-dim);">${isOpen?'▴':'▾'}</div>
         </div>
@@ -7879,6 +8102,16 @@ function renderLogs(root) {
       </div>
       <div class="history-body ${isOpen?'open':''}">${isOpen ? buildHistoryBodyHTML(e, dayMedia, hasDayMedia) : ''}</div>`;
     if (isOpen) { item.dataset.bodyBuilt = '1'; wireHistoryExNameClicks(item); }
+    const wireCopyBtn = () => {
+      const btn = item.querySelector('[data-log-copy]');
+      if (!btn) return;
+      btn.onclick = async (ev) => {
+        ev.stopPropagation();
+        const ok = await copyTextToClipboard(buildLogCopyText(e));
+        showToast(ok ? 'Log copied' : "Couldn't copy log");
+      };
+    };
+    wireCopyBtn();
     item.querySelector('[data-log-edit]').onclick = (ev) => {
       ev.stopPropagation();
       editLogId = e.id;
@@ -7887,19 +8120,28 @@ function renderLogs(root) {
     item.querySelector('.history-head').onclick = () => {
       const body = item.querySelector('.history-body');
       const arrow = item.querySelector('.hd-arrow');
+      const hdRight = item.querySelector('.hd-right');
       const nowOpen = body.classList.contains('open');
       if (nowOpen) {
         body.classList.remove('open'); arrow.textContent = '▾'; openLogId = null;
+        const copyBtn = hdRight.querySelector('[data-log-copy]');
+        if (copyBtn) copyBtn.remove();
       } else {
         // accordion — collapse any other entry that's currently open
         list.querySelectorAll('.history-body.open').forEach(el => { if (el !== body) el.classList.remove('open'); });
         list.querySelectorAll('.hd-arrow').forEach(el => { if (el !== arrow) el.textContent = '▾'; });
+        list.querySelectorAll('[data-log-copy]').forEach(el => { if (el !== hdRight.querySelector('[data-log-copy]')) el.remove(); });
         if (!item.dataset.bodyBuilt) {
           item.dataset.bodyBuilt = '1';
           body.innerHTML = buildHistoryBodyHTML(e, dayMedia, hasDayMedia);
           wireHistoryExNameClicks(item);
         }
         body.classList.add('open'); arrow.textContent = '▴'; openLogId = e.id;
+        if (!hdRight.querySelector('[data-log-copy]')) {
+          const editBtn = hdRight.querySelector('[data-log-edit]');
+          editBtn.insertAdjacentHTML('beforebegin', `<button class="icon-edit-btn" data-log-copy="${e.id}" title="Copy log">${ICON_COPY_SVG}</button>`);
+          wireCopyBtn();
+        }
         if (!item.dataset.mediaHydrated) {
           item.dataset.mediaHydrated = '1';
           // max-height transition on .history-body.open is .511s — let it
