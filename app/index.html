@@ -147,7 +147,7 @@
     font-size: 14.12px; font-weight: 700; line-height: 1.15;
     box-shadow: 0 6px 20px -8px var(--teal-glow);
     transition: transform .48s var(--ease-bounce), box-shadow .42s var(--ease-glide), opacity .38s var(--ease-glide);
-  }.select-btn:active{ transform: scale(0.925); box-shadow: 0 3px 14px -6px var(--teal-glow); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }.select-btn .sb-name{ display: flex; align-items: center; gap: 11.5px; line-height: 1.15; }.select-btn .sb-arrow{ font-size: 15.34px; font-weight: 800; line-height: 1.15; flex-shrink: 0; align-self: center; }.select-btn .li-check{ color: var(--teal-ink); font-size: 14.12px; }.select-btn.ex-pick{ background: var(--panel); color: var(--teal); border: 1.75px solid var(--border); box-shadow: none; padding: 13.8px 16px; margin-bottom: 9.2px; font-size: 13.23px; }.select-btn.ex-pick:active{ box-shadow: none; }.select-btn.ex-pick .li-check{ color: var(--teal); }.select-btn .li-progress-dot{ display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; animation: pulseDot 1.1s ease-in-out infinite; }@keyframes pulseDot{ 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }.list-item{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 18.4px; padding: 17.25px 16px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; margin-bottom: 17.25px; cursor: pointer; box-shadow: none; line-height: 1.15; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide), background-color .38s var(--ease-glide); }#exerciseDayList .list-item{ margin-bottom: 10.35px; }.list-item:not(.static):not(.dragging):active{ transform: scale(0.955); transition: transform .14s var(--ease-press); }.list-item.static{ border-color: var(--border); box-shadow: none; cursor: default; }.list-item .li-name{ font-size: 14.12px; font-weight: 700; display: flex; align-items: center; gap: 11.5px; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; line-height: 1.438; align-self: center; }.list-item:not(.static) .li-name{ color: var(--teal); }.list-item .li-check{ color: var(--teal); font-size: 14.12px; }.list-item .li-meta{ font-size: 11.02px; color: var(--text-dim); margin-top: 3.45px; }.list-item .li-pr{ font-size: 11.02px; color: var(--teal); font-weight: 700; margin-top: 3.45px; }.list-item .li-right{ display: flex; gap: 11.5px; align-items: center; color: var(--text-dim); flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }.list-item .li-right > *{ align-self: center; line-height: 1.15; }.drag-handle{ background: none; border: none; color: var(--text-dim); cursor: grab; padding: 6.9px 10px 6.9px 0; margin-right: 2px; display: flex; align-items: center; justify-content: center; touch-action: none; flex-shrink: 0; transition: color .38s var(--ease-glide), transform .48s var(--ease-bounce); }.drag-handle:active{ cursor: grabbing; color: var(--teal); transform: scale(1.225); transition: color .14s var(--ease-press), transform .14s var(--ease-press); }.list-item.dragging{ border-color: var(--border); box-shadow: 0 10px 26px -6px rgba(0,0,0,0.55); cursor: grabbing; }.list-item.item-entering{ animation: itemSlideUp 0.42s var(--ease-glide); }@keyframes itemSlideUp{ from { opacity: 0; transform: translateY(28px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }.list-item.item-removing{ animation: itemSlideOut 0.32s var(--ease-glide) forwards; pointer-events: none; }@keyframes itemSlideOut{ from { opacity: 1; transform: scale(1); max-height: 200px; margin-bottom: 17.25px; } to { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; } }.list-item.compact{ padding: 10.35px 14px; margin-bottom: 8.05px; }.list-item.compact .li-name{ font-size: 13.23px; }.row-inline{ display: flex; gap: 9.2px; align-items: stretch; margin-bottom: 20.7px; }.icon-btn{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 13.23px; cursor: pointer; flex-shrink: 0; }.icon-btn svg{ width: 18px; height: 18px; }.icon-btn[data-act="rename"]{ color: var(--teal); padding: 10.46px 14.8px; position: relative; top: 0.5px; }.icon-btn[data-act="rename"] svg{ width: 20.4px; height: 20.4px; }.icon-btn.danger{ color: var(--danger); border-color: var(--border); box-shadow: none; padding: 11.5px 16px; }.icon-btn.danger svg{ width: 22px; height: 22px; }.row-inline #newExBtn{ padding: 9.2px 22px; }.uni-toggle{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 12.34px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: border-color .38s var(--ease-glide), color .38s var(--ease-glide), background-color .38s var(--ease-glide); }.uni-toggle.on{ border-color: var(--border); color: var(--teal); background: var(--teal-a14); }.uni-tag{ font-size: 10.92px; color: var(--teal-dim); border: 1px solid var(--border); border-radius: 8px; padding: 2.3px 6px; margin-left: 8px; }.ex-pick-search-wrap{ position: sticky; top: 0; z-index: 5; background: var(--bg); padding-bottom: 11.5px; margin-bottom: 4.6px; }.ex-pick-search-wrap input{ font-size: 13.67px; }.ex-pick-group-label{ font-size: 12.34px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--teal); margin: 13.8px 0 6.9px; }.ex-pick-group-label:first-child{ margin-top: 4.6px; }.ex-pick-row{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 11.5px;
+  }.select-btn:active{ transform: scale(0.925); box-shadow: 0 3px 14px -6px var(--teal-glow); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }.select-btn .sb-name{ display: flex; align-items: center; gap: 11.5px; line-height: 1.15; }.select-btn .sb-arrow{ font-size: 15.34px; font-weight: 800; line-height: 1.15; flex-shrink: 0; align-self: center; }.select-btn .li-check{ color: var(--teal-ink); font-size: 14.12px; }.select-btn.ex-pick{ background: var(--panel); color: var(--teal); border: 1.75px solid var(--border); box-shadow: none; padding: 13.8px 16px; margin-bottom: 9.2px; font-size: 13.23px; }.select-btn.ex-pick:active{ box-shadow: none; }.select-btn.ex-pick .li-check{ color: var(--teal); }.select-btn .li-progress-dot{ display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; animation: pulseDot 1.1s ease-in-out infinite; }@keyframes pulseDot{ 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }.list-item{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 18.4px; padding: 17.25px 16px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; margin-bottom: 17.25px; cursor: pointer; box-shadow: none; line-height: 1.15; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide), background-color .38s var(--ease-glide); }#exerciseDayList .list-item{ margin-bottom: 10.35px; }.list-item:not(.static):not(.dragging):active{ transform: scale(0.955); transition: transform .14s var(--ease-press); }.list-item.static{ border-color: var(--border); box-shadow: none; cursor: default; }.list-item .li-name{ font-size: 14.12px; font-weight: 700; display: flex; align-items: center; gap: 11.5px; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; line-height: 1.438; align-self: center; }.list-item:not(.static) .li-name{ color: var(--teal); }.list-item .li-check{ color: var(--teal); font-size: 14.12px; }.list-item .li-meta{ font-size: 11.02px; color: var(--text-dim); margin-top: 3.45px; }.list-item .li-pr{ font-size: 11.02px; color: var(--teal); font-weight: 700; margin-top: 3.45px; }.list-item .li-right{ display: flex; gap: 11.5px; align-items: center; color: var(--text-dim); flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }.list-item .li-right > *{ align-self: center; line-height: 1.15; }.drag-handle{ background: none; border: none; color: var(--text-dim); cursor: grab; padding: 6.9px 10px 6.9px 0; margin-right: 2px; display: flex; align-items: center; justify-content: center; touch-action: none; flex-shrink: 0; transition: color .38s var(--ease-glide), transform .48s var(--ease-bounce); }.drag-handle:active{ cursor: grabbing; color: var(--teal); transform: scale(1.225); transition: color .14s var(--ease-press), transform .14s var(--ease-press); }.list-item.dragging{ border-color: var(--border); box-shadow: 0 10px 26px -6px rgba(0,0,0,0.55); cursor: grabbing; }.list-item.item-entering{ animation: itemSlideUp 0.42s var(--ease-glide); }@keyframes itemSlideUp{ from { opacity: 0; transform: translateY(28px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }.list-item.item-removing{ animation: itemSlideOut 0.32s var(--ease-glide) forwards; pointer-events: none; }@keyframes itemSlideOut{ from { opacity: 1; transform: scale(1); max-height: 200px; margin-bottom: 17.25px; } to { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; } }.list-item.compact{ padding: 10.35px 14px; margin-bottom: 8.05px; }.list-item.compact .li-name{ font-size: 13.23px; }.row-inline{ display: flex; gap: 9.2px; align-items: stretch; margin-bottom: 20.7px; }.icon-btn{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 13.23px; cursor: pointer; flex-shrink: 0; }.icon-btn svg{ width: 18px; height: 18px; }.icon-btn[data-act="rename"]{ color: var(--teal); padding: 10.46px 14.8px; position: relative; top: 0.5px; }.icon-btn[data-act="rename"] svg{ width: 20.4px; height: 20.4px; }.icon-btn.danger{ color: var(--danger); border-color: var(--border); box-shadow: none; padding: 11.5px 16px; }.icon-btn.danger svg{ width: 22px; height: 22px; }.row-inline #newExBtn, .row-inline #newLogExBtn{ padding: 9.2px 22px; }.uni-toggle{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 12.34px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: border-color .38s var(--ease-glide), color .38s var(--ease-glide), background-color .38s var(--ease-glide); }.uni-toggle.on{ border-color: var(--border); color: var(--teal); background: var(--teal-a14); }.uni-tag{ font-size: 10.92px; color: var(--teal-dim); border: 1px solid var(--border); border-radius: 8px; padding: 2.3px 6px; margin-left: 8px; }.ex-pick-search-wrap{ position: sticky; top: 0; z-index: 5; background: var(--bg); padding-bottom: 11.5px; margin-bottom: 4.6px; }.ex-pick-search-wrap input{ font-size: 13.67px; }.ex-pick-group-label{ font-size: 12.34px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--teal); margin: 13.8px 0 6.9px; }.ex-pick-group-label:first-child{ margin-top: 4.6px; }.ex-pick-row{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 11.5px;
     padding: 11.5px 13px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 13px;
     margin-bottom: 6.9px; cursor: pointer; color: var(--text); font-size: 13.23px; font-weight: 600;
     transition: transform .3s var(--ease-bounce), border-color .3s var(--ease-glide), color .3s var(--ease-glide), background-color .3s var(--ease-glide); }.ex-pick-row:active{ transform: scale(0.97); }.ex-pick-row.selected{ color: var(--teal); border-color: var(--border); background: var(--teal-a16); font-weight: 700; }.ex-pick-row .ex-pick-name{ display: flex; align-items: center; gap: 9.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.ex-pick-row .ex-pick-check{ flex-shrink: 0; color: var(--teal); }.ex-pick-row .uni-toggle{ padding: 6.9px 10px; font-size: 10.92px; }.ex-pick-row-right{ display: flex; align-items: center; gap: 6.9px; flex-shrink: 0; }.ex-pick-drag{ display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
@@ -180,10 +180,10 @@
     border-bottom: 1.75px solid var(--border); box-shadow: 0 10px 26px -8px rgba(0,0,0,0.55);
     transform: translateY(-100%); transition: transform .42s var(--ease-glide); pointer-events: none; }.alarm-stop-banner.show{ transform: translateY(0); pointer-events: auto; }.alarm-stop-banner .asb-text{ color: var(--text); font-size: 12.78px; font-weight: 700; }.alarm-stop-banner .asb-stop{ flex-shrink: 0; background: var(--danger); border: none; color: #2a0708; font-size: 12.34px; font-weight: 800; padding: 11.5px 18px; border-radius: 11px; cursor: pointer; box-shadow: 0 6px 18px -6px var(--danger-glow); transition: transform .38s var(--ease-bounce); }.alarm-stop-banner .asb-stop:active{ transform: scale(0.92); transition: transform .14s var(--ease-press); }.err-text{ color: var(--danger); font-size: 11.47px; margin-top: -6.9px; margin-bottom: 11.5px; min-height: 16px; }.ex-ac-wrap{ position: relative; flex: 1 1 auto; min-width: 0; }.ex-ac-dropdown{ position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--panel);
     border: 1px solid var(--border); border-radius: 12px; max-height: 240px; overflow-y: auto; z-index: 60;
-    box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); }.ex-ac-item{ padding: 13.8px 14px; font-size: 12.78px; color: var(--text); cursor: pointer; }.ex-ac-item:active{ background: var(--panel-2); }.ex-ac-item .uni-tag{ margin-left: 8px; }.ex-ac-empty{ padding: 14px; font-size: 11.47px; color: var(--text-dim); text-align: center; }.sort-menu-wrap{ position: relative; flex-shrink: 0; }.sort-menu{ position: absolute; top: calc(100% + 8px); right: 0; min-width: 208px; width: max-content; background: var(--panel);
+    box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); }.ex-ac-item{ padding: 13.8px 14px; font-size: 12.78px; color: var(--text); cursor: pointer; }.ex-ac-item:active{ background: var(--panel-2); }.ex-ac-item .uni-tag{ margin-left: 8px; }.ex-ac-empty{ padding: 14px; font-size: 11.47px; color: var(--text-dim); text-align: center; }.ex-ac-item.ex-pick-add-row{ color: var(--teal-dim); font-style: italic; }.ex-name-editable{ border: 1.5px dashed var(--border); border-radius: 9px; padding: 6px 9px; margin: -6px -9px; cursor: pointer; transition: border-color .3s var(--ease-glide), background-color .3s var(--ease-glide); }.ex-name-editable:active{ border-color: var(--teal); background: var(--panel-2); }.sb-name-editable{ border: 1.5px dashed rgba(0,0,0,0.32); border-radius: 8px; padding: 2px 7px; margin: -2px -7px; cursor: pointer; }.select-btn .sb-name-editable:active{ background: rgba(0,0,0,0.1); }h1.big .sb-name-editable{ border-color: var(--border); }h1.big .sb-name-editable:active{ background: var(--panel-2); }.ex-search-btn{ width: 100%; justify-content: flex-start; gap: 9.2px; color: var(--text-dim); margin-bottom: 20.7px; padding: 13.8px 16px; }.ex-search-btn svg{ width: 17px; height: 17px; flex-shrink: 0; }#exSearchRow{ margin-bottom: 20.7px; }.sort-menu-wrap{ position: relative; flex-shrink: 0; }.sort-menu{ position: absolute; top: calc(100% + 8px); right: 0; min-width: 208px; width: max-content; background: var(--panel);
     border: 1px solid var(--border); border-radius: 14px; padding: 6px; z-index: 60;
     box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); animation: rwPanelIn .18s var(--ease-glide); }.sort-menu-item{ display: block; width: 100%; text-align: left; background: none; border: none; color: var(--teal);
-    font-size: 12.78px; font-weight: 700; padding: 13.8px 16px; border-radius: 10px; cursor: pointer; white-space: nowrap; }.sort-menu-item.active{ background: var(--teal-a14); }.sort-menu-item:active{ background: var(--panel-2); }/* ---------- in-app media lightbox (custom player, no native popups) ---------- */
+    font-size: 12.78px; font-weight: 700; padding: 13.8px 16px; border-radius: 10px; cursor: pointer; white-space: nowrap; }.sort-menu-item.active{ background: var(--teal-a14); }.sort-menu-item:active{ background: var(--panel-2); }.sort-menu-item.danger{ color: var(--danger); }/* ---------- in-app media lightbox (custom player, no native popups) ---------- */
   .log-media-thumb, .media-thumb{ cursor: pointer; position: relative; }.thumb-play-badge{ position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     color: #fff; font-size: 15.88px; text-shadow: 0 1px 6px rgba(0,0,0,0.8); pointer-events: none; }.thumb-play-badge::before{ content: ''; position: absolute; width: 26px; height: 26px; border-radius: 50%;
     background: rgba(0,0,0,0.38); }.lightbox-overlay{ position: fixed; inset: 0; background: rgba(4,8,8,0.94); z-index: 200;
@@ -457,7 +457,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.3.3';
+const APP_VERSION = '1.3.4';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -589,7 +589,7 @@ function logClientError(context, err) {
   } catch (e) {}
 }
 
-const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings', 'notes', 'allExSortMode', 'rotationLength', 'rotationStartWeekday', 'rotationAnchorDate', 'rotationSchedule'];
+const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings', 'notes', 'allExSortMode', 'rotationLength', 'rotationStartWeekday', 'rotationAnchorDate', 'rotationSchedule', 'savedPrograms'];
 
 async function pushCloudAppState(key, val) {
   if (!account || !account.id) return;
@@ -833,7 +833,7 @@ function draftHasData(d) {
    showAppConfirm above: a native prompt() renders as stock OS chrome, which
    breaks the app's visual identity completely. Resolves with the trimmed
    string, or null if dismissed via Cancel/backdrop. */
-function showAppPrompt(message, placeholder, submitLabel) {
+function showAppPrompt(message, placeholder, submitLabel, defaultValue) {
   return new Promise((resolve) => {
     const overlay = document.createElement('div');
     overlay.className = 'confirm-overlay';
@@ -848,6 +848,7 @@ function showAppPrompt(message, placeholder, submitLabel) {
       </div>`;
     document.body.appendChild(overlay);
     const input = overlay.querySelector('#promptInput');
+    if (defaultValue) input.value = defaultValue;
     const close = (val) => { document.body.removeChild(overlay); resolve(val); };
     overlay.querySelector('#promptSubmit').onclick = () => {
       const v = input.value.trim();
@@ -856,7 +857,7 @@ function showAppPrompt(message, placeholder, submitLabel) {
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') overlay.querySelector('#promptSubmit').click(); });
     overlay.querySelector('#confirmCancel').onclick = () => close(null);
     overlay.onclick = (e) => { if (e.target === overlay) close(null); };
-    setTimeout(() => input.focus(), 50);
+    setTimeout(() => { input.focus(); input.select(); }, 50);
   });
 }
 // Multiline variant of showAppPrompt — used for set notes, where a single-
@@ -975,6 +976,7 @@ const HB_TIMER_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" 
 const HB_NOTES_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="15" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3v18M2 7h3M2 11h3M2 15h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 const ICON_LOGS_SVG = `<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3.5" width="14" height="17" rx="2.2" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_SORT_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M7 5v14M7 5L4 8M7 5l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 8h8M13 12.5h5.5M13 17h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+const ICON_SEARCH_SVG = `<svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M19 19l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 /* ---------- bottom tab bar icons ---------- */
 const ICON_NAV_HOME_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5L12 4l8 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v8.5a1 1 0 0 0 1 1h3.5v-5.5h3v5.5H17a1 1 0 0 0 1-1V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_NAV_TRAIN_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M3.5 12h1.6M18.9 12h1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="5.1" y="9" width="2.6" height="6" rx="0.8" fill="currentColor"/><rect x="16.3" y="9" width="2.6" height="6" rx="0.8" fill="currentColor"/><rect x="7.7" y="7.2" width="2.2" height="9.6" rx="0.9" fill="currentColor"/><rect x="14.1" y="7.2" width="2.2" height="9.6" rx="0.9" fill="currentColor"/><rect x="9.9" y="10.6" width="4.2" height="2.8" fill="currentColor"/></svg>`;
@@ -1020,14 +1022,33 @@ function fmtTime(ts) { return new Date(ts).toLocaleTimeString(undefined,{hour:'2
    done for 13-15 reps. Brzycki tracks real capacity much better in that range.
    RIR/RPE (reps still "in the tank") are folded in as extra effective reps —
    a set with reps left is further from a true max than the same reps at 0 RIR,
-   so it should feed a smaller 1RM estimate. RPE is converted to RIR (10-RPE)
-   when RIR itself wasn't logged. Formula is undefined at 37 reps, so effective
-   reps is capped at 36. */
+   so it should feed a smaller 1RM estimate.
+   Both fields are converted onto the same RIR scale (RPE -> 10-RPE) and then
+   combined, never one silently discarding the other:
+   - both logged: averaged into a single blended effort figure — two
+     independent readings of the same set's effort, so neither is thrown
+     away regardless of which one was used last session, or whether either
+     was used at all.
+   - only one logged: that one is used as-is.
+   - neither logged (including all pre-RIR/RPE legacy sets): effort is 0,
+     i.e. the set is scored on raw weight/reps alone with no effort
+     adjustment — a neutral baseline rather than assuming either failure
+     or huge reserve.
+   Formula is undefined at 37 reps, so effective reps is capped at 36. */
 function estimate1RM(weight, reps, rir, rpe) {
   if (!weight || !reps) return 0;
+  const hasRir = rir !== undefined && rir !== null && rir !== '';
+  const hasRpe = rpe !== undefined && rpe !== null && rpe !== '';
   let effort = 0;
-  if (rir !== undefined && rir !== null && rir !== '') effort = parseFloat(rir) || 0;
-  else if (rpe !== undefined && rpe !== null && rpe !== '') effort = Math.max(0, 10 - (parseFloat(rpe) || 10));
+  if (hasRir && hasRpe) {
+    const rirVal = parseFloat(rir) || 0;
+    const rpeAsRir = Math.max(0, 10 - (parseFloat(rpe) || 10));
+    effort = (rirVal + rpeAsRir) / 2;
+  } else if (hasRir) {
+    effort = parseFloat(rir) || 0;
+  } else if (hasRpe) {
+    effort = Math.max(0, 10 - (parseFloat(rpe) || 10));
+  }
   const effReps = Math.min(reps + effort, 36);
   return Math.round(weight * (36 / (37 - effReps)) * 10) / 10;
 }
@@ -1148,7 +1169,7 @@ function hasSetData(s) {
   return s.weight !== '' && repsFilled;
 }
 function programTitleLabel(type) {
-  return type === 'PPL' ? 'Push Pull Legs' : type === 'UL' ? 'Upper Lower' : type === 'AP' ? 'Anterior / Posterior' : type === 'BS' ? 'Bro Split' : type === 'FB' ? 'Full Body' : 'Custom';
+  return type === 'PPL' ? 'Push Pull Legs' : type === 'UL' ? 'Upper Lower' : type === 'AP' ? 'Anterior Posterior' : type === 'FB' ? 'Full Body' : 'Custom';
 }
 /* The day list under the program name (e.g. "Push · Pull · Legs") is only
    useful when it tells you something the title didn't — like the numbered
@@ -1310,7 +1331,13 @@ function attachExerciseAutocomplete(input, dropdown, onPick) {
           input.value = item.dataset.name;
           dropdown.style.display = 'none';
           if (onPick) onPick(item.dataset.name);
-          else input.focus();
+          // Tapping the dropdown item blurs the input, which on mobile
+          // closes the keyboard — refocus so the search bar stays open
+          // for picking/typing the next exercise instead of forcing a
+          // re-tap. (No-op if onPick tore down and rebuilt this input as
+          // part of a fuller re-render — that case refocuses its own new
+          // input element separately.)
+          input.focus();
         };
       });
     }
@@ -1916,6 +1943,26 @@ let programType = null, programDays = [];
 // of Day 1; rotationSchedule[i] is the programDays entry (or 'Rest')
 // scheduled for day (i+1) of the cycle. See getScheduledDayForDate().
 let rotationLength = null, rotationStartWeekday = null, rotationAnchorDate = null, rotationSchedule = [];
+// User-named, fully-configured splits saved from the program setup/change
+// wizard (type + days + exercisesByDay for those days + rotation), so they
+// can be reloaded instantly later without re-picking exercises/rotation.
+// See saveProgramWizardResult() / loadSavedProgram() / editSavedProgram().
+let savedPrograms = [];
+// Non-null while the setup-exercises → setup-rotation wizard is running as
+// an EDIT of an existing entry in savedPrograms (reached via that entry's
+// pencil icon) rather than a fresh split pick — set by editSavedProgram(),
+// read by the wizard's final save-prompt step to offer Overwrite vs Save
+// as new instead of just asking for a brand-new name.
+let programWizardEditingId = null;
+// Set alongside programWizardEditingId by editSavedProgram() — the exact
+// day names the program-being-edited owned BEFORE any variant-count change
+// in this edit session. finalizeEditedProgram() uses this to tell "this day
+// belongs to the program being edited, its saved exercises should carry
+// over" apart from "this day name is new to this edit" (e.g. raising the
+// variant count from 1 to 2 introduces 'Upper 2'/'Lower 2') — the latter
+// must start blank even if exercisesByDay already happens to hold entries
+// under that exact name from some unrelated program. null outside an edit.
+let editWizardOriginalDays = null;
 // Persisted (locally + synced via app_state/CLOUD_SYNC_KEYS, same as
 // settings) so the Progress History sort choice survives an app restart
 // and follows the account across devices instead of resetting to A-Z
@@ -2403,6 +2450,7 @@ async function continueBootAfterAuth() {
   exerciseUnits = await loadJSON('exerciseUnits', {});
   notes = await loadJSON('notes', []);
   customExercises = await loadJSON('customExercises', []);
+  savedPrograms = await loadJSON('savedPrograms', []);
   if (!activeNoteId && notes.length) activeNoteId = notes[0].id;
   loggedIn = true;
   refreshHotbarLayout();
@@ -2453,7 +2501,7 @@ async function autoFinishStaleDraft() {
 
   const staleDay = draft.day;
   const cleanExercises = draft.exercises
-    .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, bodyweightExercise: isBodyweightExercise(ex), sets: ex.sets.filter(s => !setLacksPerformanceData(s, ex.unilateral)) }))
+    .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, bodyweightExercise: isBodyweightExercise(ex), sets: ex.sets.filter(s => s.done && !setLacksPerformanceData(s, ex.unilateral)) }))
     .filter(ex => ex.sets.length > 0);
 
   if (cleanExercises.length === 0) {
@@ -2616,6 +2664,20 @@ function goBack(fallback) {
 }
 function performBack() {
   stopSoundPreview();
+  // Leaving the edit-log screen by ANY back path (the on-screen arrow,
+  // hardware/software back button, or the Android edge-swipe/predictive-back
+  // gesture — all of these funnel through here) must discard whatever
+  // wasn't explicitly Saved. persistEditDraft() mirrors every keystroke to
+  // EDIT_DRAFT_PREFIX+id in storage as it happens (so an Android WebView
+  // restart mid-edit doesn't lose it); without clearing that here, the next
+  // time this same workout is opened for editing it would silently reload
+  // and resurrect changes the user walked away from without saving. The
+  // on-screen back arrow already does this inline too — this just makes
+  // sure every OTHER way of leaving the screen does the same thing.
+  if (screen === 'edit-log' && editLogWorkingCopy) {
+    deleteKey(EDIT_DRAFT_PREFIX + editLogWorkingCopy.id);
+    editLogWorkingCopy = null;
+  }
   const prev = navStack.pop();
   screen = prev || pendingBackFallback || 'home';
   pendingBackFallback = null;
@@ -2719,7 +2781,7 @@ function render() {
     'select-program': renderSelectProgram,
     'ppl-count': (r) => renderSplitCountPicker(r, { type: 'PPL', max: 2, title: 'How many PPL splits?', sub: 'Pick 2 to alternate two different Push/Pull/Legs setups, each with its own exercises and order.', isSwitch: false }),
     'ul-count': (r) => renderSplitCountPicker(r, { type: 'UL', max: 3, title: 'How many Upper/Lower splits?', sub: 'Pick more than 1 to alternate multiple Upper/Lower setups, each with its own exercises and order.', isSwitch: false }),
-    'ap-count': (r) => renderSplitCountPicker(r, { type: 'AP', max: 2, title: 'How many Anterior/Posterior splits?', sub: 'Pick 2 to alternate two different Anterior/Posterior setups, each with its own exercises and order.', isSwitch: false }),
+    'ap-count': (r) => renderSplitCountPicker(r, { type: 'AP', max: 2, title: 'How many Anterior Posterior splits?', sub: 'Pick 2 to alternate two different Anterior Posterior setups, each with its own exercises and order.', isSwitch: false }),
     'fb-count': (r) => renderSplitCountPicker(r, { type: 'FB', max: 4, title: 'How many Full Body templates?', sub: 'e.g. pick 2 to alternate FB1 / FB2, or up to 4 for more variety.', isSwitch: false }),
     'custom-count': (r) => renderSplitCountPicker(r, { type: 'Custom', max: 6, title: 'How many variants of this split do you run?', sub: "e.g. pick 3 to alternate three different rotations of your custom split — let's be realistic though.", isSwitch: false }),
     'setup-exercises': renderSetupExercises, 'setup-rotation': renderSetupRotation, 'home': renderHome,
@@ -2734,9 +2796,14 @@ function render() {
     'settings-program': renderSettingsProgram, 'settings-backup': renderSettingsBackup,
     'ppl-count-switch': (r) => renderSplitCountPicker(r, { type: 'PPL', max: 2, title: 'How many PPL splits?', isSwitch: true }),
     'ul-count-switch': (r) => renderSplitCountPicker(r, { type: 'UL', max: 3, title: 'How many Upper/Lower splits?', isSwitch: true }),
-    'ap-count-switch': (r) => renderSplitCountPicker(r, { type: 'AP', max: 2, title: 'How many Anterior/Posterior splits?', isSwitch: true }),
+    'ap-count-switch': (r) => renderSplitCountPicker(r, { type: 'AP', max: 2, title: 'How many Anterior Posterior splits?', isSwitch: true }),
     'fb-count-switch': (r) => renderSplitCountPicker(r, { type: 'FB', max: 4, title: 'How many Full Body templates?', isSwitch: true }),
-    'custom-count-switch': (r) => renderSplitCountPicker(r, { type: 'Custom', max: 6, title: 'How many variants of this split do you run?', isSwitch: true })
+    'custom-count-switch': (r) => renderSplitCountPicker(r, { type: 'Custom', max: 6, title: 'How many variants of this split do you run?', isSwitch: true }),
+    'ppl-count-edit': (r) => renderSplitCountPicker(r, { type: 'PPL', max: 2, title: 'How many PPL splits?', sub: 'Pick 2 to alternate two different Push/Pull/Legs setups, each with its own exercises and order.', isEdit: true }),
+    'ul-count-edit': (r) => renderSplitCountPicker(r, { type: 'UL', max: 3, title: 'How many Upper/Lower splits?', sub: 'Pick more than 1 to alternate multiple Upper/Lower setups, each with its own exercises and order.', isEdit: true }),
+    'ap-count-edit': (r) => renderSplitCountPicker(r, { type: 'AP', max: 2, title: 'How many Anterior Posterior splits?', sub: 'Pick 2 to alternate two different Anterior Posterior setups, each with its own exercises and order.', isEdit: true }),
+    'fb-count-edit': (r) => renderSplitCountPicker(r, { type: 'FB', max: 4, title: 'How many Full Body templates?', sub: 'e.g. pick 2 to alternate FB1 / FB2, or up to 4 for more variety.', isEdit: true }),
+    'custom-count-edit': (r) => renderSplitCountPicker(r, { type: 'Custom', max: 6, title: 'How many variants of this split do you run?', sub: "e.g. pick 3 to alternate three different rotations of your custom split — let's be realistic though.", isEdit: true })
   };
   const centeredScreens = ['loading','register','login','onboarding-welcome'];
   if (centeredScreens.includes(screen)) wrap.classList.add('centered');
@@ -2965,6 +3032,8 @@ function renderSelectProgram(root) {
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Setup</div>
     <h1 class="big">Select your program</h1>
     <p class="sub">This is the shape of your split — the list of distinct workout days you rotate through. You'll pick exercises for each one next, then set how the cycle repeats. You can change this later in Settings.</p>
+    ${renderSavedProgramsListHtml()}
+    <div class="section-label">${savedPrograms.length ? 'Start a new split' : ''}</div>
     <div class="chip-grid" id="progGrid">
       <button class="chip wide" data-v="PPL">Push Pull Legs</button>
       <button class="chip wide" data-v="UL">Upper Lower</button>
@@ -2979,16 +3048,18 @@ function renderSelectProgram(root) {
     </div>
   `;
   root.querySelector('#backBtn').onclick = () => goBack('onboarding-welcome');
+  attachSavedProgramsListHandlers(root);
   root.querySelectorAll('#progGrid .chip').forEach(btn => {
     btn.onclick = () => selectProgramType(btn.dataset.v);
   });
 }
 
 function selectProgramType(type) {
+  programWizardEditingId = null; // fresh split pick, not an edit of a saved one
+  editWizardOriginalDays = null;
   if (type === 'PPL') { goTo('ppl-count'); }
   else if (type === 'UL') { goTo('ul-count'); }
   else if (type === 'AP') { goTo('ap-count'); }
-  else if (type === 'BS') { finalizeProgram('BS', buildSplitDays('BS', 1)); }
   else if (type === 'FB') { goTo('fb-count'); }
   else if (type === 'Custom') {
     showAppPrompt('Enter your day names, separated by commas (e.g. Arms, Cardio, Core):', 'Arms, Cardio, Core', 'Next').then((input) => {
@@ -3036,12 +3107,6 @@ function buildSplitDays(type, count) {
     for (let s = 1; s <= count; s++) days.push('Anterior '+s, 'Posterior '+s);
     return days;
   }
-  if (type === 'BS') {
-    if (count <= 1) return ['Chest','Back','Shoulders','Arms','Legs'];
-    const days = [];
-    for (let s = 1; s <= count; s++) days.push('Chest '+s, 'Back '+s, 'Shoulders '+s, 'Arms '+s, 'Legs '+s);
-    return days;
-  }
   if (type === 'FB') {
     const days = [];
     for (let s = 1; s <= count; s++) days.push('FB'+s);
@@ -3050,14 +3115,14 @@ function buildSplitDays(type, count) {
   return [];
 }
 function renderSplitCountPicker(root, opts) {
-  const { type, max, title, sub, isSwitch } = opts;
+  const { type, max, title, sub, isSwitch, isEdit } = opts;
   root.innerHTML = `
-    <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${isSwitch ? 'Program' : 'Setup'}</div>
+    <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${isSwitch || isEdit ? 'Program' : 'Setup'}</div>
     <h1 class="big">${title}</h1>
     ${sub ? `<p class="sub">${sub}</p>` : ''}
     <div class="select-list" id="countGrid"></div>
   `;
-  root.querySelector('#backBtn').onclick = () => goBack(isSwitch ? undefined : 'select-program');
+  root.querySelector('#backBtn').onclick = () => goBack(isSwitch || isEdit ? undefined : 'select-program');
   const grid = root.querySelector('#countGrid');
   for (let i = 1; i <= max; i++) {
     const b = document.createElement('button');
@@ -3065,7 +3130,8 @@ function renderSplitCountPicker(root, opts) {
     b.innerHTML = `<span class="sb-name">${i}</span><span class="sb-arrow">›</span>`;
     b.onclick = () => {
       const days = type === 'Custom' ? buildCustomSplitDays(customDayNamesTemp, i) : buildSplitDays(type, i);
-      if (isSwitch) switchProgram(type, days);
+      if (isEdit) finalizeEditedProgram(type, days);
+      else if (isSwitch) switchProgram(type, days);
       else finalizeProgram(type, days);
     };
     grid.appendChild(b);
@@ -3073,15 +3139,394 @@ function renderSplitCountPicker(root, opts) {
 }
 
 async function finalizeProgram(type, days) {
+  programWizardEditingId = null; // fresh split pick, not an edit of a saved one
+  editWizardOriginalDays = null;
   programType = type; programDays = days;
   await saveJSON('programType', programType);
   await saveJSON('programDays', programDays);
   const existing = normalizeExercisesByDay(await loadJSON('exercisesByDay', {}));
+  // Fresh pick from the split list — always walk exercise setup for these
+  // days, even if exercisesByDay already has entries under the same plain
+  // names (e.g. Upper/Lower) left over from a previous program. Reusing
+  // those silently skipped the picker and dumped the user straight into
+  // an old rotation.
+  programDays.forEach(d => { delete existing[d]; });
   exercisesByDay = existing;
-  const unconfigured = programDays.filter(d => !exercisesByDay[d] || exercisesByDay[d].length === 0);
-  if (unconfigured.length === 0) { resetRotationTemp(); goTo('setup-rotation'); return; }
-  setupDays = unconfigured; setupIndex = 0; setupTemp = []; setupSearchQuery = '';
+  setupDays = programDays.slice(); setupIndex = 0; setupTemp = []; setupSearchQuery = '';
   goTo('setup-exercises');
+}
+
+/* ---------- saved programs (named, fully-configured splits) ----------
+   A saved program is a snapshot of everything the setup wizard produces —
+   type, day list, each day's exercise list, and the rotation — under a
+   name the user chose. Reloading one (loadSavedProgram) skips the wizard
+   entirely; editing one (editSavedProgram) re-enters the wizard pre-filled
+   and ends with an overwrite-or-save-as-new choice instead of a plain name
+   prompt. See promptSaveProgramWizard(), called from setup-rotation's
+   Continue handler, for where new/edited saves actually get written. */
+
+/* Snapshot of the program as CURRENTLY configured (live programType/
+   programDays/exercisesByDay/rotation*), trimmed to just this program's own
+   days — exercisesByDay can carry entries for other programs' days too
+   (switching programs never deletes old days' exercises), and those have no
+   business inside this saved program's record. */
+function buildProgramSnapshot() {
+  const daysExercises = {};
+  programDays.forEach(d => { daysExercises[d] = (exercisesByDay[d] || []).slice(); });
+  return {
+    type: programType,
+    days: programDays.slice(),
+    exercisesByDay: daysExercises,
+    rotationLength, rotationStartWeekday, rotationAnchorDate,
+    rotationSchedule: rotationSchedule.slice()
+  };
+}
+
+/* Called once at the very end of the setup wizard (setup-rotation's
+   Continue), after the rotation itself has already been saved. Always
+   results in something landing in savedPrograms — if the user dismisses
+   the name prompt, falls back to an auto-generated name rather than
+   silently skipping the save, since every trip through this wizard is
+   meant to produce a named, reloadable program. */
+async function promptSaveProgramWizard() {
+  const snapshot = buildProgramSnapshot();
+  const editingId = programWizardEditingId;
+  programWizardEditingId = null;
+  editWizardOriginalDays = null;
+  if (editingId) {
+    const existing = savedPrograms.find(p => p.id === editingId);
+    const choice = await showAppConfirm(
+      existing
+        ? `Save changes to <strong>${existing.name}</strong>, save this as a separate program, or just rename it?`
+        : 'Save this program?',
+      existing ? [
+        { label: 'Overwrite', value: 'overwrite', cls: 'yes' },
+        { label: 'Save as New', value: 'new', cls: 'yes' },
+        { label: 'Rename', value: 'rename', cls: 'yes' }
+      ] : [
+        { label: 'Overwrite', value: 'overwrite', cls: 'yes' },
+        { label: 'Save as New', value: 'new', cls: 'yes' }
+      ],
+      false
+    );
+    if (choice === 'overwrite' && existing) {
+      Object.assign(existing, snapshot, { updatedAt: Date.now() });
+      showToast(`"${existing.name}" updated`);
+    } else if (choice === 'rename' && existing) {
+      // Renames while otherwise leaving the saved program exactly as it
+      // was before this edit pass — the wizard's edits are NOT applied,
+      // since the point of this option is "I only wanted to change the
+      // name," not a backdoor overwrite. Applying changes-you-may-not-want
+      // just because you happened to also want a rename would be
+      // surprising; someone who wants both can just pick Overwrite and
+      // rename the row afterward from the saved-programs list.
+      const name = await showAppPrompt('Rename this program:', 'e.g. Summer PPL', 'Rename', existing.name);
+      if (name && name !== existing.name) {
+        existing.name = name;
+        existing.updatedAt = Date.now();
+        showToast(`Renamed to "${name}"`);
+      }
+    } else {
+      let name = await showAppPrompt('Enter a new name for this program:', 'e.g. Summer PPL', 'Save');
+      if (!name) name = `${programTitleLabel(snapshot.type)} (${new Date().toLocaleDateString()})`;
+      savedPrograms.push({ id: uid(), name, ...snapshot, createdAt: Date.now(), updatedAt: Date.now() });
+      showToast(`Saved as "${name}"`);
+    }
+  } else {
+    let name = await showAppPrompt('Name this program so you can reload it later:', 'e.g. Push Pull Legs', 'Save');
+    if (!name) name = `${programTitleLabel(snapshot.type)} (${new Date().toLocaleDateString()})`;
+    savedPrograms.push({ id: uid(), name, ...snapshot, createdAt: Date.now(), updatedAt: Date.now() });
+    showToast(`Saved as "${name}"`);
+  }
+  await saveJSON('savedPrograms', savedPrograms);
+}
+
+/* Loads a previously-saved program's exact snapshot and jumps straight to
+   Home — no re-running exercises/rotation, since all of that was already
+   captured when the program was saved. Merges (rather than replaces)
+   exercisesByDay so other programs' days already configured on this device
+   aren't wiped out — only this program's own days are overwritten with its
+   saved snapshot. */
+async function loadSavedProgram(id) {
+  const p = savedPrograms.find(x => x.id === id);
+  if (!p) return;
+  programWizardEditingId = null;
+  editWizardOriginalDays = null;
+  programType = p.type;
+  programDays = p.days.slice();
+  exercisesByDay = normalizeExercisesByDay({ ...exercisesByDay, ...JSON.parse(JSON.stringify(p.exercisesByDay)) });
+  rotationLength = p.rotationLength;
+  rotationStartWeekday = p.rotationStartWeekday;
+  rotationAnchorDate = p.rotationAnchorDate;
+  rotationSchedule = (p.rotationSchedule || []).slice();
+  await saveJSON('programType', programType);
+  await saveJSON('programDays', programDays);
+  await saveJSON('exercisesByDay', exercisesByDay);
+  await saveJSON('rotationLength', rotationLength);
+  await saveJSON('rotationStartWeekday', rotationStartWeekday);
+  await saveJSON('rotationAnchorDate', rotationAnchorDate);
+  await saveJSON('rotationSchedule', rotationSchedule);
+  if (!settings.onboardingDone) {
+    settings.onboardingDone = true;
+    await saveJSON('settings', settings);
+  }
+  showToast(`"${p.name}" loaded`);
+  goToReplace('home');
+}
+
+/* Recovers a custom split's base day names (e.g. ['Arms','Cardio','Core'])
+   from a saved day list that may have variant-number suffixes ('Arms 1',
+   'Cardio 1', 'Arms 2', ...). buildCustomSplitDays() groups all of one
+   variant's days together, so the first N days (N = count of distinct
+   trailing numbers' first group) are the base names in order. Falls back
+   to the day list as-is for a 1-variant (unsuffixed) split. */
+function inferCustomBaseNames(days) {
+  const parsed = days.map(d => d.match(/^(.*) (\d+)$/));
+  if (!parsed.length || !parsed.every(m => m)) return days.slice();
+  const firstNum = parsed[0][2];
+  return parsed.filter(m => m[2] === firstNum).map(m => m[1]);
+}
+
+/* Edit-flow counterpart to finalizeProgram()/switchProgram() — called once
+   the user (re-)picks a variant count while editing a saved program.
+   Unlike finalizeProgram(), it does NOT clear programWizardEditingId, so
+   promptSaveProgramWizard() (at the end of setup-rotation) still lands on
+   the overwrite-or-save-as-new choice instead of a plain name prompt.
+   If the chosen day list differs from what the program had before (variant
+   count changed), the old rotation schedule references day names that no
+   longer exist, so it's cleared here — same reasoning as switchProgram(). */
+async function finalizeEditedProgram(type, days) {
+  const daysChanged = JSON.stringify(days) !== JSON.stringify(programDays);
+  programType = type; programDays = days;
+  await saveJSON('programType', programType);
+  await saveJSON('programDays', programDays);
+  if (daysChanged) {
+    rotationLength = null; rotationStartWeekday = null; rotationAnchorDate = null; rotationSchedule = [];
+    await saveJSON('rotationLength', rotationLength);
+    await saveJSON('rotationStartWeekday', rotationStartWeekday);
+    await saveJSON('rotationAnchorDate', rotationAnchorDate);
+    await saveJSON('rotationSchedule', rotationSchedule);
+    // Any day name here that wasn't part of the program before this edit
+    // (e.g. going from 1 to 2 variants introduces 'Upper 2'/'Lower 2') must
+    // start blank — even if exercisesByDay already happens to hold entries
+    // under that exact name from some unrelated program. Day names that
+    // ARE unchanged from before keep their saved exercises untouched.
+    days.forEach(d => {
+      if (!editWizardOriginalDays || !editWizardOriginalDays.includes(d)) delete exercisesByDay[d];
+    });
+    await saveJSON('exercisesByDay', exercisesByDay);
+  }
+  setupDays = days.slice();
+  setupIndex = 0;
+  setupTemp = (exercisesByDay[setupDays[0]] || []).slice();
+  setupSearchQuery = '';
+  goTo('setup-exercises');
+}
+
+/* Pencil-icon entry point on a saved program row — re-enters the wizard
+   pre-filled with that program's own type/exercises/rotation. Routes
+   through the same variant-count picker used for a fresh pick (so the
+   user can keep or change how many variants they run), then per-variant
+   exercise setup (pre-filled from the saved snapshot — a day whose name
+   is unchanged shows its old exercises; a genuinely new day, from a
+   raised variant count, starts blank), then rotation, ending (via
+   promptSaveProgramWizard) in an overwrite-or-save-as-new choice instead of
+   a fresh name prompt. */
+async function editSavedProgram(id) {
+  const p = savedPrograms.find(x => x.id === id);
+  if (!p) return;
+  programWizardEditingId = id;
+  editWizardOriginalDays = p.days.slice();
+  programType = p.type;
+  programDays = p.days.slice();
+  exercisesByDay = normalizeExercisesByDay({ ...exercisesByDay, ...JSON.parse(JSON.stringify(p.exercisesByDay)) });
+  await saveJSON('programType', programType);
+  await saveJSON('programDays', programDays);
+  await saveJSON('exercisesByDay', exercisesByDay);
+  rotationLength = p.rotationLength;
+  rotationStartWeekday = p.rotationStartWeekday;
+  rotationAnchorDate = p.rotationAnchorDate;
+  rotationSchedule = (p.rotationSchedule || []).slice();
+  const editScreen = { PPL: 'ppl-count-edit', UL: 'ul-count-edit', AP: 'ap-count-edit', FB: 'fb-count-edit', Custom: 'custom-count-edit' }[p.type];
+  if (!editScreen) { // no variant-count picker for this type — straight to exercise setup
+    setupDays = programDays.slice();
+    setupIndex = 0;
+    setupTemp = (exercisesByDay[setupDays[0]] || []).slice();
+    setupSearchQuery = '';
+    goTo('setup-exercises');
+    return;
+  }
+  if (p.type === 'Custom') customDayNamesTemp = inferCustomBaseNames(p.days);
+  goTo(editScreen);
+}
+
+/* Renders the "Your saved programs" list shared by renderSelectProgram
+   (onboarding) and renderSettingsProgram (Settings > Program) — tapping a
+   row loads it straight to Home; the pencil re-enters the wizard to edit
+   it; the trash deletes it. Returns the HTML string (empty if there's
+   nothing saved yet) so callers can splice it in above/below their own
+   chip grid. Wrapped in #savedProgramsSection so deleteSavedProgram() can
+   drop the whole section in place if the last entry is removed, without
+   re-rendering the screen. */
+function renderSavedProgramsListHtml() {
+  if (!savedPrograms.length) return '';
+  return `
+    <div id="savedProgramsSection">
+      <div class="section-label">Your saved programs</div>
+      <div class="select-list" id="savedProgramsList">
+        ${savedPrograms.map(p => `
+          <div class="list-item" data-saved-id="${p.id}">
+            <div class="li-name">${p.name}</div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="sort-menu-wrap">
+                <button class="icon-edit-btn" data-prog-menu="${p.id}" title="Options for ${p.name}">${ICON_EDIT_SVG}</button>
+              </div>
+              <span class="sb-arrow">›</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+/* Renames a saved program in place — just the `name` field, everything else
+   (exercises, rotation, id) untouched. Reached via the pencil's dropdown
+   (Rename), as a quicker path than the full "Edit" wizard just to change a
+   label. Updates the DOM text directly rather than a full re-render,
+   matching deleteSavedProgram()'s approach. */
+async function renameSavedProgram(id, nameEl) {
+  const p = savedPrograms.find(x => x.id === id);
+  if (!p) return;
+  const name = await showAppPrompt('Rename this program:', 'e.g. Push Pull Legs', 'Rename', p.name);
+  if (!name || name === p.name) return;
+  p.name = name;
+  p.updatedAt = Date.now();
+  await saveJSON('savedPrograms', savedPrograms);
+  if (nameEl) nameEl.textContent = name;
+  showToast(`Renamed to "${name}"`);
+}
+/* Renames a day (e.g. "Upper 1" -> "Push Day") across everywhere its name
+   is used as a key/label in the ACTIVE program: programDays itself, its
+   exercisesByDay entry, any rotationSchedule slot pointing at it, the
+   current setup wizard's setupDays (if mid-setup), every past log's `day`
+   field (re-persisted + re-synced to the cloud so history/PRs still group
+   correctly), and today's in-progress draft/currentDay/editingDay if one of
+   those is the day being renamed. Deliberately scoped to what's live right
+   now — other saved programs that happen to share this day name (see
+   renderSavedProgramsListHtml) are untouched; editing THAT program and
+   overwriting it (see promptSaveProgramWizard) is how its own copy of the
+   name gets updated. */
+async function renameProgramDay(oldName, newName) {
+  const idx = programDays.indexOf(oldName);
+  if (idx === -1) return;
+  programDays[idx] = newName;
+  await saveJSON('programDays', programDays);
+  if (exercisesByDay[oldName]) {
+    exercisesByDay[newName] = exercisesByDay[oldName];
+    delete exercisesByDay[oldName];
+    await saveJSON('exercisesByDay', exercisesByDay);
+  }
+  if (Array.isArray(rotationSchedule) && rotationSchedule.some(d => d === oldName)) {
+    rotationSchedule = rotationSchedule.map(d => d === oldName ? newName : d);
+    await saveJSON('rotationSchedule', rotationSchedule);
+  }
+  const si = setupDays.indexOf(oldName);
+  if (si !== -1) setupDays[si] = newName;
+  const changedLogs = historyEntries.filter(e => e.day === oldName);
+  changedLogs.forEach(e => { e.day = newName; });
+  for (const log of changedLogs) {
+    saveJSON('log:' + log.id, log);
+    syncWorkoutToCloud(log);
+  }
+  if (draft && draft.day === oldName) { draft.day = newName; persistDraft(); }
+  if (currentDay === oldName) currentDay = newName;
+  if (editingDay === oldName) editingDay = newName;
+}
+/* Shared rename prompt used by both the "Which session?" list and the
+   per-day exercise setup screen — see renameProgramDay() above for what
+   actually gets updated. */
+async function promptRenameDay(oldName) {
+  const name = await showAppPrompt('Rename this day:', 'e.g. Push Day', 'Rename', oldName);
+  if (!name || name === oldName) return false;
+  if (programDays.some(d => d !== oldName && d === name)) { showToast(`"${name}" is already a day in this program`); return false; }
+  await renameProgramDay(oldName, name);
+  showToast(`Renamed to "${name}"`);
+  return true;
+}
+
+/* Wires up the rows rendered by renderSavedProgramsListHtml() — call after
+   setting root.innerHTML. Tapping anywhere on a row except the pencil loads
+   that program; the pencil opens a small dropdown (Edit / Rename / Delete)
+   instead of each action needing its own icon — keeps the row from getting
+   crowded and reads as one "options" affordance per program, same pattern
+   as the sort menu on Progress History. */
+function attachSavedProgramsListHandlers(root) {
+  const list = root.querySelector('#savedProgramsList');
+  if (!list) return;
+  list.querySelectorAll('[data-saved-id]').forEach(row => {
+    row.onclick = (e) => {
+      if (e.target.closest('[data-prog-menu]') || e.target.closest('.sort-menu')) return; // handled below
+      loadSavedProgram(row.dataset.savedId);
+    };
+  });
+  list.querySelectorAll('[data-prog-menu]').forEach(btn => {
+    const id = btn.dataset.progMenu;
+    const row = btn.closest('[data-saved-id]');
+    const nameEl = row.querySelector('.li-name');
+    const wrap = btn.closest('.sort-menu-wrap');
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const existing = wrap.querySelector('.sort-menu');
+      if (existing) { existing.remove(); return; }
+      // Close any other row's open menu before opening this one.
+      list.querySelectorAll('.sort-menu').forEach(m => m.remove());
+      const menu = document.createElement('div');
+      menu.className = 'sort-menu';
+      menu.innerHTML = `
+        <button class="sort-menu-item" data-menu-act="edit">Edit</button>
+        <button class="sort-menu-item" data-menu-act="rename">Rename</button>
+        <button class="sort-menu-item danger" data-menu-act="delete">Delete</button>
+      `;
+      wrap.appendChild(menu);
+      menu.querySelector('[data-menu-act="edit"]').onclick = (ev) => { ev.stopPropagation(); menu.remove(); editSavedProgram(id); };
+      menu.querySelector('[data-menu-act="rename"]').onclick = (ev) => { ev.stopPropagation(); menu.remove(); renameSavedProgram(id, nameEl); };
+      menu.querySelector('[data-menu-act="delete"]').onclick = (ev) => { ev.stopPropagation(); menu.remove(); deleteSavedProgram(id, row); };
+      const closeOnOutsideClick = (ev) => {
+        if (!wrap.contains(ev.target)) { menu.remove(); document.removeEventListener('click', closeOnOutsideClick); }
+      };
+      setTimeout(() => document.addEventListener('click', closeOnOutsideClick), 0);
+    };
+  });
+}
+
+/* Deletes a saved program after confirming. Only removes the savedPrograms
+   entry itself — deliberately leaves exercisesByDay/rotation/history alone,
+   since those may still be in active use (this program could be the
+   currently-loaded one) or shared by day name with other saved programs.
+   Updates the DOM directly (slide-out the row, same as exercise-list
+   deletion) instead of calling the global render() — a full re-render tears
+   down and replays the whole screen's entrance animation and can jump
+   scroll position, which felt like an unwanted refresh for something this
+   small. Drops the whole "Your saved programs" section if that was the
+   last one. */
+async function deleteSavedProgram(id, row) {
+  const p = savedPrograms.find(x => x.id === id);
+  if (!p) return;
+  const ok = await appConfirmDelete(`Delete <strong>${p.name}</strong>? This can't be undone.`);
+  if (!ok) return;
+  savedPrograms = savedPrograms.filter(x => x.id !== id);
+  await saveJSON('savedPrograms', savedPrograms);
+  showToast(`"${p.name}" deleted`);
+  if (row) {
+    row.classList.add('item-removing');
+    row.addEventListener('animationend', () => {
+      row.remove();
+      if (!savedPrograms.length) {
+        const section = document.getElementById('savedProgramsSection');
+        if (section) section.remove();
+      }
+    }, { once: true });
+  }
 }
 
 /* Clears the working (unsaved) state for the setup-rotation screen. Call
@@ -3145,9 +3590,9 @@ function renderSetupRotation(root) {
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Setup</div>
     <h1 class="big">Build your weekly cycle</h1>
-    <p class="sub">Your split repeats on a fixed cycle of days — not necessarily 7. "Days" below is how many days are in one full cycle before it loops back to Day 1 (workouts AND rest days both count). "Starting on" is just the real-world weekday that Day 1 of that cycle lands on, so the app knows what today actually is in your rotation.</p>
+    <p class="sub">Your split repeats on a fixed cycle — not necessarily 7 days. "Days" is the cycle length (workouts + rest days). "Starting on" is the real weekday Day 1 lands on.</p>
     <div style="background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-bottom:18px; font-size:13px; line-height:1.55; color:var(--text-dim);">
-      <b style="color:var(--text);">Example:</b> Push/Pull/Legs with a rest day is a 4-day cycle (Push, Pull, Legs, Rest). If you set "Starting on" to Monday, Day 1 = Push falls on Monday, Day 2 = Pull on Tuesday, Day 3 = Legs on Wednesday, Day 4 = Rest on Thursday — then it loops: Day 1 = Push again on Friday, and so on, drifting through the calendar week after week instead of always landing on the same weekdays.
+      <b style="color:var(--text);">Example:</b> Push/Pull/Legs + Rest = a 4-day cycle. Starting on Monday: Push Mon, Pull Tue, Legs Wed, Rest Thu — then it loops to Push on Friday, drifting through the week instead of repeating the same weekdays.
     </div>
     <div style="display:flex; gap:14px; align-items:flex-start;">
       <div style="flex:0 0 108px;">
@@ -3216,10 +3661,16 @@ function renderSetupRotation(root) {
     await saveJSON('rotationSchedule', rotationSchedule);
     await saveJSON('rotationAnchorDate', rotationAnchorDate);
     resetRotationTemp();
+    // End of the wizard — name-and-save (or overwrite-vs-save-as-new, if
+    // this run started from a saved program's pencil icon). Disabled while
+    // the modal chain is up so a fast double-tap can't fire this whole
+    // block twice.
+    continueBtn.disabled = true;
+    await promptSaveProgramWizard();
+    continueBtn.disabled = false;
     if (!settings.onboardingDone) {
       goToReplace('setup-features');
     } else {
-      showToast('Rotation schedule saved');
       goToReplace('home');
     }
   };
@@ -3269,7 +3720,7 @@ function renderSetupExercises(root) {
   const day = setupDays[setupIndex];
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Setup ${setupDays.length > 1 ? `(${setupIndex+1}/${setupDays.length})` : ''}</div>
-    <h1 class="big">What exercises do you do on ${day}?</h1>
+    <h1 class="big">What exercises do you do on <span class="sb-name-editable" id="setupDayRename" title="Tap to rename this day">${day}</span>?</h1>
     <p class="sub">Tap to select. You can edit this list anytime.</p>
     <div class="ex-pick-search-wrap">
       <input type="text" id="exPickSearch" placeholder="Search exercises…" autocomplete="off" value="${setupSearchQuery.replace(/"/g,'&quot;')}">
@@ -3277,8 +3728,15 @@ function renderSetupExercises(root) {
     <div id="exPickList" style="padding-bottom: 84px;"></div>
     <div class="floating-done-wrap"><button class="btn-primary" id="setupContinueBtn">${setupIndex < setupDays.length - 1 ? 'Continue' : 'Done'}</button></div>
   `;
-  root.querySelector('#backBtn').onclick = () => {
+  root.querySelector('#backBtn').onclick = async () => {
     if (setupIndex > 0) {
+      // Persist whatever's currently selected on this day before leaving
+      // it — same as the Continue handler below does going forward.
+      // Without this, tapping Back after picking exercises on this step
+      // (but before hitting Continue) discarded them entirely instead of
+      // preserving them for when you come back to this day.
+      exercisesByDay[day] = setupTemp.slice();
+      await saveJSON('exercisesByDay', exercisesByDay);
       setupIndex--;
       const prevDay = setupDays[setupIndex];
       setupTemp = (exercisesByDay[prevDay] || []).slice();
@@ -3293,12 +3751,28 @@ function renderSetupExercises(root) {
   renderExPickList(root, day);
   const searchInput = root.querySelector('#exPickSearch');
   searchInput.oninput = () => { setupSearchQuery = searchInput.value; renderExPickList(root, day); };
+  root.querySelector('#setupDayRename').onclick = async () => {
+    // Persist whatever's currently selected before the rename swaps the
+    // exercisesByDay key out from under it — same reasoning as the Back
+    // handler above.
+    exercisesByDay[day] = setupTemp.slice();
+    await saveJSON('exercisesByDay', exercisesByDay);
+    const renamed = await promptRenameDay(day);
+    if (renamed) { pendingAnim = null; render(); }
+  };
   root.querySelector('#setupContinueBtn').onclick = async () => {
     if (setupTemp.length === 0) { showToast('Select at least one exercise'); return; }
     exercisesByDay[day] = setupTemp.slice();
     await saveJSON('exercisesByDay', exercisesByDay);
     setupIndex++;
-    setupTemp = []; setupSearchQuery = '';
+    // Prefill from whatever's already configured for the next day instead of
+    // always starting blank — a no-op for a genuinely brand-new day (nothing
+    // in exercisesByDay for it yet) but essential for editSavedProgram()'s
+    // "make changes" flow, where every day already has a saved exercise list
+    // that should show up pre-selected rather than forcing a re-pick from
+    // scratch.
+    setupTemp = (exercisesByDay[setupDays[setupIndex]] || []).slice();
+    setupSearchQuery = '';
     if (setupIndex < setupDays.length) { pendingAnim = { type: 'slide-forward' }; render(); window.scrollTo(0, 0); }
     else { draft = await loadJSON('draft', null); resetRotationTemp(); goToReplace('setup-rotation'); }
   };
@@ -3348,7 +3822,7 @@ function renderExPickList(root, day) {
   const q = setupSearchQuery.trim().toLowerCase();
   const cats = categoriesForDay(day);
   const seen = new Set();
-  const pool = [];
+  const fullPool = [];
   // The static EXERCISE_LIBRARY_FLAT is now just an offline-first-launch
   // fallback — customExercises (synced from Supabase) carries the real,
   // possibly-grown catalog: every global/builtin row always has a
@@ -3360,19 +3834,37 @@ function renderExPickList(root, day) {
   const catalogWithCategory = customExercises.length
     ? [...EXERCISE_LIBRARY_FLAT, ...customExercises.filter(item => item.category).map(item => ({ name: item.name, category: item.category, unilateral: item.unilateral, bodyweight_exercise: item.bodyweight_exercise }))]
     : EXERCISE_LIBRARY_FLAT;
-  catalogWithCategory.filter(item => cats.includes(item.category)).forEach(item => {
+  catalogWithCategory.forEach(item => {
     const k = nameKey(item.name);
-    if (!seen.has(k)) { seen.add(k); pool.push(item); }
+    if (!seen.has(k)) { seen.add(k); fullPool.push(item); }
   });
+  // Browsing with no search stays scoped to the day's relevant muscle
+  // groups (a Lower day shouldn't be scrolling past Forearm exercises to
+  // find its squats) — but an active search should still be able to find
+  // something outside those categories (e.g. "Wrist Wrench" on a Lower
+  // day), it just won't be part of the default browse list.
+  const pool = fullPool.filter(item => cats.includes(item.category));
   const selectedKeys = new Set(setupTemp.map(e => nameKey(e.name)));
-  const matches = (name) => !q || name.toLowerCase().startsWith(q) ||
-    name.toLowerCase().split(/[\s(),/-]+/).some(word => word.startsWith(q));
+  // A multi-word query (e.g. "tricep extension") has to match a
+  // multi-word name (e.g. "Cable Tricep Extension") word-by-word — every
+  // word typed must prefix-match *some* word in the name, not just check
+  // whether the whole name or a single one of its words starts with the
+  // entire (multi-word) query string, which only "cable ..." or a
+  // one-word query could ever satisfy.
+  const matches = (name) => {
+    if (!q) return true;
+    const nameLower = name.toLowerCase();
+    if (nameLower.startsWith(q)) return true;
+    const nameWords = nameLower.split(/[\s(),/-]+/).filter(Boolean);
+    const queryWords = q.split(/[\s(),/-]+/).filter(Boolean);
+    return queryWords.length > 0 && queryWords.every(qw => nameWords.some(nw => nw.startsWith(qw)));
+  };
   // Built first and rendered right under the search box (before "Selected"
   // and before the category groups) — not appended after everything else.
   // With even a handful of exercises already picked, "add as new" landing
   // at the very bottom of the list meant scrolling past the whole Selected
   // group just to reach it every time, which made it look broken/missing.
-  const showAddCustom = !!(q && !pool.some(item => nameKey(item.name) === nameKey(setupSearchQuery.trim())) &&
+  const showAddCustom = !!(q && !fullPool.some(item => nameKey(item.name) === nameKey(setupSearchQuery.trim())) &&
     !selectedKeys.has(nameKey(setupSearchQuery.trim())));
   let html = '';
   if (showAddCustom) {
@@ -3392,24 +3884,24 @@ function renderExPickList(root, day) {
       </div>`;
     });
   }
-  const availableByCat = {};
-  pool.forEach(item => {
+  // Flat, alphabetized list — no muscle-group headers. Category is still
+  // used above to decide the *pool* of exercises relevant to this day
+  // (and, while searching, to widen it to the full catalog), but it's no
+  // longer used to group or label rows: category tagging on exercises is
+  // unreliable (e.g. a wrist-curl variant saved under "Chest"), so a
+  // category heading was actively misleading rather than helpful.
+  const available = [];
+  (q ? fullPool : pool).forEach(item => {
     if (selectedKeys.has(nameKey(item.name))) return;
     if (!matches(item.name)) return;
-    (availableByCat[item.category] = availableByCat[item.category] || []).push(item);
+    available.push(item);
   });
-  const catOrder = [...cats];
-  let anyAvailable = false;
-  catOrder.forEach(cat => {
-    const items = availableByCat[cat];
-    if (!items || items.length === 0) return;
-    anyAvailable = true;
-    html += `<div class="ex-pick-group-label">${cat}</div>`;
-    items.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
-      html += `<div class="ex-pick-row" data-act="select" data-name="${item.name.replace(/"/g,'&quot;')}">
-        <span class="ex-pick-name">${item.name}</span>
-      </div>`;
-    });
+  available.sort((a, b) => a.name.localeCompare(b.name));
+  const anyAvailable = available.length > 0;
+  available.forEach(item => {
+    html += `<div class="ex-pick-row" data-act="select" data-name="${item.name.replace(/"/g,'&quot;')}">
+      <span class="ex-pick-name">${item.name}</span>
+    </div>`;
   });
   if (!showAddCustom && !anyAvailable && setupTemp.length === 0) {
     html += `<div class="ex-pick-empty">No matching exercise</div>`;
@@ -3421,9 +3913,19 @@ function renderExPickList(root, day) {
       // in the list — matching tap order — instead of last. If this name
       // already has a saved catalog entry (personal or global), pick up its
       // remembered unilateral default instead of always starting at false.
-      const known = pool.find(item => nameKey(item.name) === nameKey(row.dataset.name));
+      const known = fullPool.find(item => nameKey(item.name) === nameKey(row.dataset.name));
       setupTemp.push({ name: row.dataset.name, unilateral: !!(known && known.unilateral) });
+      // Adding an exercise is "done" with that search — clear it back to
+      // the full list instead of leaving the stale query (and the now-added
+      // exercise, or its now-empty-looking category group) sitting there.
+      // Refocus the input right after (tapping the row itself blurs it) so
+      // the search bar and keyboard stay open for picking the next one,
+      // instead of closing and forcing a re-tap to keep searching.
+      setupSearchQuery = '';
+      const searchInputEl = root.querySelector('#exPickSearch');
+      if (searchInputEl) { searchInputEl.value = ''; }
       renderExPickList(root, day);
+      if (searchInputEl) searchInputEl.focus();
     };
   });
   listEl.querySelectorAll('[data-act="deselect"]').forEach(row => {
@@ -3453,8 +3955,10 @@ function renderExPickList(root, day) {
     setupTemp.push({ name: val, unilateral: false });
     captureNewExerciseIfUnknown(val, false, cats[0]);
     setupSearchQuery = '';
-    root.querySelector('#exPickSearch').value = '';
+    const searchInputEl = root.querySelector('#exPickSearch');
+    if (searchInputEl) searchInputEl.value = '';
     renderExPickList(root, day);
+    if (searchInputEl) searchInputEl.focus();
   };
 }
 
@@ -4471,15 +4975,37 @@ function renderTrackSelect(root) {
   `;
   root.querySelector('#backBtn').onclick = () => goBack();
   const grid = root.querySelector('#dayGrid');
-  programDays.forEach(day => {
-    const b = document.createElement('button');
-    b.className = 'select-btn';
-    b.innerHTML = `<span class="sb-name">${day}</span><span class="sb-arrow">›</span>`;
-    b.onclick = () => startTrackingDay(day, false);
-    grid.appendChild(b);
-  });
+  function draw() {
+    grid.innerHTML = '';
+    programDays.forEach(day => {
+      const b = document.createElement('button');
+      b.className = 'select-btn';
+      b.innerHTML = `<span class="sb-name"><span data-act="rename" title="Tap to rename">${day}</span></span><span class="sb-arrow">›</span>`;
+      b.onclick = () => startTrackingDay(day, false);
+      b.querySelector('[data-act="rename"]').onclick = async (e) => {
+        e.stopPropagation();
+        const renamed = await promptRenameDay(day);
+        if (renamed) draw();
+      };
+      grid.appendChild(b);
+    });
+  }
+  draw();
 }
 
+/* The active-session "Exercises" screen — everything for managing today's
+   exercise list (search-add, reorder, rename, L|R/BW, delete) lives right
+   here, in place. There used to be a separate "Edit Exercises" page
+   (goTo('exercise-edit')) reached from the pencil button; navigating away
+   mid-session was disorienting and the search bar was hidden behind an
+   extra tap. Now the pencil just flips a local edit-mode flag and redraws
+   #exList in place (no goTo, no full render()) — same pattern as
+   renderExerciseEdit's own view/edit toggle (see that function's header
+   comment for the Save/Cancel/snapshot reasoning, which this mirrors).
+   renderExerciseEdit itself is untouched and still used from Settings >
+   Program (editing a day's exercises without an active session going on),
+   where a real navigation makes sense since there's no "current session"
+   context to stay inside of. */
 function renderExerciseList(root) {
   // Self-healing, same pattern as updateHotbarVisibility(): landing on this
   // screen — via Back, hardware back/edge-swipe, or a direct jump — always
@@ -4488,67 +5014,83 @@ function renderExerciseList(root) {
   // activeExerciseName a reliable signal of the exact training view (used
   // by goToTab's Train-tab resume logic below) no matter how we got here.
   activeExerciseName = null;
-  const list = exercisesByDay[currentDay] || [];
+  let day = currentDay;
+  const list = exercisesByDay[day] || [];
   draft.media = ensureMediaShape(draft.media);
   if (draft.bodyweight === undefined) draft.bodyweight = '';
+  let editMode = false;
+  let editSnapshot = null;
+  let pendingRenames = [];
+  let reorderAttached = false;
+
   root.innerHTML = `
-    <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${currentDay}</div>
+    <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span id="sessionDayLabel">${day}</span></div>
     <div class="section-header-row">
       <h1 class="big">Exercises</h1>
       <div style="display:flex; align-items:center; gap:8px;">
         <button class="unit-toggle-btn" id="sessionUnitBtn" title="Switch units">${ICON_SWAP_SVG}${settings.units}</button>
-        <button class="icon-edit-btn" id="editExBtn" title="Edit Exercises" style="position:relative; top:2px;">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div style="display:flex; align-items:center; gap:8px;" id="exListHeaderBtns"></div>
       </div>
+    </div>
+    <div class="row-inline" id="exListSearchRow">
+      <div class="ex-ac-wrap">
+        <input type="text" id="exListSearchInput" placeholder="Search or add an exercise" autocomplete="off">
+        <div class="ex-ac-dropdown" id="exListSearchDropdown" style="display:none;"></div>
+      </div>
+      <button class="uni-toggle" id="exListUniToggle" title="One side at a time, tracked as separate R/L reps">L | R</button>
     </div>
     <div class="select-list" id="exList"></div>
     <button class="btn-primary" id="finishBtn" style="margin-top:26px;">Finish Tracking</button>
   `;
   const exList = root.querySelector('#exList');
+  const dayLabelEl = root.querySelector('#sessionDayLabel');
+  function persistEditList() { exercisesByDay[day] = list; saveJSON('exercisesByDay', exercisesByDay); }
+  function indexOfItem(item) { return Array.from(exList.children).indexOf(item); }
+
   // Temporary display order only (doesn't touch exercisesByDay/settings):
   // any exercise with data already tracked today floats to the top, in the
   // order it was FIRST started (firstTouched, set once and never updated
   // again) — so exercise #1 you actually did stays pinned above #2, #3,
   // etc. even if you go back and re-edit an earlier one later in the
-  // session. Untouched exercises stay below in their normal order.
-  const touchedAt = new Map();
-  (draft.exercises || []).forEach(ex => {
-    if (exerciseHasLoggedData(ex)) touchedAt.set(ex.name, ex.firstTouched || ex.lastTouched || 0);
-  });
-  // Deleting (or renaming out from under) an exercise in Edit Exercises only
-  // ever touches exercisesByDay — the logged sets stay put in draft.exercises
-  // untouched (see syncDraftRename/syncDraftUnilateral, and the plain
-  // list.splice() delete handler in renderExerciseEdit which doesn't touch
-  // draft at all) and still get included when the workout is finished. But
-  // this screen used to build its list from exercisesByDay alone, so an
-  // exercise removed from today's list — even with sets already logged
-  // against it this session — would vanish here and become impossible to
-  // reopen/edit/view until the workout was finished. Splice any such
-  // already-tracked-but-no-longer-listed exercises back in so the data
-  // stays reachable for the rest of the session.
-  const listNameKeys = new Set(list.map(item => nameKey(item.name)));
-  const orphanedTracked = (draft.exercises || []).filter(ex =>
-    exerciseHasLoggedData(ex) && !listNameKeys.has(nameKey(ex.name))
-  );
-  const displayList = orphanedTracked.length
-    ? [...list, ...orphanedTracked.map(ex => ({ name: ex.name, unilateral: ex.unilateral }))]
-    : list;
-  const sortedList = [...displayList].sort((a, b) => {
-    const aTouched = touchedAt.has(a.name), bTouched = touchedAt.has(b.name);
-    if (aTouched && bTouched) return touchedAt.get(a.name) - touchedAt.get(b.name);
-    if (aTouched) return -1;
-    if (bTouched) return 1;
-    return 0;
-  });
-  sortedList.forEach(item => {
+  // session. Untouched exercises stay below in their normal order. Only
+  // applies in view mode — edit mode shows the raw list in its real,
+  // reorderable order, since that's the order being edited.
+  function viewOrderedList() {
+    const touchedAt = new Map();
+    (draft.exercises || []).forEach(ex => {
+      if (exerciseHasLoggedData(ex)) touchedAt.set(ex.name, ex.firstTouched || ex.lastTouched || 0);
+    });
+    // Deleting (or renaming out from under) an exercise only ever touches
+    // exercisesByDay — the logged sets stay put in draft.exercises
+    // untouched (see syncDraftRename/syncDraftUnilateral, and the plain
+    // list.splice() delete handler below which doesn't touch draft at all)
+    // and still get included when the workout is finished. But this screen
+    // builds its list from exercisesByDay, so an exercise removed from
+    // today's list — even with sets already logged against it this session
+    // — would vanish here and become impossible to reopen/edit/view until
+    // the workout is finished. Splice any such already-tracked-but-no-
+    // longer-listed exercises back in so the data stays reachable.
+    const listNameKeys = new Set(list.map(item => nameKey(item.name)));
+    const orphanedTracked = (draft.exercises || []).filter(ex =>
+      exerciseHasLoggedData(ex) && !listNameKeys.has(nameKey(ex.name))
+    );
+    const displayList = orphanedTracked.length
+      ? [...list, ...orphanedTracked.map(ex => ({ name: ex.name, unilateral: ex.unilateral }))]
+      : list;
+    return [...displayList].sort((a, b) => {
+      const aTouched = touchedAt.has(a.name), bTouched = touchedAt.has(b.name);
+      if (aTouched && bTouched) return touchedAt.get(a.name) - touchedAt.get(b.name);
+      if (aTouched) return -1;
+      if (bTouched) return 1;
+      return 0;
+    });
+  }
+
+  function buildViewRow(item) {
     const trackEntry = draft.exercises.find(e => sameExName(e.name, item.name));
     const hasData = trackEntry && exerciseHasLoggedData(trackEntry);
     const isDone = hasData && trackEntry.done;
     const inProgress = hasData && !trackEntry.done;
-    // Tick = pressed Done while tracking; blinking dot = still tracking,
-    // not yet confirmed done. Neither shows until real data (reps/RIR/RPE,
-    // not just a weight) has actually been logged for the exercise.
     const marker = isDone
       ? '<span class="li-check">✓</span>'
       : (inProgress ? '<span class="li-progress-dot" title="Currently tracking"></span>' : '');
@@ -4556,10 +5098,284 @@ function renderExerciseList(root) {
     el.className = 'select-btn ex-pick';
     el.innerHTML = `<span class="sb-name">${marker}${item.name}${item.unilateral ? '<span class="uni-tag">UNI</span>' : ''}</span><span class="sb-arrow">›</span>`;
     el.onclick = () => { activeExerciseName = item.name; activeExerciseUnilateral = !!item.unilateral; goTo('set-log'); };
-    exList.appendChild(el);
+    return el;
+  }
+
+  function buildEditRow(entry) {
+    const item = document.createElement('div');
+    // .static turns off .list-item's whole-row :active press-scale (and its
+    // bouncy easing curve) — the drag handle's own reorder animation is
+    // driven entirely by inline styles set in makeReorderable, so this has
+    // no effect on real dragging. Without it, tapping ANYTHING on the row
+    // (the name to rename, L|R, BW, even delete) triggered that same
+    // scale/bounce, which read as "it's trying to reorder itself" even
+    // though no drag was happening.
+    item.className = 'list-item compact static';
+    const bw = catalogIsBodyweight(entry.name);
+    item.innerHTML = `
+      <button class="drag-handle" title="Drag to reorder">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="li-name ex-name-editable" data-act="rename" title="Tap to rename">${entry.name}</div>
+      <div class="li-right">
+        <button class="uni-toggle no-pop ${bw ? 'on' : ''}" data-act="bw" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
+        <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
+        <button class="icon-btn danger no-pop" data-act="del" title="Delete">${ICON_TRASH_SVG}</button>
+      </div>`;
+    item.querySelector('[data-act="bw"]').onclick = (e) => {
+      const i = indexOfItem(item);
+      const newBw = !catalogIsBodyweight(list[i].name);
+      e.currentTarget.classList.toggle('on', newBw);
+      syncExerciseCatalogSetting(list[i].name, { bodyweightExercise: newBw });
+      syncDraftBodyweight(list[i], newBw);
+    };
+    item.querySelector('[data-act="uni"]').onclick = (e) => {
+      const i = indexOfItem(item);
+      list[i].unilateral = !list[i].unilateral;
+      persistEditList();
+      e.currentTarget.classList.toggle('on', list[i].unilateral);
+      syncDraftUnilateral(list[i]);
+      syncExerciseCatalogSetting(list[i].name, { unilateral: list[i].unilateral });
+    };
+    item.querySelector('[data-act="rename"]').onclick = () => {
+      const nameDiv = item.querySelector('.li-name');
+      const i = indexOfItem(item);
+      const current = list[i].name;
+      nameDiv.innerHTML = `<input type="text" class="rename-input" value="${current.replace(/"/g,'&quot;')}" style="width:100%; background:var(--panel-2); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius: 9px; font-size: 14.12px; font-weight:700; font-family:inherit;">`;
+      const inp = nameDiv.querySelector('input');
+      inp.focus();
+      inp.setSelectionRange(inp.value.length, inp.value.length);
+      let committed = false;
+      let commitInFlight = false;
+      let vvCleanup = null;
+      if (window.visualViewport) {
+        const vv = window.visualViewport;
+        const fullHeight = window.innerHeight;
+        const onVVResize = () => {
+          if (vv.height > fullHeight * 0.85 && document.activeElement === inp) inp.blur();
+        };
+        vv.addEventListener('resize', onVVResize);
+        vvCleanup = () => vv.removeEventListener('resize', onVVResize);
+      }
+      const commit = async () => {
+        if (committed || commitInFlight) return;
+        const idx = indexOfItem(item);
+        const v = inp.value.trim();
+        if (v && list.some((other, j) => j !== idx && sameExName(other.name, v))) {
+          showToast(`${v} is already in this day's list`);
+          inp.focus();
+          return;
+        }
+        const oldName = list[idx].name;
+        if (!v || v === oldName) {
+          committed = true;
+          if (vvCleanup) vvCleanup();
+          nameDiv.innerHTML = `${oldName}`;
+          return;
+        }
+        commitInFlight = true;
+        const choice = await showAppConfirm(
+          `Rename "${oldName}" to "${v}"?`,
+          [
+            { label: 'Overwrite — keep past logs linked', value: 'overwrite' },
+            { label: 'Save as new exercise', value: 'new' }
+          ],
+          true
+        );
+        commitInFlight = false;
+        if (choice === null) { nameDiv.innerHTML = `${oldName}`; return; }
+        committed = true;
+        if (vvCleanup) vvCleanup();
+        list[idx].name = v;
+        persistEditList();
+        nameDiv.innerHTML = `${v}`;
+        syncDraftRename(oldName, v);
+        if (choice === 'overwrite') {
+          pendingRenames.push({ oldName, newName: v, unilateral: list[idx].unilateral, bodyweightExercise: catalogIsBodyweight(oldName) });
+        } else {
+          captureNewExerciseIfUnknown(v, list[idx].unilateral, categoriesForDay(day)[0]);
+          syncExerciseCatalogSetting(v, { unilateral: list[idx].unilateral });
+        }
+      };
+      inp.onblur = commit;
+      inp.onkeydown = (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
+        else if (e.key === 'Escape') { committed = true; if (vvCleanup) vvCleanup(); nameDiv.innerHTML = `${current}`; }
+      };
+    };
+    item.querySelector('[data-act="del"]').onclick = async () => {
+      const i = indexOfItem(item);
+      const ok = await appConfirmDelete(`Remove ${list[i].name} from ${day}'s exercise list? Its logged history is kept — add it back anytime to pick up where you left off.`);
+      if (!ok) return;
+      const idx = indexOfItem(item);
+      list.splice(idx,1);
+      persistEditList();
+      item.classList.add('item-removing');
+      item.addEventListener('animationend', () => item.remove(), { once: true });
+    };
+    return item;
+  }
+
+  function refreshRows() {
+    exList.innerHTML = '';
+    if (editMode) {
+      list.forEach(entry => exList.appendChild(buildEditRow(entry)));
+      if (!reorderAttached) {
+        makeReorderable(exList, list, () => persistEditList());
+        reorderAttached = true;
+      }
+    } else {
+      viewOrderedList().forEach(item => exList.appendChild(buildViewRow(item)));
+    }
+  }
+
+  function renderHeaderBtns() {
+    const wrap = root.querySelector('#exListHeaderBtns');
+    if (editMode) {
+      wrap.innerHTML = `
+        <button class="icon-edit-btn" id="editCancelBtn" title="Cancel">✕</button>
+        <button class="icon-edit-btn" id="editSaveBtn" title="Save">${ICON_CHECK_SVG}</button>`;
+      wrap.querySelector('#editCancelBtn').onclick = cancelEdits;
+      wrap.querySelector('#editSaveBtn').onclick = commitEdits;
+    } else {
+      wrap.innerHTML = `<button class="icon-edit-btn" id="editExBtn" title="Edit Exercises" style="position:relative; top:2px;">${ICON_EDIT_SVG}</button>`;
+      wrap.querySelector('#editExBtn').onclick = enterEditMode;
+    }
+  }
+
+  // Deliberately does NOT touch the search row, the subtitle, or anything
+  // else's layout — the pencil should only add/remove the per-row controls
+  // and swap its own icon for Save/Cancel, not shove the rest of the screen
+  // around. (An earlier version hid the search bar and swapped in a
+  // subtitle line here, which shifted everything below it every time you
+  // tapped Edit — that's exactly what this comment is here to prevent
+  // creeping back in.)
+  function refreshChrome() {
+    renderHeaderBtns();
+    if (editMode) {
+      dayLabelEl.innerHTML = `<span class="ex-name-editable" id="sessionDayRename" title="Tap to rename this session">${day}</span>`;
+      dayLabelEl.querySelector('#sessionDayRename').onclick = async () => {
+        const renamed = await promptRenameDay(day);
+        if (!renamed) return;
+        day = currentDay; // renameProgramDay() already updated the global
+        refreshChrome(); // rebuilds the label + rebinds this handler under the new name
+      };
+    } else {
+      dayLabelEl.textContent = day;
+    }
+    refreshRows();
+  }
+
+  function enterEditMode() {
+    editSnapshot = list.map(e => ({ ...e }));
+    pendingRenames = [];
+    editMode = true;
+    refreshChrome();
+  }
+  function cancelEdits() {
+    list.length = 0;
+    (editSnapshot || []).forEach(e => list.push({ ...e }));
+    persistEditList();
+    editSnapshot = null;
+    pendingRenames = [];
+    editMode = false;
+    refreshChrome();
+  }
+  async function commitEdits() {
+    const toApply = pendingRenames;
+    editSnapshot = null;
+    pendingRenames = [];
+    editMode = false;
+    refreshChrome();
+    if (toApply.length) {
+      for (const r of toApply) await renameExerciseEverywhere(r.oldName, r.newName, r.unilateral, r.bodyweightExercise);
+      showToast('History updated');
+    }
+  }
+
+  refreshChrome();
+
+  const searchInput = root.querySelector('#exListSearchInput');
+  const searchDropdown = root.querySelector('#exListSearchDropdown');
+  const uniToggle = root.querySelector('#exListUniToggle');
+  uniToggle.onclick = () => uniToggle.classList.toggle('on');
+
+  // Tapping an existing exercise (or an autocomplete match) adds it
+  // immediately; a query that matches nothing known surfaces a "+ Add as
+  // new" row instead of needing a separate Add button. Either way the
+  // input is cleared back to empty afterward (never hidden) and the list
+  // below just grows in place — no navigation, no re-render of the screen.
+  function addExercise(val) {
+    val = (val || '').trim();
+    if (!val) return;
+    if (list.some(other => sameExName(other.name, val))) {
+      showToast(`${val} is already in this day's list`);
+      return;
+    }
+    const entry = { name: val, unilateral: uniToggle.classList.contains('on') };
+    list.push(entry);
+    persistEditList();
+    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(day)[0]);
+    syncExerciseCatalogSetting(val, { unilateral: entry.unilateral });
+    if (!editMode) {
+      const item = buildViewRow(entry);
+      item.classList.add('item-entering');
+      exList.appendChild(item);
+      item.addEventListener('animationend', () => item.classList.remove('item-entering'), { once: true });
+    } else {
+      refreshRows();
+    }
+    searchInput.value = '';
+    searchDropdown.style.display = 'none';
+    uniToggle.classList.remove('on');
+    searchInput.focus();
+  }
+
+  function renderSearchDropdown() {
+    const q = searchInput.value.trim();
+    const suggestions = getExerciseSuggestions(q).filter(m => !list.some(other => sameExName(other.name, m.name)));
+    const exactKnown = q && getExerciseSuggestions(q).some(m => nameKey(m.name) === nameKey(q));
+    const alreadyOnList = q && list.some(other => sameExName(other.name, q));
+    let html = '';
+    if (q && !exactKnown && !alreadyOnList) {
+      html += `<div class="ex-ac-item ex-pick-add-row" data-add="1">+ Add "${q.replace(/"/g,'&quot;')}" as a new exercise</div>`;
+    }
+    if (suggestions.length === 0 && !(q && !exactKnown && !alreadyOnList)) {
+      html += `<div class="ex-ac-empty">${alreadyOnList ? `${q} is already in this day's list` : 'No matching exercise'}</div>`;
+    } else {
+      html += suggestions.map(m =>
+        `<div class="ex-ac-item" data-name="${m.name.replace(/"/g,'&quot;')}">${m.name}${m.unilateral ? '<span class="uni-tag">L|R</span>' : ''}</div>`
+      ).join('');
+    }
+    searchDropdown.innerHTML = html;
+    searchDropdown.style.display = 'block';
+    const addRow = searchDropdown.querySelector('[data-add]');
+    if (addRow) addRow.onclick = () => addExercise(q);
+    searchDropdown.querySelectorAll('.ex-ac-item[data-name]').forEach(row => {
+      row.onclick = () => addExercise(row.dataset.name);
+    });
+  }
+  searchInput.addEventListener('focus', renderSearchDropdown);
+  searchInput.addEventListener('input', renderSearchDropdown);
+  searchInput.addEventListener('blur', () => { setTimeout(() => { searchDropdown.style.display = 'none'; }, 150); });
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const q = searchInput.value.trim();
+    if (!q) return;
+    const exact = getExerciseSuggestions(q).find(m => nameKey(m.name) === nameKey(q));
+    addExercise(exact ? exact.name : q);
   });
+  if (window.visualViewport) {
+    const vv = window.visualViewport;
+    const fullHeight = window.innerHeight;
+    const onVVResizeList = () => {
+      if (vv.height > fullHeight * 0.85 && document.activeElement === searchInput) searchInput.blur();
+    };
+    vv.addEventListener('resize', onVVResizeList);
+  }
+
   root.querySelector('#backBtn').onclick = () => goBack();
-  root.querySelector('#editExBtn').onclick = () => { editingDay = currentDay; goTo('exercise-edit'); };
   root.querySelector('#sessionUnitBtn').onclick = async () => {
     const changed = await runUnitFixFlow((factor) => {
       if (draft.bodyweight !== undefined && draft.bodyweight !== '') {
@@ -4576,11 +5392,11 @@ function renderExerciseList(root) {
       .map(ex => ({
         name: ex.name,
         sets: (ex.sets || [])
-          .filter(s => !setLacksPerformanceData(s, ex.unilateral))
+          .filter(s => s.done && !setLacksPerformanceData(s, ex.unilateral))
           .map(s => { const { baseline, ...rest } = s; return rest; })
       }))
       .filter(ex => ex.sets.length > 0);
-    if (cleanExercises.length === 0) { showToast('Log at least one set before finishing'); return; }
+    if (cleanExercises.length === 0) { showToast('Mark at least one set done before finishing'); return; }
     if (draft.bodyweight === undefined || draft.bodyweight === '') {
       await loadHistory();
       const prior = historyEntries.find(e => e.bodyweight !== undefined && e.bodyweight !== '');
@@ -4739,6 +5555,27 @@ function syncDraftUnilateral(entry) {
   persistDraft();
 }
 
+/* Mirrors syncDraftUnilateral above, for the BW (bodyweight) toggle in the
+   Edit Exercises list — keeps today's in-progress session's load math in
+   sync with a BW flip made mid-session instead of leaving it stale until
+   the exercise is next reopened. */
+function syncDraftBodyweight(entry, bw) {
+  if (!draft || draft.day !== editingDay) return;
+  const ex = draft.exercises.find(e => sameExName(e.name, entry.name));
+  if (!ex || isBodyweightExercise(ex) === bw) return;
+  ex.bodyweightExercise = bw;
+  persistDraft();
+}
+/* Same catalog-first/name-heuristic-fallback priority as isBodyweightExercise,
+   just without a live tracked `ex` object to read from — used by the Edit
+   Exercises list to show the BW toggle's current state for an exercise that
+   may not have been opened this session. */
+function catalogIsBodyweight(name) {
+  const entry = customExercises.find(item => item.name_key === nameKey(name));
+  const bw = entry && typeof entry.bodyweight_exercise === 'boolean' ? entry.bodyweight_exercise : null;
+  return bw !== null ? bw : looksLikeBodyweightExercise(name);
+}
+
 /* Renaming an exercise in the Edit Exercises list only updated
    exercisesByDay — the matching entry inside the active session's `draft`
    kept the old name, so sameExName() stopped matching it: the exercise list
@@ -4754,39 +5591,142 @@ function syncDraftRename(oldName, newName) {
   persistDraft();
 }
 
+/* Direct update-in-place for the personal catalog row, keyed by its OLD
+   name_key — a plain pushCustomExercise() upsert can't do this because the
+   server computes name_key from `name` and upserts on (user_id, name_key),
+   so once the name changes the old row's key no longer matches and it would
+   insert a stray duplicate under the old name instead of renaming it. Falls
+   back to the normal upsert path (which will at least get the new name
+   saved somewhere) if the direct update fails for any reason. */
+async function renameCustomExerciseInCloud(oldNameKey, newEntry) {
+  if (!account || !account.id) return;
+  try {
+    const { error } = await supabase
+      .from('exercises')
+      .update({
+        name: newEntry.name, unilateral: !!newEntry.unilateral,
+        category: newEntry.category || null,
+        bodyweight_exercise: typeof newEntry.bodyweight_exercise === 'boolean' ? newEntry.bodyweight_exercise : null
+      })
+      .eq('user_id', account.id)
+      .eq('name_key', oldNameKey);
+    if (error) throw error;
+  } catch (e) {
+    logClientError('renameCustomExerciseInCloud', e);
+    pushCustomExercise(newEntry);
+  }
+}
+/* The "Overwrite" rename choice — folds the old name's entire history into
+   the new one, unlike the plain rename above (syncDraftRename) which only
+   ever touches today's in-progress draft and leaves every finished session
+   under the old name. Renames the exercise inside every past log that used
+   it (re-persisted + re-synced to the cloud), renames the personal catalog
+   row in place instead of leaving a stale duplicate behind, and rebuilds
+   bestLifts from scratch afterward so PRs/trend graphs read as one
+   continuous exercise instead of splitting into two at the rename point.
+   Deliberately only ever called from Save in renderExerciseEdit (queued in
+   pendingRenames while editing) so a Cancel never leaves history half
+   renamed. */
+async function renameExerciseEverywhere(oldName, newName, unilateral, bodyweightExercise) {
+  const oldKey = nameKey(oldName);
+  const changedLogs = historyEntries.filter(entry =>
+    (entry.exercises || []).some(ex => sameExName(ex.name, oldName))
+  );
+  changedLogs.forEach(entry => {
+    entry.exercises.forEach(ex => { if (sameExName(ex.name, oldName)) ex.name = newName; });
+  });
+  for (const log of changedLogs) {
+    saveJSON('log:' + log.id, log);
+    syncWorkoutToCloud(log);
+  }
+  const catEntry = customExercises.find(item => item.name_key === oldKey);
+  if (catEntry) {
+    const oldNameKey = catEntry.name_key;
+    catEntry.name = newName;
+    catEntry.name_key = nameKey(newName);
+    if (typeof unilateral === 'boolean') catEntry.unilateral = unilateral;
+    if (typeof bodyweightExercise === 'boolean') catEntry.bodyweight_exercise = bodyweightExercise;
+    saveJSON('customExercises', customExercises);
+    renameCustomExerciseInCloud(oldNameKey, catEntry);
+  } else {
+    captureNewExerciseIfUnknown(newName, !!unilateral, categoriesForDay(editingDay)[0], bodyweightExercise);
+  }
+  if (changedLogs.length) await recomputeBestLiftsFromHistory();
+}
+
+/* Edit Exercises has two modes on the same screen — never a navigation, so
+   toggling between them never calls goTo()/render() (that would be a full
+   screen rebuild, losing scroll position and animating like a page change).
+   View mode (default): a plain list plus the search bar for quickly adding
+   exercises. Edit mode (pencil button, top right): reveals the drag handle,
+   rename border, L|R / BW toggles and delete button per row, and swaps the
+   pencil for Save/Cancel. A snapshot of the list is taken the moment Edit is
+   pressed; Cancel restores it verbatim, Save keeps whatever's current and
+   then folds any queued "Overwrite" renames (see pendingRenames) into
+   history. Everyday mutations (search-add, delete, plain rename, L|R/BW
+   toggle, reorder) still write straight through to exercisesByDay as they
+   always have — the snapshot only exists to make Cancel meaningful. */
 function renderExerciseEdit(root) {
   const list = exercisesByDay[editingDay] || [];
+  let exEditMode = false;
+  let editSnapshot = null;
+  let pendingRenames = [];
+  let reorderAttached = false;
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${editingDay}</div>
-    <h1 class="big">Edit Exercises</h1>
-    <p class="sub">Changes apply going forward — your past logs stay exactly as recorded. Drag the handle to reorder.</p>
-    <div class="row-inline">
-      <div class="ex-ac-wrap">
-        <input type="text" id="newExInput" placeholder="+ Add exercise" autocomplete="off">
-        <div class="ex-ac-dropdown" id="newExDropdown" style="display:none;"></div>
+    <div class="section-header-row">
+      <h1 class="big">Edit Exercises</h1>
+      <div style="display:flex; align-items:center; gap:8px;" id="editHeaderBtns"></div>
+    </div>
+    <p class="sub" id="editSub"></p>
+    <div id="exSearchSection">
+      <button class="icon-btn ex-search-btn" id="exSearchToggleBtn">${ICON_SEARCH_SVG}Search exercise</button>
+      <div class="row-inline" id="exSearchRow" style="display:none;">
+        <div class="ex-ac-wrap">
+          <input type="text" id="newExInput" placeholder="Search or type a new exercise" autocomplete="off">
+          <div class="ex-ac-dropdown" id="newExDropdown" style="display:none;"></div>
+        </div>
+        <button class="uni-toggle" id="newUniToggle" title="One side at a time, tracked as separate R/L reps">L | R</button>
       </div>
-      <button class="uni-toggle" id="newUniToggle" title="One side at a time, tracked as separate R/L reps">L | R</button>
-      <button class="icon-btn no-pop" id="newExBtn">Add</button>
     </div>
     <div id="editList"></div>
   `;
   const editList = root.querySelector('#editList');
+  const subEl = root.querySelector('#editSub');
   function persistEditList() { exercisesByDay[editingDay] = list; saveJSON('exercisesByDay', exercisesByDay); }
   function indexOfItem(item) { return Array.from(editList.children).indexOf(item); }
 
   function buildItem(entry) {
     const item = document.createElement('div');
     item.className = 'list-item compact';
+    if (!exEditMode) {
+      item.classList.add('static');
+      item.innerHTML = `<div class="li-name">${entry.name}${entry.unilateral ? '<span class="uni-tag">L|R</span>' : ''}</div>`;
+      return item;
+    }
+    // Same reasoning as buildEditRow() in renderExerciseList: .static kills
+    // the whole-row :active press-scale so tapping the name/L|R/BW/delete
+    // doesn't visually "bounce" like a drag pickup — the actual drag-handle
+    // reorder animation is inline-style-driven and unaffected by this.
+    item.classList.add('static');
+    const bw = catalogIsBodyweight(entry.name);
     item.innerHTML = `
       <button class="drag-handle" title="Drag to reorder">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-      <div class="li-name">${entry.name}</div>
+      <div class="li-name ex-name-editable" data-act="rename" title="Tap to rename">${entry.name}</div>
       <div class="li-right">
-        <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="Toggle unilateral tracking">L | R</button>
-        <button class="icon-btn no-pop" data-act="rename" title="Rename">${ICON_EDIT_SVG}</button>
+        <button class="uni-toggle no-pop ${bw ? 'on' : ''}" data-act="bw" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
+        <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
         <button class="icon-btn danger no-pop" data-act="del" title="Delete">${ICON_TRASH_SVG}</button>
       </div>`;
+    item.querySelector('[data-act="bw"]').onclick = (e) => {
+      const i = indexOfItem(item);
+      const newBw = !catalogIsBodyweight(list[i].name);
+      e.currentTarget.classList.toggle('on', newBw);
+      syncExerciseCatalogSetting(list[i].name, { bodyweightExercise: newBw });
+      syncDraftBodyweight(list[i], newBw);
+    };
     item.querySelector('[data-act="uni"]').onclick = (e) => {
       const i = indexOfItem(item);
       list[i].unilateral = !list[i].unilateral;
@@ -4804,27 +5744,7 @@ function renderExerciseEdit(root) {
       inp.focus();
       inp.setSelectionRange(inp.value.length, inp.value.length);
       let committed = false;
-      const commit = () => {
-        if (committed) return;
-        const idx = indexOfItem(item);
-        const v = inp.value.trim();
-        if (v && list.some((other, j) => j !== idx && sameExName(other.name, v))) {
-          showToast(`${v} is already in this day's list`);
-          inp.focus();
-          return;
-        }
-        committed = true;
-        if (vvCleanup) vvCleanup();
-        if (v) {
-          const oldName = list[idx].name;
-          list[idx].name = v;
-          syncDraftRename(oldName, v);
-          captureNewExerciseIfUnknown(v, list[idx].unilateral, categoriesForDay(editingDay)[0]);
-          syncExerciseCatalogSetting(v, { unilateral: list[idx].unilateral });
-        }
-        persistEditList();
-        nameDiv.innerHTML = `${list[idx].name}`;
-      };
+      let commitInFlight = false;
       // Mobile keyboards can be dismissed (tapping the down-chevron, tapping
       // outside the input's own focus chain, etc.) without the input ever
       // actually receiving a blur event — the keyboard visually closes but
@@ -4842,6 +5762,53 @@ function renderExerciseEdit(root) {
         vv.addEventListener('resize', onVVResize);
         vvCleanup = () => vv.removeEventListener('resize', onVVResize);
       }
+      // A genuine rename (name actually changed) asks how to carry the
+      // history: Overwrite renames it everywhere, including every past
+      // finished log, so PRs/graphs stay one continuous exercise (queued
+      // here, actually applied in commitEdits on Save — see
+      // renameExerciseEverywhere's comment for why). "Save as new" is the
+      // old plain-rename behavior — only today's list/draft change, past
+      // logs stay under the old name untouched.
+      const commit = async () => {
+        if (committed || commitInFlight) return;
+        const idx = indexOfItem(item);
+        const v = inp.value.trim();
+        if (v && list.some((other, j) => j !== idx && sameExName(other.name, v))) {
+          showToast(`${v} is already in this day's list`);
+          inp.focus();
+          return;
+        }
+        const oldName = list[idx].name;
+        if (!v || v === oldName) {
+          committed = true;
+          if (vvCleanup) vvCleanup();
+          nameDiv.innerHTML = `${oldName}`;
+          return;
+        }
+        commitInFlight = true;
+        const choice = await showAppConfirm(
+          `Rename "${oldName}" to "${v}"?`,
+          [
+            { label: 'Overwrite — keep past logs linked', value: 'overwrite' },
+            { label: 'Save as new exercise', value: 'new' }
+          ],
+          true
+        );
+        commitInFlight = false;
+        if (choice === null) { nameDiv.innerHTML = `${oldName}`; return; }
+        committed = true;
+        if (vvCleanup) vvCleanup();
+        list[idx].name = v;
+        persistEditList();
+        nameDiv.innerHTML = `${v}`;
+        syncDraftRename(oldName, v);
+        if (choice === 'overwrite') {
+          pendingRenames.push({ oldName, newName: v, unilateral: list[idx].unilateral, bodyweightExercise: catalogIsBodyweight(oldName) });
+        } else {
+          captureNewExerciseIfUnknown(v, list[idx].unilateral, categoriesForDay(editingDay)[0]);
+          syncExerciseCatalogSetting(v, { unilateral: list[idx].unilateral });
+        }
+      };
       inp.onblur = commit;
       inp.onkeydown = (e) => {
         if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
@@ -4861,17 +5828,85 @@ function renderExerciseEdit(root) {
     return item;
   }
 
-  list.forEach(entry => editList.appendChild(buildItem(entry)));
-  makeReorderable(editList, list, () => persistEditList());
+  function renderRows() {
+    editList.innerHTML = '';
+    list.forEach(entry => editList.appendChild(buildItem(entry)));
+    if (exEditMode && !reorderAttached) {
+      makeReorderable(editList, list, () => persistEditList());
+      reorderAttached = true;
+    }
+  }
+
+  function renderHeaderBtns() {
+    const wrap = root.querySelector('#editHeaderBtns');
+    if (exEditMode) {
+      wrap.innerHTML = `
+        <button class="icon-edit-btn" id="editCancelBtn" title="Cancel">✕</button>
+        <button class="icon-edit-btn" id="editSaveBtn" title="Save">${ICON_CHECK_SVG}</button>`;
+      wrap.querySelector('#editCancelBtn').onclick = cancelEdits;
+      wrap.querySelector('#editSaveBtn').onclick = commitEdits;
+    } else {
+      wrap.innerHTML = `<button class="icon-edit-btn" id="editToggleBtn" title="Edit exercises">${ICON_EDIT_SVG}</button>`;
+      wrap.querySelector('#editToggleBtn').onclick = enterEditMode;
+    }
+  }
+
+  function refreshChrome() {
+    renderHeaderBtns();
+    subEl.textContent = exEditMode
+      ? 'Drag the handle to reorder. Tap a name to rename it — Overwrite keeps its history, Save as new starts fresh.'
+      : 'Search above to add an exercise. Tap the pencil to reorder, rename, or remove one.';
+    const searchSection = root.querySelector('#exSearchSection');
+    if (searchSection) searchSection.style.display = exEditMode ? 'none' : '';
+    renderRows();
+  }
+
+  function enterEditMode() {
+    editSnapshot = list.map(e => ({ ...e }));
+    pendingRenames = [];
+    exEditMode = true;
+    refreshChrome();
+  }
+  function cancelEdits() {
+    list.length = 0;
+    (editSnapshot || []).forEach(e => list.push({ ...e }));
+    persistEditList();
+    editSnapshot = null;
+    pendingRenames = [];
+    exEditMode = false;
+    refreshChrome();
+  }
+  async function commitEdits() {
+    const toApply = pendingRenames;
+    editSnapshot = null;
+    pendingRenames = [];
+    exEditMode = false;
+    refreshChrome();
+    if (toApply.length) {
+      for (const r of toApply) await renameExerciseEverywhere(r.oldName, r.newName, r.unilateral, r.bodyweightExercise);
+      showToast('History updated');
+    }
+  }
+
+  refreshChrome();
   root.querySelector('#backBtn').onclick = () => goBack();
+
   const newUniToggle = root.querySelector('#newUniToggle');
   newUniToggle.onclick = () => newUniToggle.classList.toggle('on');
   const newExInput = root.querySelector('#newExInput');
-  const newExBtn = root.querySelector('#newExBtn');
-  // Shared by both the Add button and tapping a suggestion in the
-  // autocomplete dropdown — previously only the button added the
-  // exercise, so picking a suggestion just filled the text box and left
-  // the user to press Add separately for no reason.
+  const newExDropdown = root.querySelector('#newExDropdown');
+  const searchToggleBtn = root.querySelector('#exSearchToggleBtn');
+  const searchRow = root.querySelector('#exSearchRow');
+  searchToggleBtn.onclick = () => {
+    searchToggleBtn.style.display = 'none';
+    searchRow.style.display = 'flex';
+    newExInput.focus();
+  };
+
+  // Tapping an existing exercise adds it immediately — same as picking one
+  // in the program setup's exercise picker. A query that matches nothing
+  // known surfaces a "+ Add as new" row instead of requiring a separate Add
+  // button press.
   function addExercise(val) {
     val = (val || '').trim();
     if (!val) return;
@@ -4882,19 +5917,57 @@ function renderExerciseEdit(root) {
     const entry = { name: val, unilateral: newUniToggle.classList.contains('on') };
     list.push(entry);
     persistEditList();
-    // Handles both cases: a genuinely new name gets captured fresh, and an
-    // already-known name (builtin or personal) still gets this L|R choice
-    // written back to the catalog rather than silently dropped.
     captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(editingDay)[0]);
     syncExerciseCatalogSetting(val, { unilateral: entry.unilateral });
-    const item = buildItem(entry);
-    item.classList.add('item-entering');
-    editList.appendChild(item);
-    item.addEventListener('animationend', () => item.classList.remove('item-entering'), { once: true });
+    if (exEditMode) {
+      const item = buildItem(entry);
+      item.classList.add('item-entering');
+      editList.appendChild(item);
+      item.addEventListener('animationend', () => item.classList.remove('item-entering'), { once: true });
+    } else {
+      renderRows();
+    }
     newExInput.value = '';
+    newExDropdown.style.display = 'none';
     newUniToggle.classList.remove('on');
+    newExInput.focus();
   }
-  attachExerciseAutocomplete(newExInput, root.querySelector('#newExDropdown'), (name) => addExercise(name));
+
+  function renderSearchDropdown() {
+    const q = newExInput.value.trim();
+    const suggestions = getExerciseSuggestions(q).filter(m => !list.some(other => sameExName(other.name, m.name)));
+    const exactKnown = q && getExerciseSuggestions(q).some(m => nameKey(m.name) === nameKey(q));
+    const alreadyOnList = q && list.some(other => sameExName(other.name, q));
+    let html = '';
+    if (q && !exactKnown && !alreadyOnList) {
+      html += `<div class="ex-ac-item ex-pick-add-row" data-add="1">+ Add "${q.replace(/"/g,'&quot;')}" as a new exercise</div>`;
+    }
+    if (suggestions.length === 0 && !(q && !exactKnown && !alreadyOnList)) {
+      html += `<div class="ex-ac-empty">${alreadyOnList ? `${q} is already in this day's list` : 'No matching exercise'}</div>`;
+    } else {
+      html += suggestions.map(m =>
+        `<div class="ex-ac-item" data-name="${m.name.replace(/"/g,'&quot;')}">${m.name}${m.unilateral ? '<span class="uni-tag">L|R</span>' : ''}</div>`
+      ).join('');
+    }
+    newExDropdown.innerHTML = html;
+    newExDropdown.style.display = 'block';
+    const addRow = newExDropdown.querySelector('[data-add]');
+    if (addRow) addRow.onclick = () => addExercise(q);
+    newExDropdown.querySelectorAll('.ex-ac-item[data-name]').forEach(row => {
+      row.onclick = () => addExercise(row.dataset.name);
+    });
+  }
+  newExInput.addEventListener('focus', renderSearchDropdown);
+  newExInput.addEventListener('input', renderSearchDropdown);
+  newExInput.addEventListener('blur', () => { setTimeout(() => { newExDropdown.style.display = 'none'; }, 150); });
+  newExInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const q = newExInput.value.trim();
+    if (!q) return;
+    const exact = getExerciseSuggestions(q).find(m => nameKey(m.name) === nameKey(q));
+    addExercise(exact ? exact.name : q);
+  });
   // Same lingering-focus issue as the rename input above: dismissing the
   // on-screen keyboard via its own dismiss control (rather than tapping
   // elsewhere / blurring the field) doesn't always fire a blur event, so the
@@ -4908,19 +5981,6 @@ function renderExerciseEdit(root) {
     };
     vv.addEventListener('resize', onVVResizeNew);
   }
-  // Whether to re-focus after Add (for quick multi-add) depends on whether
-  // the keyboard was actually still open right before the tap. mousedown
-  // fires before the browser shifts focus to the button, so this is the
-  // last point where activeElement still reflects the pre-click state —
-  // by the time the click handler runs, focus has already moved to the
-  // button regardless of whether the keyboard was open or closed.
-  let wasInputFocused = false;
-  newExBtn.addEventListener('mousedown', () => { wasInputFocused = document.activeElement === newExInput; });
-  newExBtn.addEventListener('touchstart', () => { wasInputFocused = document.activeElement === newExInput; });
-  newExBtn.onclick = () => {
-    addExercise(newExInput.value);
-    if (wasInputFocused) newExInput.focus();
-  };
 }
 
 /* Touch/mouse drag reordering for a vertical list of .list-item rows, driven
@@ -5494,10 +6554,11 @@ function setLacksPerformanceData(set, unilateral) {
    set-done checkmark, set.done) — used to decide whether it counts as
    "in progress"/"done" for the exercise-list sorting + markers. Typing
    reps/RIR/RPE into a set's fields is NOT enough on its own; the set has
-   to be marked done. (Whether a set gets saved into history when the
-   workout is finished is a separate question — see setLacksPerformanceData
-   / the finishBtn handler, which still goes by whether real data was
-   entered rather than whether it was checked off.) */
+   to be marked done. Whether a set gets saved into history when the
+   workout is finished goes by the same rule now — see the finishBtn/
+   finishWorkout/autoFinishStaleDraft filters (s.done && real data),
+   so a set that was only typed into (or added via + Add Set) but never
+   checked off is dropped instead of silently logged. */
 function exerciseHasLoggedData(ex) {
   return !!(ex && ex.sets && ex.sets.some(s => s.done));
 }
@@ -6499,9 +7560,9 @@ async function finishWorkout() {
   if (draft.bodyweight === undefined || draft.bodyweight === '') { showToast('Enter your bodyweight before finishing'); return; }
   const endTime = Date.now();
   const cleanExercises = draft.exercises
-    .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, bodyweightExercise: isBodyweightExercise(ex), sets: ex.sets.filter(s => !setLacksPerformanceData(s, ex.unilateral)) }))
+    .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, bodyweightExercise: isBodyweightExercise(ex), sets: ex.sets.filter(s => s.done && !setLacksPerformanceData(s, ex.unilateral)) }))
     .filter(ex => ex.sets.length > 0);
-  if (cleanExercises.length === 0) { showToast('Log at least one set before finishing'); return; }
+  if (cleanExercises.length === 0) { showToast('Mark at least one set done before finishing'); return; }
 
   await loadHistory(); // need prior sessions to compare against for the summary screen
 
@@ -6951,7 +8012,20 @@ function renderEditLog(root) {
     <button class="btn-primary" id="saveEditBtn" style="margin-top:14px;">Save Changes</button>
     <button class="btn-secondary btn-danger" id="deleteWholeBtn" style="margin-top:10px;">Delete Entire Workout</button>
   `;
-  root.querySelector('#backBtn').onclick = () => { editLogWorkingCopy = null; goBack(); };
+  root.querySelector('#backBtn').onclick = () => {
+    // Back discards whatever's in the working copy — but persistEditDraft()
+    // has been mirroring every edit to EDIT_DRAFT_PREFIX+id in storage as
+    // they were made (so an Android WebView restart mid-edit doesn't lose
+    // them). Clearing editLogWorkingCopy alone only drops the in-memory
+    // copy; the persisted draft would still be sitting in storage and would
+    // get silently reloaded (see the `saved ||` fallback above) the next
+    // time this same workout is opened for editing, resurrecting changes
+    // the user explicitly walked away from. Delete it so Back really means
+    // "throw this away."
+    deleteKey(EDIT_DRAFT_PREFIX + w.id);
+    editLogWorkingCopy = null;
+    goBack();
+  };
   root.querySelector('#logUnitBtn').onclick = async () => {
     const changed = await runUnitFixFlow((factor) => {
       if (w.bodyweight !== undefined && w.bodyweight !== '') w.bodyweight = convertWeightValue(w.bodyweight, factor);
@@ -7174,7 +8248,14 @@ function renderEditLog(root) {
   });
   makeReorderable(exBlocksWrap, w.exercises, () => { persistEditDraft(); renderEditLog(root); }, '.hex');
 
-  // Add a new exercise to this historic workout.
+  // Add a new exercise to this historic workout. Uses the same
+  // getExerciseSuggestions()-backed autocomplete as Edit Exercises and
+  // onboarding (builtin library + the Supabase-synced personal catalog,
+  // not just exercises already logged/configured on this device), and —
+  // like those other pickers — also accepts a name typed fresh that
+  // matches nothing, capturing it into the shared catalog via
+  // captureNewExerciseIfUnknown so it syncs and shows up as a suggestion
+  // everywhere else from then on.
   const addExWrap = document.createElement('div');
   addExWrap.className = 'row-inline';
   addExWrap.style.marginTop = '4px';
@@ -7184,44 +8265,44 @@ function renderEditLog(root) {
       <input type="text" id="newLogExInput" placeholder="+ Add exercise" autocomplete="off">
       <div class="ex-ac-dropdown" id="newLogExDropdown" style="display:none;"></div>
     </div>
+    <button class="icon-btn no-pop" id="newLogExBtn">Add</button>
   `;
   exList.appendChild(addExWrap);
   const newLogExInput = addExWrap.querySelector('#newLogExInput');
   const dropdown = addExWrap.querySelector('#newLogExDropdown');
-  const knownExercises = collectKnownExercisesFull();
-  function renderDropdown() {
-    const q = newLogExInput.value.trim().toLowerCase();
-    const matches = (q ? knownExercises.filter(k => k.name.toLowerCase().includes(q)) : knownExercises).slice(0, 40);
-    if (matches.length === 0) {
-      dropdown.innerHTML = `<div class="ex-ac-empty">${q ? 'No matching exercise found' : 'Nothing tracked yet'}</div>`;
-    } else {
-      dropdown.innerHTML = matches.map(k =>
-        `<div class="ex-ac-item" data-name="${k.name.replace(/"/g,'&quot;')}" data-uni="${k.unilateral ? '1' : '0'}">${k.name}${k.unilateral ? '<span class="uni-tag">UNI</span>' : ''}</div>`
-      ).join('');
+  const newLogExBtn = addExWrap.querySelector('#newLogExBtn');
+  function addLogExercise(name) {
+    const val = (name || newLogExInput.value || '').trim();
+    if (!val) return;
+    if (w.exercises.some(ex => sameExName(ex.name, val))) {
+      showToast(`${val} is already in this workout`);
+      return;
     }
-    dropdown.style.display = 'block';
-    dropdown.querySelectorAll('.ex-ac-item[data-name]').forEach(item => {
-      item.onclick = () => {
-        const name = item.dataset.name;
-        const uni = item.dataset.uni === '1';
-        if (w.exercises.some(ex => sameExName(ex.name, name))) {
-          showToast(`${name} is already in this workout`);
-          return;
-        }
-        w.exercises.push({
-          name, unilateral: uni,
-          sets: [ uni
-            ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: restDuration, media: [] }
-            : { weight: '', reps: '', rir: '', rpe: '', rest: restDuration, media: [] } ]
-        });
-        persistEditDraft();
-        renderEditLog(root);
-      };
+    // Pick up a remembered unilateral default (personal catalog first,
+    // then anything already logged/configured locally) instead of always
+    // starting at false, same as every other "add exercise" entry point.
+    const catalogEntry = customExercises.find(item => item.name_key === nameKey(val)) ||
+      collectKnownExercisesFull().find(item => sameExName(item.name, val));
+    const uni = !!(catalogEntry && catalogEntry.unilateral);
+    w.exercises.push({
+      name: val, unilateral: uni,
+      sets: [ uni
+        ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: restDuration, media: [] }
+        : { weight: '', reps: '', rir: '', rpe: '', rest: restDuration, media: [] } ]
     });
+    captureNewExerciseIfUnknown(val, uni, categoriesForDay(w.day)[0]);
+    persistEditDraft();
+    renderEditLog(root);
+    // renderEditLog() rebuilds this whole screen from scratch, so the old
+    // input element (and any focus it had) is gone — grab the freshly
+    // created one and refocus it so the search bar/keyboard stays open
+    // for adding the next exercise instead of closing after every add.
+    const freshInput = root.querySelector('#newLogExInput');
+    if (freshInput) freshInput.focus();
   }
-  newLogExInput.addEventListener('focus', renderDropdown);
-  newLogExInput.addEventListener('input', renderDropdown);
-  newLogExInput.addEventListener('blur', () => { setTimeout(() => { dropdown.style.display = 'none'; }, 150); });
+  attachExerciseAutocomplete(newLogExInput, dropdown, (name) => addLogExercise(name));
+  newLogExBtn.onclick = () => addLogExercise();
+  newLogExInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addLogExercise(); } });
 
   // General media for the day — not tied to any specific set.
   w.media = ensureMediaShape(w.media);
@@ -7875,23 +8956,26 @@ function renderSettingsProgram(root) {
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Program</div>
     <h1 class="big">Change program</h1>
     <p class="sub">Switching keeps all history. If a program's days aren't configured yet, you'll set up exercises for them.</p>
+    ${renderSavedProgramsListHtml()}
+    <div class="section-label">${savedPrograms.length ? 'Start a new split' : ''}</div>
     <div class="chip-grid" id="progGrid">
       <button class="chip wide" data-v="PPL">Push Pull Legs</button>
       <button class="chip wide" data-v="UL">Upper Lower</button>
-      <button class="chip wide" data-v="AP">Anterior / Posterior</button>
-      <button class="chip wide" data-v="BS">Bro Split</button>
+      <button class="chip wide" data-v="AP">Anterior Posterior</button>
       <button class="chip wide" data-v="FB">Full Body</button>
       <button class="chip wide" data-v="Custom">Custom</button>
     </div>
   `;
   root.querySelector('#backBtn').onclick = () => goBack();
+  attachSavedProgramsListHandlers(root);
   root.querySelectorAll('#progGrid .chip').forEach(btn => {
     btn.onclick = () => {
+      programWizardEditingId = null; // fresh split pick, not an edit of a saved one
+      editWizardOriginalDays = null;
       const type = btn.dataset.v;
       if (type === 'PPL') { goTo('ppl-count-switch'); }
       else if (type === 'UL') { goTo('ul-count-switch'); }
       else if (type === 'AP') { goTo('ap-count-switch'); }
-      else if (type === 'BS') { switchProgram('BS', buildSplitDays('BS', 1)); }
       else if (type === 'FB') { goTo('fb-count-switch'); }
       else if (type === 'Custom') {
         showAppPrompt('Enter your day names, separated by commas:', 'Arms, Cardio, Core', 'Next').then((input) => {
@@ -7906,6 +8990,8 @@ function renderSettingsProgram(root) {
   });
 }
 async function switchProgram(type, days) {
+  programWizardEditingId = null; // fresh split pick, not an edit of a saved one
+  editWizardOriginalDays = null;
   programType = type; programDays = days;
   await saveJSON('programType', programType);
   await saveJSON('programDays', programDays);
@@ -7920,15 +9006,18 @@ async function switchProgram(type, days) {
   await saveJSON('rotationStartWeekday', rotationStartWeekday);
   await saveJSON('rotationAnchorDate', rotationAnchorDate);
   await saveJSON('rotationSchedule', rotationSchedule);
-  const unconfigured = days.filter(d => !exercisesByDay[d] || exercisesByDay[d].length===0);
-  if (unconfigured.length > 0) {
-    setupDays = unconfigured; setupIndex = 0; setupTemp = []; setupSearchQuery = '';
-    showToast('New days need exercises set up');
-    goTo('setup-exercises');
-  } else {
-    resetRotationTemp();
-    goTo('setup-rotation');
-  }
+  const existing = normalizeExercisesByDay(await loadJSON('exercisesByDay', {}));
+  // Same reasoning as finalizeProgram(): a switch always means fresh days
+  // for this program, even if exercisesByDay already has entries under
+  // matching plain names (e.g. Upper/Lower) left over from a previous
+  // program — otherwise switching "back" to a split you've used before
+  // silently skips exercise setup and drops you straight into rotation.
+  days.forEach(d => { delete existing[d]; });
+  exercisesByDay = existing;
+  await saveJSON('exercisesByDay', exercisesByDay);
+  setupDays = days.slice(); setupIndex = 0; setupTemp = []; setupSearchQuery = '';
+  showToast('Set up exercises for your new program');
+  goTo('setup-exercises');
 }
 
 /* ---------- onboarding: app feature customization ----------
