@@ -53,7 +53,7 @@
     padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }#app *{ min-width: 0; }.screen{ flex: 1; display: flex; flex-direction: column; padding: 0 18px 34.5px; }.screen.centered{ justify-content: center; }.screen.anim-default{ animation: fadeIn 0.56s var(--ease-glide); }.screen.anim-slide-back{ animation: slideBack 0.62s var(--ease-glide); }.screen.anim-slide-forward{ animation: slideForward 0.62s var(--ease-glide); }@keyframes fadeIn{ from { opacity: 0; } to { opacity: 1; } }@keyframes slideBack{ from { opacity: 0; transform: translateX(-9%); } to { opacity: 1; transform: translateX(0); } }@keyframes slideForward{ from { opacity: 0; transform: translateX(9%); } to { opacity: 1; transform: translateX(0); } }button{ touch-action: manipulation; transition: transform .48s var(--ease-bounce), opacity .38s var(--ease-glide), box-shadow .42s var(--ease-glide), border-color .38s var(--ease-glide), background-color .38s var(--ease-glide); }button:active{ transform: scale(0.895); transition: transform .14s var(--ease-press), opacity .14s var(--ease-press), box-shadow .14s var(--ease-press), border-color .14s var(--ease-press), background-color .14s var(--ease-press); }.eyebrow{ font-size: 23.01px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--teal); font-weight: 800;
     text-shadow: 0 0 14px var(--teal-glow);
     padding-top: max(env(safe-area-inset-top), 28px); margin-bottom: 6.9px; display: flex; align-items: center; gap: 13.8px; padding-bottom: 9.2px;
-    min-height: calc(max(env(safe-area-inset-top), 28px) + 9.2px + 47.8px); }.eyebrow-name-col{ display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }.eyebrow-name-col .rename-link-btn{ margin: 0; font-size: 11.5px; text-transform: none; letter-spacing: normal; }.back-btn{ background: none; border: none; color: var(--teal); cursor: pointer; padding: 6.9px 16px 6.9px 0;
+    min-height: calc(max(env(safe-area-inset-top), 28px) + 9.2px + 47.8px); }.eyebrow-name-col{ display: inline-flex; flex-direction: row; align-items: center; gap: 8px; min-width: 0; }.eyebrow-name-col .rename-link-btn{ margin: 0 !important; width: 42px !important; height: 42px !important; border-radius: 13px !important; flex-shrink: 0; position: relative; top: 3px; }.eyebrow-name-col .rename-link-btn svg{ width: 24px !important; height: 24px !important; }.back-btn{ background: none; border: none; color: var(--teal); cursor: pointer; padding: 6.9px 16px 6.9px 0;
     display: inline-flex; align-items: center; justify-content: center;
     filter: drop-shadow(0 0 8px var(--teal-glow));
     transition: transform .48s var(--ease-bounce), opacity .38s var(--ease-glide); }.back-btn svg{ width: 34px; height: 34px; }.back-btn:active, .back-btn.is-pressed{ transform: scale(0.79); opacity: 0.7; transition: transform .14s var(--ease-press), opacity .14s var(--ease-press); }.gear-btn{ background: var(--btn-bg); border: none; color: var(--teal); font-size: 15.88px; border-radius: 14px; width: 42px; height: 42px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: none; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), color .38s var(--ease-glide); }.gear-btn:active, .gear-btn.is-pressed{ border-color: var(--border); color: var(--teal); transform: scale(0.82) rotate(-27deg); transition: transform .14s var(--ease-press), border-color .14s var(--ease-press), color .14s var(--ease-press); }.home-topbar{ display: flex; justify-content: space-between; align-items: center;
@@ -147,7 +147,7 @@
     font-size: 14.12px; font-weight: 700; line-height: 1.15;
     box-shadow: 0 6px 20px -8px var(--teal-glow);
     transition: transform .48s var(--ease-bounce), box-shadow .42s var(--ease-glide), opacity .38s var(--ease-glide);
-  }.select-btn:active{ transform: scale(0.925); box-shadow: 0 3px 14px -6px var(--teal-glow); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }.select-btn .sb-name{ display: flex; align-items: center; gap: 11.5px; line-height: 1.15; }.select-btn .sb-arrow{ font-size: 15.34px; font-weight: 800; line-height: 1.15; flex-shrink: 0; align-self: center; }.select-btn .li-check{ color: var(--teal-ink); font-size: 14.12px; }.select-btn.ex-pick{ background: var(--panel); color: var(--teal); border: 1.75px solid var(--border); box-shadow: none; padding: 13.8px 16px; margin-bottom: 9.2px; font-size: 13.23px; }.select-btn.ex-pick:active{ box-shadow: none; }.select-btn.ex-pick .li-check{ color: var(--teal); }.select-btn .li-progress-dot{ display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; animation: pulseDot 1.1s ease-in-out infinite; }@keyframes pulseDot{ 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }.list-item{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 18.4px; padding: 17.25px 16px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; margin-bottom: 17.25px; cursor: pointer; box-shadow: none; line-height: 1.15; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide), background-color .38s var(--ease-glide); }#exerciseDayList .list-item{ margin-bottom: 10.35px; }.list-item:not(.static):not(.dragging):active{ transform: scale(0.955); transition: transform .14s var(--ease-press); }.list-item.static{ border-color: var(--border); box-shadow: none; cursor: default; }.list-item .li-name{ font-size: 14.12px; font-weight: 700; display: flex; align-items: center; gap: 11.5px; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; line-height: 1.438; align-self: center; }.list-item:not(.static) .li-name{ color: var(--teal); }.list-item .li-check{ color: var(--teal); font-size: 14.12px; }.list-item .li-meta{ font-size: 11.02px; color: var(--text-dim); margin-top: 3.45px; }.list-item .li-pr{ font-size: 11.02px; color: var(--teal); font-weight: 700; margin-top: 3.45px; }.list-item .li-right{ display: flex; gap: 11.5px; align-items: center; color: var(--text-dim); flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }.list-item .li-right > *{ align-self: center; line-height: 1.15; }.drag-handle{ background: none; border: none; color: var(--text-dim); cursor: grab; padding: 6.9px 10px 6.9px 0; margin-right: 2px; display: flex; align-items: center; justify-content: center; touch-action: none; flex-shrink: 0; transition: color .38s var(--ease-glide), transform .48s var(--ease-bounce); }.drag-handle:active{ cursor: grabbing; color: var(--teal); transform: scale(1.225); transition: color .14s var(--ease-press), transform .14s var(--ease-press); }.list-item.dragging{ border-color: var(--border); box-shadow: 0 10px 26px -6px rgba(0,0,0,0.55); cursor: grabbing; }.list-item.item-entering{ animation: itemSlideUp 0.42s var(--ease-glide); }@keyframes itemSlideUp{ from { opacity: 0; transform: translateY(28px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }.list-item.item-removing{ animation: itemSlideOut 0.32s var(--ease-glide) forwards; pointer-events: none; }@keyframes itemSlideOut{ from { opacity: 1; transform: scale(1); max-height: 200px; margin-bottom: 17.25px; } to { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; } }.list-item.compact{ padding: 10.35px 14px; margin-bottom: 8.05px; }.list-item.compact .li-name{ font-size: 13.23px; }.row-inline{ display: flex; gap: 9.2px; align-items: stretch; margin-bottom: 20.7px; }.icon-btn{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 13.23px; cursor: pointer; flex-shrink: 0; }.icon-btn svg{ width: 18px; height: 18px; }.icon-btn[data-act="rename"]{ color: var(--teal); padding: 10.46px 14.8px; position: relative; top: 0.5px; }.icon-btn[data-act="rename"] svg{ width: 20.4px; height: 20.4px; }.icon-btn.danger{ color: var(--danger); border-color: var(--border); box-shadow: none; padding: 11.5px 16px; }.icon-btn.danger svg{ width: 22px; height: 22px; }.row-inline #newExBtn, .row-inline #newLogExBtn{ padding: 9.2px 22px; }.uni-toggle{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 12.34px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: border-color .38s var(--ease-glide), color .38s var(--ease-glide), background-color .38s var(--ease-glide); }.uni-toggle.on{ border-color: var(--border); color: var(--teal); background: var(--teal-a14); }.uni-tag{ font-size: 10.92px; color: var(--teal-dim); border: 1px solid var(--border); border-radius: 8px; padding: 2.3px 6px; margin-left: 8px; }.ex-pick-search-wrap{ position: sticky; top: 0; z-index: 5; background: var(--bg); padding-bottom: 11.5px; margin-bottom: 4.6px; }.ex-pick-search-wrap input{ font-size: 13.67px; }.ex-pick-group-label{ font-size: 12.34px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--teal); margin: 13.8px 0 6.9px; }.ex-pick-group-label:first-child{ margin-top: 4.6px; }.ex-pick-row{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 11.5px;
+  }.select-btn:active{ transform: scale(0.925); box-shadow: 0 3px 14px -6px var(--teal-glow); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }.select-btn .sb-name{ display: flex; align-items: center; gap: 11.5px; line-height: 1.15; }.select-btn .sb-arrow{ font-size: 15.34px; font-weight: 800; line-height: 1.15; flex-shrink: 0; align-self: center; }.select-btn .li-check{ color: var(--teal-ink); font-size: 14.12px; }.select-btn.ex-pick{ background: var(--panel); color: var(--teal); border: 1.75px solid var(--border); box-shadow: none; padding: 13.8px 16px; margin-bottom: 9.2px; font-size: 13.23px; }.select-btn.ex-pick:active{ box-shadow: none; }.select-btn.ex-pick .li-check{ color: var(--teal); }.select-btn .li-progress-dot{ display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; animation: pulseDot 1.1s ease-in-out infinite; }@keyframes pulseDot{ 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }.list-item{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 18.4px; padding: 17.25px 16px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; margin-bottom: 17.25px; cursor: pointer; box-shadow: none; line-height: 1.15; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide), background-color .38s var(--ease-glide); }#exerciseDayList .list-item{ margin-bottom: 10.35px; }.list-item:not(.static):not(.dragging):active{ transform: scale(0.955); transition: transform .14s var(--ease-press); }.list-item.static{ border-color: var(--border); box-shadow: none; cursor: default; }.list-item .li-name{ font-size: 14.12px; font-weight: 700; display: flex; align-items: center; gap: 11.5px; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; line-height: 1.438; align-self: center; }.list-item:not(.static) .li-name{ color: var(--teal); }.list-item .li-check{ color: var(--teal); font-size: 14.12px; }.list-item .li-meta{ font-size: 11.02px; color: var(--text-dim); margin-top: 3.45px; }.list-item .li-pr{ font-size: 11.02px; color: var(--teal); font-weight: 700; margin-top: 3.45px; }.list-item .li-right{ display: flex; gap: 11.5px; align-items: center; color: var(--text-dim); flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }.list-item .li-right > *{ align-self: center; line-height: 1.15; }.drag-handle{ background: none; border: none; color: var(--text-dim); cursor: grab; padding: 6.9px 10px 6.9px 0; margin-right: 2px; display: flex; align-items: center; justify-content: center; touch-action: none; flex-shrink: 0; transition: color .38s var(--ease-glide), transform .48s var(--ease-bounce); }.drag-handle:active{ cursor: grabbing; color: var(--teal); transform: scale(1.225); transition: color .14s var(--ease-press), transform .14s var(--ease-press); }.list-item.dragging{ border-color: var(--border); box-shadow: 0 10px 26px -6px rgba(0,0,0,0.55); cursor: grabbing; }.list-item.item-entering{ animation: itemSlideUp 0.42s var(--ease-glide); }@keyframes itemSlideUp{ from { opacity: 0; transform: translateY(28px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }.list-item.item-removing{ animation: itemSlideOut 0.32s var(--ease-glide) forwards; pointer-events: none; }@keyframes itemSlideOut{ from { opacity: 1; transform: scale(1); max-height: 200px; margin-bottom: 17.25px; } to { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; } }.list-item.compact{ padding: 10.35px 14px; margin-bottom: 8.05px; }.list-item.compact .li-name{ font-size: 13.23px; color: var(--teal); }.list-item.compact .drag-handle{ height: 22px; padding: 0 8px 0 0; }.list-item.compact .drag-handle svg{ width: 17px; height: 17px; }.list-item.compact .uni-toggle{ height: 22px; padding: 0 10px; font-size: 11.48px; }.list-item.compact .icon-btn.danger{ height: 22px; padding: 0 8px; }.list-item.compact .icon-btn.danger svg{ width: 18px; height: 18px; }.list-item.compact .li-right{ gap: 8px; }.row-inline{ display: flex; gap: 9.2px; align-items: stretch; margin-bottom: 20.7px; }.icon-btn{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 13.23px; cursor: pointer; flex-shrink: 0; }.icon-btn svg{ width: 18px; height: 18px; }.icon-btn[data-act="rename"]{ color: var(--teal); padding: 10.46px 14.8px; position: relative; top: 0.5px; }.icon-btn[data-act="rename"] svg{ width: 20.4px; height: 20.4px; }.icon-btn.danger{ color: var(--danger); border-color: var(--border); box-shadow: none; padding: 11.5px 16px; }.icon-btn.danger svg{ width: 22px; height: 22px; }.row-inline #newExBtn, .row-inline #newLogExBtn{ padding: 9.2px 22px; }.uni-toggle{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 12.34px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: border-color .38s var(--ease-glide), color .38s var(--ease-glide), background-color .38s var(--ease-glide); }.uni-toggle.on{ border-color: var(--border); color: var(--teal); background: var(--teal-a14); }.uni-tag{ font-size: 10.92px; color: var(--teal-dim); border: 1px solid var(--border); border-radius: 8px; padding: 2.3px 6px; margin-left: 8px; }.ex-pick-search-wrap{ position: sticky; top: 0; z-index: 5; background: var(--bg); padding-bottom: 11.5px; margin-bottom: 4.6px; }.ex-pick-search-wrap input{ font-size: 13.67px; }.ex-pick-group-label{ font-size: 12.34px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--teal); margin: 13.8px 0 6.9px; }.ex-pick-group-label:first-child{ margin-top: 4.6px; }.ex-pick-row{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 11.5px;
     padding: 11.5px 13px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 13px;
     margin-bottom: 6.9px; cursor: pointer; color: var(--text); font-size: 13.23px; font-weight: 600;
     transition: transform .3s var(--ease-bounce), border-color .3s var(--ease-glide), color .3s var(--ease-glide), background-color .3s var(--ease-glide); }.ex-pick-row:active{ transform: scale(0.97); }.ex-pick-row.selected{ color: var(--teal); border-color: var(--border); background: var(--teal-a16); font-weight: 700; }.ex-pick-row .ex-pick-name{ display: flex; align-items: center; gap: 9.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.ex-pick-row .ex-pick-check{ flex-shrink: 0; color: var(--teal); }.ex-pick-row .uni-toggle{ padding: 6.9px 10px; font-size: 10.92px; }.ex-pick-row-right{ display: flex; align-items: center; gap: 6.9px; flex-shrink: 0; }.ex-pick-drag{ display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
@@ -180,15 +180,26 @@
     border-bottom: 1.75px solid var(--border); box-shadow: 0 10px 26px -8px rgba(0,0,0,0.55);
     transform: translateY(-100%); transition: transform .42s var(--ease-glide); pointer-events: none; }.alarm-stop-banner.show{ transform: translateY(0); pointer-events: auto; }.alarm-stop-banner .asb-text{ color: var(--text); font-size: 12.78px; font-weight: 700; }.alarm-stop-banner .asb-stop{ flex-shrink: 0; background: var(--danger); border: none; color: #2a0708; font-size: 12.34px; font-weight: 800; padding: 11.5px 18px; border-radius: 11px; cursor: pointer; box-shadow: 0 6px 18px -6px var(--danger-glow); transition: transform .38s var(--ease-bounce); }.alarm-stop-banner .asb-stop:active{ transform: scale(0.92); transition: transform .14s var(--ease-press); }.err-text{ color: var(--danger); font-size: 11.47px; margin-top: -6.9px; margin-bottom: 11.5px; min-height: 16px; }.ex-ac-wrap{ position: relative; flex: 1 1 auto; min-width: 0; }.ex-ac-dropdown{ position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--panel);
     border: 1px solid var(--border); border-radius: 12px; max-height: 240px; overflow-y: auto; z-index: 60;
-    box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); }.ex-ac-item{ padding: 13.8px 14px; font-size: 12.78px; color: var(--text); cursor: pointer; }.ex-ac-item:active{ background: var(--panel-2); }.ex-ac-item .uni-tag{ margin-left: 8px; }.ex-ac-empty{ padding: 14px; font-size: 11.47px; color: var(--text-dim); text-align: center; }.ex-ac-item.ex-pick-add-row{ color: var(--teal-dim); font-style: italic; }.li-name-col{ display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; min-width: 0; }.li-name-col .li-name{ flex: none; }
+    box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); }.ex-ac-item{ padding: 13.8px 14px; font-size: 12.78px; color: var(--text); cursor: pointer; }.ex-ac-item:active{ background: var(--panel-2); }.ex-ac-item .uni-tag{ margin-left: 8px; }.ex-ac-empty{ padding: 14px; font-size: 11.47px; color: var(--text-dim); text-align: center; }.ex-ac-item.ex-pick-add-row{ color: var(--teal-dim); font-style: italic; }.li-name-col{ display: flex; flex-direction: row; align-items: center; gap: 8px; flex: 1 1 auto; min-width: 0; }.li-name-col .li-name{ flex: 1 1 auto; min-width: 0; }.li-name-col .rename-link-btn{ flex-shrink: 0; margin: 0; }
     /* Small standalone "Rename session" link — replaces the old pattern of
        wrapping the session/day name itself in a dashed box with a cramped
        inline icon. The name now renders as plain text; this sits just below
        it as its own tappable affordance, sized like a caption rather than a
        button, so it never fights the heading for space. */
-    .rename-link-btn{ -webkit-appearance: none; appearance: none; display: inline-flex; align-items: center; gap: 5px; width: auto; background: none; border: none; padding: 0; margin: 4px 0 0; font-size: 12.3px; font-weight: 600; color: var(--teal); cursor: pointer; text-align: left; }
-    .rename-link-btn svg{ width: 13px; height: 13px; flex-shrink: 0; }
-    .rename-link-btn:active{ opacity: 0.6; transform: none; transition: opacity .14s var(--ease-press); }.ex-search-btn{ width: 100%; justify-content: flex-start; gap: 9.2px; color: var(--text-dim); margin-bottom: 20.7px; padding: 13.8px 16px; }.ex-search-btn svg{ width: 17px; height: 17px; flex-shrink: 0; }#exSearchRow{ margin-bottom: 20.7px; }.sort-menu-wrap{ position: relative; flex-shrink: 0; }.sort-menu{ position: absolute; top: calc(100% + 8px); right: 0; min-width: 208px; width: max-content; background: var(--panel);    border: 1px solid var(--border); border-radius: 14px; padding: 6px; z-index: 60;
+    .rename-link-btn{ -webkit-appearance: none; appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: 0; width: auto; background: none; border: none; padding: 0; margin: 0; font-size: 12.3px; font-weight: 600; color: var(--teal); cursor: pointer; text-align: left; }
+    .rename-link-btn span{ display: none; }
+    .rename-link-btn svg{ width: 15px; height: 15px; flex-shrink: 0; }
+    .rename-link-btn:active{ opacity: 0.6; transform: none; transition: opacity .14s var(--ease-press); }
+    /* Setup-exercises heading ("What exercises do you do on X?") — the
+       rename affordance sits inline right after the "?", vertically
+       centered against the heading text and sized to match it (1em), and
+       the day/session name itself gets a dotted underline so it reads as
+       tappable-to-rename without needing a separate caption link below. */
+    h1.big .setup-heading-name{ border-bottom: 2.5px dashed var(--teal); }
+    h1.big .setup-heading-rename-btn{ -webkit-appearance: none; appearance: none; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; width: 1.55em; height: 1.55em; margin-left: 0.45em; padding: 0; background: none; border: none; color: var(--teal); cursor: pointer; position: relative; top: 0.03em; }
+    h1.big .setup-heading-rename-btn svg{ width: 100%; height: 100%; display: block; }
+    h1.big .setup-heading-rename-btn:active{ opacity: 0.6; transition: opacity .14s var(--ease-press); }
+    .ex-search-btn{ width: 100%; justify-content: flex-start; gap: 9.2px; color: var(--text-dim); margin-bottom: 20.7px; padding: 13.8px 16px; }.ex-search-btn svg{ width: 17px; height: 17px; flex-shrink: 0; }#exSearchRow{ margin-bottom: 20.7px; }.sort-menu-wrap{ position: relative; flex-shrink: 0; }.sort-menu{ position: absolute; top: calc(100% + 8px); right: 0; min-width: 208px; width: max-content; background: var(--panel);    border: 1px solid var(--border); border-radius: 14px; padding: 6px; z-index: 60;
     box-shadow: 0 14px 34px -10px rgba(0,0,0,0.55); animation: rwPanelIn .18s var(--ease-glide); }.sort-menu-item{ display: block; width: 100%; text-align: left; background: none; border: none; color: var(--teal);
     font-size: 12.78px; font-weight: 700; padding: 13.8px 16px; border-radius: 10px; cursor: pointer; white-space: nowrap; }.sort-menu-item.active{ background: var(--teal-a14); }.sort-menu-item:active{ background: var(--panel-2); }.sort-menu-item.danger{ color: var(--danger); }
 /* #savedProgramsList rows: the pencil's dropdown (.sort-menu) is appended as
@@ -481,7 +492,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.3.5';
+const APP_VERSION = '1.3.6';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -613,7 +624,7 @@ function logClientError(context, err) {
   } catch (e) {}
 }
 
-const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings', 'notes', 'allExSortMode', 'rotationLength', 'rotationStartWeekday', 'rotationAnchorDate', 'rotationSchedule', 'savedPrograms'];
+const CLOUD_SYNC_KEYS = ['programType', 'programDays', 'exercisesByDay', 'settings', 'notes', 'allExSortMode', 'rotationLength', 'rotationStartWeekday', 'rotationAnchorDate', 'rotationSchedule', 'savedPrograms', 'freeRecentExercises'];
 
 async function pushCloudAppState(key, val) {
   if (!account || !account.id) return;
@@ -1153,6 +1164,24 @@ function totalReps(s) {
   if (s.repsR !== undefined || s.repsL !== undefined) return (parseFloat(s.repsR) || 0) + (parseFloat(s.repsL) || 0);
   return parseFloat(s.reps) || 0;
 }
+/* Single bilateral reps value when converting a set FROM unilateral back to
+   a normal two-handed set (L|R toggled off). Uses whichever side actually
+   has a value if only one does, otherwise the SMALLER of the two — same
+   "limited by the weaker side" reasoning as effectiveReps() above. Never
+   sums the sides into one number — that's what totalReps() is for
+   (volume only) and doing it here was silently doubling a converted set's
+   reps (7R + 7L becoming a bilateral "14" instead of the correct 7). */
+function mergedBilateralReps(s) {
+  const r = s.repsR, l = s.repsL;
+  const rEmpty = r === undefined || r === null || r === '';
+  const lEmpty = l === undefined || l === null || l === '';
+  if (rEmpty && lEmpty) return '';
+  if (rEmpty) return l;
+  if (lEmpty) return r;
+  const rn = parseFloat(r), ln = parseFloat(l);
+  if (isNaN(rn) || isNaN(ln)) return r;
+  return rn <= ln ? r : l;
+}
 /* The single set that represents an exercise's effort in a session. Picking
    this by raw weight (old behavior) breaks on anything but a straight single
    — 50kg x20 is a far bigger effort than 55kg x1, but "top weight" alone
@@ -1203,7 +1232,7 @@ function hasSetData(s) {
   return s.weight !== '' && repsFilled;
 }
 function programTitleLabel(type) {
-  return type === 'PPL' ? 'Push Pull Legs' : type === 'UL' ? 'Upper Lower' : type === 'AP' ? 'Anterior Posterior' : type === 'FB' ? 'Full Body' : 'Custom';
+  return type === 'PPL' ? 'Push Pull Legs' : type === 'UL' ? 'Upper Lower' : type === 'AP' ? 'Anterior Posterior' : type === 'FB' ? 'Full Body' : type === 'FREE' ? 'Track Freely' : 'Custom';
 }
 /* The day list under the program name (e.g. "Push · Pull · Legs") is only
    useful when it tells you something the title didn't — like the numbered
@@ -1212,6 +1241,7 @@ function programTitleLabel(type) {
    or 2-day Upper Lower), showing it again is pure repetition — show the
    day count instead. */
 function programMetaLabel(type, days) {
+  if (type === 'FREE') return 'No fixed schedule — pick any exercise, any day';
   const titleWords = programTitleLabel(type).toLowerCase().split(' ');
   const isRedundant = days.length === titleWords.length &&
     days.every((d, i) => d.toLowerCase() === titleWords[i]);
@@ -1972,6 +2002,11 @@ function ensureMediaShape(mediaObj) {
 let account = null, loggedIn = false;
 
 let programType = null, programDays = [];
+// Track Freely mode's speed-dial: exercise names in most-recently-tracked
+// order, capped at 20 (see recordFreeExerciseUsage). Independent of
+// exercisesByDay/programDays entirely, and never cleared by switching to a
+// fixed split — so it's exactly as the user left it if they switch back.
+let freeRecentExercises = [];
 // Rotation schedule: maps calendar dates to a program day (or 'Rest') on
 // a repeating N-day cycle. rotationAnchorDate is the ISO date ('YYYY-MM-DD')
 // of Day 1; rotationSchedule[i] is the programDays entry (or 'Rest')
@@ -2504,10 +2539,17 @@ async function continueBootAfterAuth() {
   programDays = await loadJSON('programDays', []);
   exercisesByDay = normalizeExercisesByDay(await loadJSON('exercisesByDay', {}));
   await saveJSON('exercisesByDay', exercisesByDay);
+  freeRecentExercises = await loadJSON('freeRecentExercises', []);
+  // Track Freely has no days/exercises to pre-configure and no rotation to
+  // schedule — both walk straight past those wizard steps below and land
+  // on setup-features/home like every other program type does once it's
+  // actually configured.
+  if (programType !== 'FREE') {
   const unconfigured = programDays.filter(d => !exercisesByDay[d] || exercisesByDay[d].length === 0);
   if (unconfigured.length > 0) {
     setupDays = unconfigured; setupIndex = 0; setupTemp = [];
     screen = 'setup-exercises'; render(); return;
+  }
   }
   rotationLength = await loadJSON('rotationLength', null);
   rotationStartWeekday = await loadJSON('rotationStartWeekday', null);
@@ -2516,7 +2558,7 @@ async function continueBootAfterAuth() {
   // A relaunch mid-onboarding, or a program switch that was never finished,
   // can leave exercises configured but no rotation schedule saved yet —
   // catch that here on every boot, same as the onboardingDone check below.
-  if (!rotationLength || !Array.isArray(rotationSchedule) || rotationSchedule.length !== rotationLength) {
+  if (programType !== 'FREE' && (!rotationLength || !Array.isArray(rotationSchedule) || rotationSchedule.length !== rotationLength)) {
     screen = 'setup-rotation'; render(); return;
   }
   // A relaunch mid-onboarding (Android backgrounding the webview is common)
@@ -2638,6 +2680,21 @@ async function goToTab(targetScreen) {
   // rebuilt to match the normal drill-down chain (mirrors startTrackingDay's
   // `chain` logic) so Back/hardware-back from the resumed screen still walks
   // exercise-list -> track-select -> home instead of jumping straight to home.
+  if (targetScreen === 'track-select' && programType === 'FREE') {
+    if (draft) {
+      targetScreen = activeExerciseName ? 'set-log' : 'free-exercise-list';
+      if (screen === targetScreen) return;
+      stopSoundPreview();
+      currentDay = draft.day;
+      navStack = targetScreen === 'set-log' ? ['home', 'free-exercise-list'] : ['home'];
+      screen = targetScreen;
+      pushNavHistoryEntry();
+      render();
+      return;
+    }
+    startTrackingFree(true);
+    return;
+  }
   if (targetScreen === 'track-select' && draft) {
     targetScreen = activeExerciseName ? 'set-log' : 'exercise-list';
     if (screen === targetScreen) return;
@@ -2831,6 +2888,7 @@ function render() {
     'setup-exercises': renderSetupExercises, 'setup-rotation': renderSetupRotation, 'home': renderHome,
     'setup-features': renderSetupFeatures,
     'track-select': renderTrackSelect, 'exercise-list': renderExerciseList,
+    'free-exercise-list': renderFreeExerciseList,
     'exercise-edit': renderExerciseEdit, 'set-log': renderSetLog,
     'logs': renderLogs, 'exercise-history': renderExerciseHistory,
     'edit-log': renderEditLog, 'workout-detail': renderWorkoutDetail,
@@ -3081,21 +3139,26 @@ function renderSelectProgram(root) {
     <div class="chip-grid" id="progGrid">
       <button class="chip wide" data-v="PPL">Push Pull Legs</button>
       <button class="chip wide" data-v="UL">Upper Lower</button>
+      <button class="chip wide" data-v="AP">Anterior Posterior</button>
       <button class="chip wide" data-v="FB">Full Body</button>
       <button class="chip wide" data-v="Custom">Custom</button>
     </div>
     <div style="background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-top:18px; font-size:13px; line-height:1.55; color:var(--text-dim);">
       <b style="color:var(--text);">Push Pull Legs</b> — 3 days: push muscles (chest/shoulders/triceps), pull muscles (back/biceps), legs.<br>
       <b style="color:var(--text);">Upper Lower</b> — 2 days: whole upper body, then whole lower body.<br>
+      <b style="color:var(--text);">Anterior Posterior</b> — 2 days: front-of-body muscles, then back-of-body muscles.<br>
       <b style="color:var(--text);">Full Body</b> — 1+ days that each train your whole body.<br>
       <b style="color:var(--text);">Custom</b> — name your own days (e.g. Arms, Cardio, Core) if none of these fit.
     </div>
+    <div class="section-label" style="margin-top:22px;">Don't have a fixed training plan?</div>
+    <button class="chip wide" id="freeTrackBtn" style="border-color:var(--teal); color:var(--teal);">Track Freely</button>
   `;
   root.querySelector('#backBtn').onclick = () => goBack('onboarding-welcome');
   attachSavedProgramsListHandlers(root);
   root.querySelectorAll('#progGrid .chip').forEach(btn => {
     btn.onclick = () => selectProgramType(btn.dataset.v);
   });
+  root.querySelector('#freeTrackBtn').onclick = () => selectFreeTracking(false);
 }
 
 function selectProgramType(type) {
@@ -3116,13 +3179,35 @@ function selectProgramType(type) {
   }
 }
 
+/* Track Freely: no split, no rotation, no exercise setup — just the full
+   exercise library available every day. Deliberately leaves programDays/
+   exercisesByDay/rotation* untouched in storage (not cleared) so switching
+   to a fixed split later, and then back to Track Freely again, restores
+   both exactly as they were left — see the boot-sequence FREE guards and
+   switchProgram's own re-setup logic, neither of which this touches. */
+async function selectFreeTracking(isSwitch) {
+  programWizardEditingId = null;
+  editWizardOriginalDays = null;
+  programType = 'FREE';
+  await saveJSON('programType', programType);
+  if (isSwitch) {
+    navStack = [];
+    goToReplace('home');
+    showToast('Now tracking freely — your saved split is kept and ready if you switch back');
+  } else {
+    goTo('setup-features');
+  }
+}
+
 /* Builds the day list for a custom split with `count` variants, mirroring
    buildSplitDays' PPL/UL/AP/FB pattern above: 1 variant keeps the plain
    names, more than 1 suffixes each name with its variant number and groups
    all of one variant's days together (e.g. Arms 1, Cardio 1, Core 1,
    Arms 2, Cardio 2, Core 2, ...). */
+/* Builds the day list for a custom split with `count` variants — see
+   buildSplitDays' comment above for why every variant, including the first
+   at count 1, always carries its number suffix ("Arms 1", not "Arms"). */
 function buildCustomSplitDays(names, count) {
-  if (count <= 1) return names.slice();
   const days = [];
   for (let s = 1; s <= count; s++) names.forEach(n => days.push(n + ' ' + s));
   return days;
@@ -3130,23 +3215,25 @@ function buildCustomSplitDays(names, count) {
 
 /* Builds the list of program days for a given split type + how many times
    the user wants to rotate through it. Each generated day name is distinct
-   (e.g. "Push 1" / "Push 2"), so every split gets its own independently
-   sortable and editable exercise list. */
+   (e.g. "Push 1" / "Push 2") and ALWAYS carries its variant number, even at
+   count 1 ("Push 1", not "Push") — that keeps a day's name (and therefore
+   its exercisesByDay entry, per finalizeEditedProgram's "unchanged name ==
+   carry over" rule) stable across a later variant-count edit. A 1-variant
+   "Push"/"Pull"/"Legs" would otherwise share nothing in common with the
+   "Push 1"/"Pull 1"/"Legs 1" a 2-variant edit generates, so raising the
+   count would wipe out the exercises the user already built. */
 function buildSplitDays(type, count) {
   if (type === 'PPL') {
-    if (count <= 1) return ['Push','Pull','Legs'];
     const days = [];
     for (let s = 1; s <= count; s++) days.push('Push '+s, 'Pull '+s, 'Legs '+s);
     return days;
   }
   if (type === 'UL') {
-    if (count <= 1) return ['Upper','Lower'];
     const days = [];
     for (let s = 1; s <= count; s++) days.push('Upper '+s, 'Lower '+s);
     return days;
   }
   if (type === 'AP') {
-    if (count <= 1) return ['Anterior','Posterior'];
     const days = [];
     for (let s = 1; s <= count; s++) days.push('Anterior '+s, 'Posterior '+s);
     return days;
@@ -3241,12 +3328,11 @@ async function promptSaveProgramWizard() {
     const existing = savedPrograms.find(p => p.id === editingId);
     const choice = await showAppConfirm(
       existing
-        ? `Save changes to <strong>${existing.name}</strong>, save this as a separate program, or just rename it?`
+        ? `Overwrite <strong>${existing.name}</strong> with these changes, or save them as a new program?`
         : 'Save this program?',
       existing ? [
         { label: 'Overwrite', value: 'overwrite', cls: 'yes' },
-        { label: 'Save as New', value: 'new', cls: 'yes' },
-        { label: 'Rename', value: 'rename', cls: 'yes' }
+        { label: 'Save as a New Program', value: 'new', cls: 'yes' }
       ] : [
         { label: 'Overwrite', value: 'overwrite', cls: 'yes' },
         { label: 'Save as New', value: 'new', cls: 'yes' }
@@ -3256,20 +3342,6 @@ async function promptSaveProgramWizard() {
     if (choice === 'overwrite' && existing) {
       Object.assign(existing, snapshot, { updatedAt: Date.now() });
       showToast(`"${existing.name}" updated`);
-    } else if (choice === 'rename' && existing) {
-      // Renames while otherwise leaving the saved program exactly as it
-      // was before this edit pass — the wizard's edits are NOT applied,
-      // since the point of this option is "I only wanted to change the
-      // name," not a backdoor overwrite. Applying changes-you-may-not-want
-      // just because you happened to also want a rename would be
-      // surprising; someone who wants both can just pick Overwrite and
-      // rename the row afterward from the saved-programs list.
-      const name = await showAppPrompt('Rename this program:', 'e.g. Summer PPL', 'Rename', existing.name);
-      if (name && name !== existing.name) {
-        existing.name = name;
-        existing.updatedAt = Date.now();
-        showToast(`Renamed to "${name}"`);
-      }
     } else {
       let name = await showAppPrompt('Enter a new name for this program:', 'e.g. Summer PPL', 'Save');
       if (!name) name = `${programTitleLabel(snapshot.type)} (${new Date().toLocaleDateString()})`;
@@ -3339,6 +3411,16 @@ function inferCustomBaseNames(days) {
    If the chosen day list differs from what the program had before (variant
    count changed), the old rotation schedule references day names that no
    longer exist, so it's cleared here — same reasoning as switchProgram(). */
+/* Maps a day name to its (base name, variant number) slot, treating a bare
+   unsuffixed name ("Upper", "FB", or a pre-fix-era 1-variant custom day) as
+   variant 1 — the same slot a same-base "Upper 1"/"FB1" occupies. Handles
+   both separator styles used by buildSplitDays/buildCustomSplitDays: a
+   space before the number ("Upper 1") and none ("FB1"). */
+function dayVariantKey(name) {
+  const m = (name || '').match(/^(.*?)\s*(\d+)$/);
+  return m ? { base: m[1], variant: parseInt(m[2], 10) } : { base: name || '', variant: 1 };
+}
+
 async function finalizeEditedProgram(type, days) {
   const daysChanged = JSON.stringify(days) !== JSON.stringify(programDays);
   programType = type; programDays = days;
@@ -3350,13 +3432,24 @@ async function finalizeEditedProgram(type, days) {
     await saveJSON('rotationStartWeekday', rotationStartWeekday);
     await saveJSON('rotationAnchorDate', rotationAnchorDate);
     await saveJSON('rotationSchedule', rotationSchedule);
-    // Any day name here that wasn't part of the program before this edit
-    // (e.g. going from 1 to 2 variants introduces 'Upper 2'/'Lower 2') must
-    // start blank — even if exercisesByDay already happens to hold entries
-    // under that exact name from some unrelated program. Day names that
-    // ARE unchanged from before keep their saved exercises untouched.
+    // A day carries its exercises forward by (base name, variant number)
+    // SLOT, not by exact name match — so a bare "Upper" (a pre-existing
+    // 1-variant program, or any program saved before day names always
+    // carried a number) still lines up with the new list's always-
+    // suffixed "Upper 1", and a genuinely new slot (e.g. raising the
+    // variant count adds "Upper 2") still starts blank even if
+    // exercisesByDay already happens to hold entries under that exact
+    // name from some unrelated program.
+    const oldByKey = new Map();
+    (editWizardOriginalDays || []).forEach(oldName => {
+      const k = dayVariantKey(oldName);
+      oldByKey.set(k.base + '|' + k.variant, exercisesByDay[oldName]);
+    });
     days.forEach(d => {
-      if (!editWizardOriginalDays || !editWizardOriginalDays.includes(d)) delete exercisesByDay[d];
+      const k = dayVariantKey(d);
+      const carried = oldByKey.get(k.base + '|' + k.variant);
+      if (carried !== undefined) exercisesByDay[d] = carried;
+      else delete exercisesByDay[d];
     });
     await saveJSON('exercisesByDay', exercisesByDay);
   }
@@ -3490,7 +3583,7 @@ async function renameProgramDay(oldName, newName) {
    per-day exercise setup screen — see renameProgramDay() above for what
    actually gets updated. */
 async function promptRenameDay(oldName) {
-  const name = await showAppPrompt('Rename this day:', 'e.g. Push Day', 'Rename', oldName);
+  const name = await showAppPrompt('Rename this session:', 'e.g. Push Day', 'Rename', oldName);
   if (!name || name === oldName) return false;
   if (programDays.some(d => d !== oldName && d === name)) { showToast(`"${name}" is already a day in this program`); return false; }
   await renameProgramDay(oldName, name);
@@ -3774,8 +3867,7 @@ function renderSetupExercises(root) {
   const day = setupDays[setupIndex];
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Setup ${setupDays.length > 1 ? `(${setupIndex+1}/${setupDays.length})` : ''}</div>
-    <h1 class="big">What exercises do you do on ${day}?</h1>
-    <button class="rename-link-btn" id="setupDayRename">${ICON_RENAME_SVG}<span>Rename session</span></button>
+    <h1 class="big">What exercises do you do on <span class="setup-heading-name">${day}</span>?<button class="setup-heading-rename-btn" id="setupDayRename" aria-label="Rename session">${ICON_RENAME_SVG}</button></h1>
     <p class="sub" style="margin-top:10px;">Tap to select. You can edit this list anytime.</p>
     <div class="ex-pick-search-wrap">
       <input type="text" id="exPickSearch" placeholder="Search exercises…" autocomplete="off" value="${setupSearchQuery.replace(/"/g,'&quot;')}">
@@ -4088,6 +4180,15 @@ function renderHome(root) {
   };
   if (draft && draftHasData(draft)) root.querySelector('#resumeBtn').onclick = () => {
     currentDay = draft.day;
+    if (draft.free) {
+      // Free-tracking sessions have no track-select day picker to land
+      // behind — just Home -> the free exercise list.
+      navStack.push('home');
+      screen = 'free-exercise-list';
+      pushNavHistoryEntry();
+      render();
+      return;
+    }
     // Land on the exercise list, not straight back inside whichever exercise
     // was last being logged — the blinking dot / tick on that exercise's row
     // already shows what's in progress. Push the same two stack entries a
@@ -4119,6 +4220,13 @@ async function renderHomeCardsRow(container) {
   const cardBuilders = {
     start: () => {
       if (draftActive) return '';
+      if (programType === 'FREE') return `
+        <button class="home-card home-card-cta" data-card-key="start" data-mode="track-free">
+          <div class="hc-text">
+            <div class="hc-value">Start Tracking</div>
+          </div>
+          <div class="hc-cta-arrow">›</div>
+        </button>`;
       if (todayEntry) return `
         <button class="home-card home-card-cta" data-card-key="start" data-mode="analyse">
           <div class="hc-text">
@@ -4181,6 +4289,7 @@ async function renderHomeCardsRow(container) {
   const startBtn = container.querySelector('[data-card-key="start"]');
   if (startBtn) startBtn.onclick = () => {
     if (startBtn.dataset.mode === 'analyse') { viewLogId = todayEntry.id; goTo('workout-detail'); }
+    else if (startBtn.dataset.mode === 'track-free') { startTrackingFree(true); }
     else startTrackingDay(startBtn.dataset.day, true);
   };
   const sessionsCard = container.querySelector('[data-card-key="sessions"]');
@@ -4600,11 +4709,36 @@ function renderPerfTrendChart(el, trend, currentPct) {
   const last = trend[trend.length - 1];
   const lastTxt = `${last.pct >= 0 ? '+' : ''}${Math.round(last.pct * 10) / 10}%`;
   const maxTxt = `${maxAbs.toFixed(maxAbs < 10 ? 1 : 0)}%`;
+  const dotR = 4.5;
+  const lastX = xFor(trend.length - 1);
+  const lastY = yFor(last.pct);
+  const labelAbove = lastY > PADY + 20;
+  const preferLeft = lastX > PADX + 40;
+  const textAnchor = preferLeft ? 'end' : 'start';
+  const textX = preferLeft ? lastX - 9 : lastX + 9;
+  const labelY = labelAbove ? lastY - 9 : lastY + 15;
+  // Pointer line runs diagonally from just below/beside the label text to
+  // the edge of today's dot (shortened by its radius so it doesn't dip
+  // under the fill), with a small arrowhead triangle at the dot end.
+  const px1 = textX + (preferLeft ? 3 : -3);
+  const py1 = labelY + (labelAbove ? 3 : -8);
+  const dx = lastX - px1, dy = lastY - py1;
+  const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+  const shorten = dotR + 3;
+  const px2 = lastX - (dx / dist) * shorten;
+  const py2 = lastY - (dy / dist) * shorten;
+  const arrowAngle = Math.atan2(dy, dx);
+  const arrowSize = 3.6;
+  const a1 = arrowAngle + Math.PI - 0.45, a2 = arrowAngle + Math.PI + 0.45;
+  const arrowPts = `${px2.toFixed(1)},${py2.toFixed(1)} ${(px2 + arrowSize * Math.cos(a1)).toFixed(1)},${(py2 + arrowSize * Math.sin(a1)).toFixed(1)} ${(px2 + arrowSize * Math.cos(a2)).toFixed(1)},${(py2 + arrowSize * Math.sin(a2)).toFixed(1)}`;
   el.innerHTML = head + `
     <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block;">
       <line x1="0" y1="${H / 2}" x2="${W}" y2="${H / 2}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" />
       <polyline points="${linePts}" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.85" />
       ${dots}
+      <line x1="${px1.toFixed(1)}" y1="${py1.toFixed(1)}" x2="${px2.toFixed(1)}" y2="${py2.toFixed(1)}" stroke="var(--teal)" stroke-width="1.2" stroke-linecap="round" opacity="0.8" />
+      <polygon points="${arrowPts}" fill="var(--teal)" opacity="0.9" />
+      <text x="${textX.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="${textAnchor}" font-size="10" font-weight="800" fill="var(--teal)">${lastTxt}</text>
       <text x="2" y="${PADY}" text-anchor="start" font-size="9" fill="var(--text-dim)">+${maxTxt}</text>
       <text x="2" y="${H - 2}" text-anchor="start" font-size="9" fill="var(--text-dim)">-${maxTxt}</text>
     </svg>
@@ -4630,11 +4764,11 @@ function renderDayPRsCard(el, prs) {
         `<div class="pr-item-name" title="${p.name}">${p.name}</div>` +
         `<div class="pr-item-set mono">${setLine} · est. ${Math.round(p.todayEst)}${exerciseUnit(p.name)}</div>` +
         `<div class="pr-item-compare">` +
-          `${badgeFor(p.vsLastPct, 'vs last')}` +
+          `${badgeFor(p.vsLastPct, 'vs previous session')}` +
           `${lastLine ? `<div class="pr-item-compare-detail mono">${lastLine}</div>` : ''}` +
         `</div>` +
         `<div class="pr-item-compare">` +
-          `${badgeFor(p.vsPrevPRPct, 'vs last PR')}` +
+          `${badgeFor(p.vsPrevPRPct, 'vs previous PR')}` +
           `${prLine ? `<div class="pr-item-compare-detail mono">${prLine}</div>` : ''}` +
         `</div>` +
       `</div>` +
@@ -4667,38 +4801,21 @@ function exerciseStrengthTrend(name, currentEntryId) {
   if (prEst <= 0) return null;
   return ((curTop.est - prEst) / prEst) * 100;
 }
-/* Average estimated 1RM for an exercise across every set of every other
-   logged session (this session excluded) — the baseline "overall
-   performance" compares against, as opposed to exerciseStrengthTrend's
-   all-time-PR baseline. Averages over every individual set, not just each
-   session's single top set, so a 5-set session counts 5x and a 1-set
-   session counts 1x — true average output, not one cherry-picked number
-   per session. */
-function exerciseAverageEst(name, excludeEntryId) {
-  let sum = 0, count = 0;
-  historyEntries.forEach(session => {
-    if (session.id === excludeEntryId) return;
-    const ex = (session.exercises || []).find(e => sameExName(e.name, name));
-    if (!ex) return;
-    ex.sets.filter(hasSetData).forEach(s => {
-      const est = estimate1RMForSet(s, ex, session.bodyweight);
-      if (est) { sum += est; count++; }
-    });
-  });
-  return count > 0 ? sum / count : null;
-}
 /* Overall session performance: for each exercise, this session's top set
-   (by est. 1RM) is compared against that exercise's historical average
-   across every set of every other session, giving a per-exercise %
-   difference; those per-exercise percentages are then averaged into one
-   overall session number. */
+   is compared against that exercise's all-time PR — the exact same
+   exerciseStrengthTrend() number shown as the "Est. PR (+/-X%)" badge next
+   to that exercise in the log — then those per-exercise percentages are
+   averaged into one overall session number. Deliberately the SAME baseline
+   as the visible badges: it used to compare against each exercise's
+   historical AVERAGE instead, which could show an overall +3.8% on a day
+   where every single exercise's own badge read negative (down vs its PR)
+   — mathematically consistent on its own terms, but a contradiction next
+   to numbers the user can see right there in the same screen. */
 function overallPerformancePct(entry) {
   const pcts = [];
   (entry.exercises || []).forEach(ex => {
-    const top = topSetByEst((ex.sets || []).filter(hasSetData), ex, entry.bodyweight);
-    if (!top || !top.est) return;
-    const avg = exerciseAverageEst(ex.name, entry.id);
-    if (avg && avg > 0) pcts.push(((top.est - avg) / avg) * 100);
+    const pct = exerciseStrengthTrend(ex.name, entry.id);
+    if (pct !== null) pcts.push(pct);
   });
   if (!pcts.length) return null;
   return pcts.reduce((a, b) => a + b, 0) / pcts.length;
@@ -5096,6 +5213,200 @@ async function startTrackingDay(day, fromHome) {
     goTo('exercise-list');
   }
 }
+/* Track Freely's version of startTrackingDay — same draft shape (so
+   finishWorkout/session-review/history all work completely unchanged) but
+   day is a fixed 'Free Tracking' label, draft.free marks it so home/resume/
+   goToTab route to free-exercise-list instead of the day-based screens,
+   and there's no auto-queue (no exercisesByDay ordering exists to queue
+   from — every exercise is picked one at a time from the full list). */
+async function startTrackingFree(fromHome) {
+  const FREE_DAY = 'Free Tracking';
+  if (!draft || draft.day !== FREE_DAY) {
+    if (draft && draftHasData(draft)) {
+      const ok = await showAppConfirm(
+        `Switching to <strong>${FREE_DAY}</strong> will wipe all currently tracked data for <strong>${draft.day}</strong>. Continue?`,
+        [{ label: 'Yes', value: true, cls: 'solid-danger' }, { label: 'No', value: false, cls: 'yes' }],
+        false
+      );
+      if (!ok) return;
+    }
+    draft = { day: FREE_DAY, free: true, startTime: Date.now(), exercises: [], media: { photos: [], videos: [] }, bodyweight: '', notes: '' };
+    await saveJSON('draft', draft);
+  }
+  currentDay = FREE_DAY;
+  if (fromHome) {
+    navStack.push('home');
+    screen = 'free-exercise-list';
+    pushNavHistoryEntry();
+    render();
+  } else {
+    goTo('free-exercise-list');
+  }
+}
+/* Records/bumps an exercise to the front of the Track Freely speed-dial.
+   Most-recently-tracked first, deduped by name key, capped at 20 so the
+   Recent section stays a quick scan instead of turning into the whole
+   library again. */
+function recordFreeExerciseUsage(name) {
+  const key = nameKey(name);
+  if (!key) return;
+  freeRecentExercises = freeRecentExercises.filter(n => nameKey(n) !== key);
+  freeRecentExercises.unshift(name);
+  if (freeRecentExercises.length > 20) freeRecentExercises = freeRecentExercises.slice(0, 20);
+  saveJSON('freeRecentExercises', freeRecentExercises);
+  pushCloudAppState && pushCloudAppState('freeRecentExercises', freeRecentExercises);
+}
+/* Track Freely's exercise picker: no day-specific list to configure —
+   every known exercise (library + custom) is always available, with
+   whatever's been tracked most recently pinned in its own section up top
+   as a speed-dial. Tapping a name (recent or not) opens set-log for it
+   exactly like the normal exercise-list flow; typing a new name and
+   hitting Add creates it in the personal catalog the same way setup does.
+   Renaming only applies to Recent entries (renames the catalog entry
+   itself, globally) — there's nothing to delete here since this isn't a
+   curated day list, just the full library. */
+function renderFreeExerciseList(root) {
+  activeExerciseName = null;
+  draft.media = ensureMediaShape(draft.media);
+  if (draft.bodyweight === undefined) draft.bodyweight = '';
+  let query = '';
+
+  root.innerHTML = `
+    <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Free Tracking</div>
+    <div class="section-header-row">
+      <h1 class="big">Exercises</h1>
+      <button class="unit-toggle-btn" id="freeUnitBtn" title="Switch units">${ICON_SWAP_SVG}${settings.units}</button>
+    </div>
+    <div class="row-inline" id="freeSearchRow">
+      <div class="ex-ac-wrap" style="flex:1;">
+        <input type="text" id="freeSearchInput" placeholder="Search or add an exercise" autocomplete="off">
+      </div>
+    </div>
+    <div id="freeExList"></div>
+    <button class="btn-primary" id="freeFinishBtn" style="margin-top:26px;">Finish Tracking</button>
+  `;
+  const listEl = root.querySelector('#freeExList');
+  const searchInput = root.querySelector('#freeSearchInput');
+
+  function buildRow(name, renamable) {
+    const trackEntry = draft.exercises.find(e => sameExName(e.name, name));
+    const hasData = trackEntry && exerciseHasLoggedData(trackEntry);
+    const isDone = hasData && trackEntry.done;
+    const inProgress = hasData && !trackEntry.done;
+    const marker = isDone
+      ? '<span class="li-check">✓</span>'
+      : (inProgress ? '<span class="li-progress-dot" title="Currently tracking"></span>' : '');
+    const el = document.createElement('div');
+    el.className = 'select-btn ex-pick';
+    el.innerHTML = `<span class="sb-name">${marker}${name}</span>${renamable ? `<button class="rename-link-btn" data-act="rename" title="Rename" style="margin:0 6px;">${ICON_RENAME_SVG}</button>` : ''}<span class="sb-arrow">›</span>`;
+    el.onclick = (e) => {
+      if (e.target.closest('[data-act="rename"]')) return;
+      activeExerciseName = name;
+      activeExerciseUnilateral = false;
+      recordFreeExerciseUsage(name);
+      goTo('set-log');
+    };
+    const renameBtn = el.querySelector('[data-act="rename"]');
+    if (renameBtn) renameBtn.onclick = async (e) => {
+      e.stopPropagation();
+      const newName = await showAppPrompt('Rename this exercise:', 'e.g. Incline Bench Press', 'Rename', name);
+      if (!newName || newName.trim() === '' || newName === name) return;
+      const trimmed = newName.trim();
+      // Renaming here is global for the catalog entry — mirrors the
+      // rename flow in Edit Exercises (syncExerciseCatalogSetting handles
+      // creating one if this name somehow has none yet).
+      const key = nameKey(name);
+      const entry = customExercises.find(item => item.name_key === key);
+      if (entry) { entry.name = trimmed; entry.name_key = nameKey(trimmed); saveJSON('customExercises', customExercises); pushCustomExercise(entry); }
+      else captureNewExerciseIfUnknown(trimmed);
+      freeRecentExercises = freeRecentExercises.map(n => nameKey(n) === key ? trimmed : n);
+      saveJSON('freeRecentExercises', freeRecentExercises);
+      const draftEx = draft.exercises.find(ex => sameExName(ex.name, name));
+      if (draftEx) { draftEx.name = trimmed; persistDraft(); }
+      draw();
+    };
+    return el;
+  }
+
+  function draw() {
+    const q = query.trim().toLowerCase();
+    const suggestions = getExerciseSuggestions(query);
+    const recentNames = freeRecentExercises.filter(n => !q || n.toLowerCase().includes(q));
+    const recentKeys = new Set(recentNames.map(n => nameKey(n)));
+    const rest = suggestions.filter(item => !recentKeys.has(nameKey(item.name)));
+    listEl.innerHTML = '';
+    if (recentNames.length) {
+      const label = document.createElement('div');
+      label.className = 'section-label';
+      label.textContent = 'Recent Exercises';
+      listEl.appendChild(label);
+      const wrap = document.createElement('div');
+      wrap.className = 'select-list';
+      recentNames.forEach(name => wrap.appendChild(buildRow(name, true)));
+      listEl.appendChild(wrap);
+    }
+    if (rest.length) {
+      const label = document.createElement('div');
+      label.className = 'section-label';
+      label.style.marginTop = recentNames.length ? '18px' : '0';
+      label.textContent = 'All Exercises';
+      listEl.appendChild(label);
+      const wrap = document.createElement('div');
+      wrap.className = 'select-list';
+      rest.forEach(item => wrap.appendChild(buildRow(item.name, false)));
+      listEl.appendChild(wrap);
+    }
+    if (!recentNames.length && !rest.length) {
+      listEl.innerHTML = `<div class="ex-ac-empty">No matching exercise — keep typing and hit Enter to add it</div>`;
+    }
+  }
+  draw();
+
+  searchInput.oninput = (e) => { query = e.target.value; draw(); };
+  searchInput.onkeydown = (e) => {
+    if (e.key !== 'Enter') return;
+    const typed = query.trim();
+    if (!typed) return;
+    const known = getExerciseSuggestions(typed).find(item => nameKey(item.name) === nameKey(typed));
+    const finalName = known ? known.name : typed;
+    if (!known) captureNewExerciseIfUnknown(finalName);
+    activeExerciseName = finalName;
+    activeExerciseUnilateral = false;
+    recordFreeExerciseUsage(finalName);
+    goTo('set-log');
+  };
+
+  root.querySelector('#backBtn').onclick = () => goBack();
+  root.querySelector('#freeUnitBtn').onclick = async () => {
+    const changed = await runUnitFixFlow((factor) => {
+      if (draft.bodyweight !== undefined && draft.bodyweight !== '') {
+        draft.bodyweight = convertWeightValue(draft.bodyweight, factor);
+      }
+      (draft.exercises || []).forEach(ex => {
+        (ex.sets || []).forEach(s => { if (s.weight !== undefined && s.weight !== '') s.weight = convertWeightValue(s.weight, factor); });
+      });
+    });
+    if (changed) { persistDraft(); render(); }
+  };
+  root.querySelector('#freeFinishBtn').onclick = async () => {
+    const cleanExercises = (draft.exercises || [])
+      .map(ex => ({
+        name: ex.name,
+        sets: (ex.sets || [])
+          .filter(s => s.done && !setLacksPerformanceData(s, ex.unilateral))
+          .map(s => { const { baseline, ...rest } = s; return rest; })
+      }))
+      .filter(ex => ex.sets.length > 0);
+    if (cleanExercises.length === 0) { showToast('Mark at least one set done before finishing'); return; }
+    if (draft.bodyweight === undefined || draft.bodyweight === '') {
+      await loadHistory();
+      const prior = historyEntries.find(e => e.bodyweight !== undefined && e.bodyweight !== '');
+      if (prior) draft.bodyweight = prior.bodyweight;
+    }
+    persistDraft();
+    goTo('session-review');
+  };
+}
 function renderTrackSelect(root) {
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Track Workout</div>
@@ -5246,7 +5557,6 @@ function renderExerciseList(root) {
     // scale/bounce, which read as "it's trying to reorder itself" even
     // though no drag was happening.
     item.className = 'list-item compact static';
-    const bw = catalogIsBodyweight(entry.name);
     item.innerHTML = `
       <button class="drag-handle" title="Drag to reorder">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -5256,23 +5566,15 @@ function renderExerciseList(root) {
         <button class="rename-link-btn" data-act="rename" title="Rename">${ICON_RENAME_SVG}<span>Rename</span></button>
       </div>
       <div class="li-right">
-        <button class="uni-toggle no-pop ${bw ? 'on' : ''}" data-act="bw" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
         <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
         <button class="icon-btn danger no-pop" data-act="del" title="Delete">${ICON_TRASH_SVG}</button>
       </div>`;
-    item.querySelector('[data-act="bw"]').onclick = (e) => {
-      const i = indexOfItem(item);
-      const newBw = !catalogIsBodyweight(list[i].name);
-      e.currentTarget.classList.toggle('on', newBw);
-      syncExerciseCatalogSetting(list[i].name, { bodyweightExercise: newBw });
-      syncDraftBodyweight(list[i], newBw);
-    };
     item.querySelector('[data-act="uni"]').onclick = (e) => {
       const i = indexOfItem(item);
       list[i].unilateral = !list[i].unilateral;
       persistEditList();
       e.currentTarget.classList.toggle('on', list[i].unilateral);
-      syncDraftUnilateral(list[i]);
+      syncDraftUnilateral(list[i], day);
       syncExerciseCatalogSetting(list[i].name, { unilateral: list[i].unilateral });
     };
     item.querySelector('[data-act="rename"]').onclick = (e) => {
@@ -5451,7 +5753,7 @@ function renderExerciseList(root) {
       showToast(`${val} is already in this day's list`);
       return;
     }
-    const entry = { name: val, unilateral: uniToggle.classList.contains('on') };
+    const entry = { name: val, unilateral: uniToggle.classList.contains('on') || catalogUnilateralDefault(val) };
     list.push(entry);
     persistEditList();
     captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(day)[0]);
@@ -5680,14 +5982,25 @@ function renderSessionSummary(root) {
    exercise is opened for the day. Converting bilateral -> unilateral copies
    the existing reps value into both sides; converting back takes Reps R as
    the single reps value (mirroring how it was copied going the other way). */
-function syncDraftUnilateral(entry) {
-  if (!draft || draft.day !== editingDay) return;
+function syncDraftUnilateral(entry, forDay) {
+  // forDay lets each caller say which day's list this toggle came from —
+  // renderExerciseEdit (Settings) passes editingDay, but the SAME toggle
+  // also lives right on the live exercise list (renderExerciseList),
+  // which has no reason to ever touch editingDay. Defaulting to editingDay
+  // when the caller doesn't pass one keeps old behavior for the Settings
+  // screen; without this param, calling from the live list compared
+  // draft.day against a stale/unrelated editingDay and silently skipped
+  // converting the actual tracked sets whenever they didn't match — the
+  // exercise list showed the toggle as flipped, but set-log still showed
+  // the old Reps R/Reps L fields underneath, out of sync with it.
+  const dayToMatch = forDay !== undefined ? forDay : editingDay;
+  if (!draft || draft.day !== dayToMatch) return;
   const ex = draft.exercises.find(e => sameExName(e.name, entry.name));
   if (!ex || ex.unilateral === entry.unilateral) return;
   if (entry.unilateral) {
     ex.sets.forEach(s => { s.repsR = s.reps ?? ''; s.repsL = s.reps ?? ''; delete s.reps; });
   } else {
-    ex.sets.forEach(s => { s.reps = s.repsR ?? ''; delete s.repsR; delete s.repsL; });
+    ex.sets.forEach(s => { s.reps = mergedBilateralReps(s); delete s.repsR; delete s.repsL; });
   }
   ex.unilateral = entry.unilateral;
   if (activeExerciseName === entry.name) activeExerciseUnilateral = entry.unilateral;
@@ -5713,6 +6026,20 @@ function catalogIsBodyweight(name) {
   const entry = customExercises.find(item => item.name_key === nameKey(name));
   const bw = entry && typeof entry.bodyweight_exercise === 'boolean' ? entry.bodyweight_exercise : null;
   return bw !== null ? bw : looksLikeBodyweightExercise(name);
+}
+/* Remembered unilateral default for a KNOWN exercise (personal catalog row,
+   falling back to the builtin library) — used so adding an exercise you've
+   always tracked unilaterally doesn't silently start bilateral just because
+   the add-row's L|R toggle happens to be off at the moment you add it.
+   Unlike catalogIsBodyweight there's no name-heuristic fallback: an unknown
+   name has no remembered side default, so it stays false (bilateral) unless
+   the person explicitly turns the toggle on themselves. */
+function catalogUnilateralDefault(name) {
+  const key = nameKey(name);
+  const entry = customExercises.find(item => item.name_key === key);
+  if (entry) return !!entry.unilateral;
+  const known = EXERCISE_LIBRARY_FLAT.find(item => nameKey(item.name) === key);
+  return known ? !!known.unilateral : false;
 }
 
 /* Renaming an exercise in the Edit Exercises list only updated
@@ -5848,7 +6175,6 @@ function renderExerciseEdit(root) {
     // doesn't visually "bounce" like a drag pickup — the actual drag-handle
     // reorder animation is inline-style-driven and unaffected by this.
     item.classList.add('static');
-    const bw = catalogIsBodyweight(entry.name);
     item.innerHTML = `
       <button class="drag-handle" title="Drag to reorder">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -5858,17 +6184,9 @@ function renderExerciseEdit(root) {
         <button class="rename-link-btn" data-act="rename" title="Rename">${ICON_RENAME_SVG}<span>Rename</span></button>
       </div>
       <div class="li-right">
-        <button class="uni-toggle no-pop ${bw ? 'on' : ''}" data-act="bw" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
         <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
         <button class="icon-btn danger no-pop" data-act="del" title="Delete">${ICON_TRASH_SVG}</button>
       </div>`;
-    item.querySelector('[data-act="bw"]').onclick = (e) => {
-      const i = indexOfItem(item);
-      const newBw = !catalogIsBodyweight(list[i].name);
-      e.currentTarget.classList.toggle('on', newBw);
-      syncExerciseCatalogSetting(list[i].name, { bodyweightExercise: newBw });
-      syncDraftBodyweight(list[i], newBw);
-    };
     item.querySelector('[data-act="uni"]').onclick = (e) => {
       const i = indexOfItem(item);
       list[i].unilateral = !list[i].unilateral;
@@ -6060,7 +6378,7 @@ function renderExerciseEdit(root) {
       showToast(`${val} is already in this day's list`);
       return;
     }
-    const entry = { name: val, unilateral: newUniToggle.classList.contains('on') };
+    const entry = { name: val, unilateral: newUniToggle.classList.contains('on') || catalogUnilateralDefault(val) };
     list.push(entry);
     persistEditList();
     captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(editingDay)[0]);
@@ -6507,6 +6825,26 @@ function renderSetLog(root) {
     draft.exercises.push(ex);
   }
   if (ex.unilateral === undefined) ex.unilateral = activeExerciseUnilateral;
+  // Belt-and-suspenders reconciliation: exercisesByDay is the source of
+  // truth for the exercise's L|R setting. syncDraftUnilateral() is supposed
+  // to push a toggle made in Edit Exercises straight into this draft entry
+  // the moment it happens, but that only fires from the toggle handler
+  // itself — if the entry didn't exist in the draft yet at toggle time (a
+  // brand-new exercise never opened this session), or any other path
+  // reaches this screen without going through that handler, ex.unilateral
+  // can silently stay stale. Re-check against the day list on every open
+  // instead of trusting whatever ex.unilateral already says.
+  const dayListEntryForUni = (exercisesByDay[draft.day] || []).find(e => sameExName(e.name, ex.name));
+  if (dayListEntryForUni && typeof dayListEntryForUni.unilateral === 'boolean' && dayListEntryForUni.unilateral !== ex.unilateral) {
+    if (dayListEntryForUni.unilateral) {
+      ex.sets.forEach(s => { s.repsR = s.reps ?? ''; s.repsL = s.reps ?? ''; delete s.reps; });
+    } else {
+      ex.sets.forEach(s => { s.reps = mergedBilateralReps(s); delete s.repsR; delete s.repsL; });
+    }
+    ex.unilateral = dayListEntryForUni.unilateral;
+    activeExerciseUnilateral = dayListEntryForUni.unilateral;
+    persistDraft();
+  }
   // Selection state is scoped to a single exercise's screen — reset it
   // whenever we land here for a different exercise than last time.
   if (setLogSelectExName !== ex.name) { setLogSelectMode = false; setLogSelected = new Set(); setLogSelectExName = ex.name; }
@@ -6568,7 +6906,7 @@ function renderSetLog(root) {
     if (nowUnilateral) {
       ex.sets.forEach(s => { s.repsR = s.reps ?? ''; s.repsL = s.reps ?? ''; delete s.reps; });
     } else {
-      ex.sets.forEach(s => { s.reps = s.repsR ?? ''; delete s.repsR; delete s.repsL; });
+      ex.sets.forEach(s => { s.reps = mergedBilateralReps(s); delete s.repsR; delete s.repsL; });
     }
     ex.unilateral = nowUnilateral;
     if (activeExerciseName === ex.name) activeExerciseUnilateral = nowUnilateral;
@@ -7705,7 +8043,18 @@ async function pullCloudWorkouts() {
 async function finishWorkout() {
   if (draft.bodyweight === undefined || draft.bodyweight === '') { showToast('Enter your bodyweight before finishing'); return; }
   const endTime = Date.now();
-  const cleanExercises = draft.exercises
+  // Save exercises in the order they were actually performed this session
+  // (first set marked done), not the fixed planned order from the day's
+  // exercise list — same firstTouched-based ordering already used to float
+  // in-progress exercises to the top of the live "Exercises" screen (see
+  // viewOrderedList above). An exercise with no firstTouched (shouldn't
+  // happen for anything with logged sets, but just in case) falls back to
+  // lastTouched, then to its original position so nothing goes missing.
+  const orderedDraftExercises = draft.exercises
+    .map((ex, i) => ({ ex, i, t: ex.firstTouched || ex.lastTouched || 0 }))
+    .sort((a, b) => (a.t - b.t) || (a.i - b.i))
+    .map(x => x.ex);
+  const cleanExercises = orderedDraftExercises
     .map(ex => ({ name: ex.name, unilateral: !!ex.unilateral, bodyweightExercise: isBodyweightExercise(ex), sets: ex.sets.filter(s => s.done && !setLacksPerformanceData(s, ex.unilateral)) }))
     .filter(ex => ex.sets.length > 0);
   if (cleanExercises.length === 0) { showToast('Mark at least one set done before finishing'); return; }
@@ -8429,7 +8778,7 @@ function renderEditLog(root) {
       if (nowUnilateral) {
         ex.sets.forEach(s => { s.repsR = s.reps ?? ''; s.repsL = s.reps ?? ''; delete s.reps; });
       } else {
-        ex.sets.forEach(s => { s.reps = s.repsR ?? ''; delete s.repsR; delete s.repsL; });
+        ex.sets.forEach(s => { s.reps = mergedBilateralReps(s); delete s.repsR; delete s.repsL; });
       }
       ex.unilateral = nowUnilateral;
       const dayList = exercisesByDay[w.day] || [];
@@ -9207,6 +9556,8 @@ function renderSettingsProgram(root) {
       <button class="chip wide" data-v="FB">Full Body</button>
       <button class="chip wide" data-v="Custom">Custom</button>
     </div>
+    <div class="section-label" style="margin-top:22px;">Don't have a fixed training plan?</div>
+    <button class="chip wide" id="freeTrackBtn" style="border-color:var(--teal); color:var(--teal);">Track Freely</button>
   `;
   root.querySelector('#backBtn').onclick = () => goBack();
   attachSavedProgramsListHandlers(root);
@@ -9230,6 +9581,7 @@ function renderSettingsProgram(root) {
       }
     };
   });
+  root.querySelector('#freeTrackBtn').onclick = () => selectFreeTracking(true);
 }
 async function switchProgram(type, days) {
   programWizardEditingId = null; // fresh split pick, not an edit of a saved one
