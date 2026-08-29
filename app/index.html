@@ -53,7 +53,7 @@
     padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }#app *{ min-width: 0; }.screen{ flex: 1; display: flex; flex-direction: column; padding: 0 18px 34.5px; }.screen.centered{ justify-content: center; }.screen.anim-default{ animation: fadeIn 0.56s var(--ease-glide); }.screen.anim-slide-back{ animation: slideBack 0.62s var(--ease-glide); }.screen.anim-slide-forward{ animation: slideForward 0.62s var(--ease-glide); }@keyframes fadeIn{ from { opacity: 0; } to { opacity: 1; } }@keyframes slideBack{ from { opacity: 0; transform: translateX(-9%); } to { opacity: 1; transform: translateX(0); } }@keyframes slideForward{ from { opacity: 0; transform: translateX(9%); } to { opacity: 1; transform: translateX(0); } }button{ touch-action: manipulation; transition: transform .48s var(--ease-bounce), opacity .38s var(--ease-glide), box-shadow .42s var(--ease-glide), border-color .38s var(--ease-glide), background-color .38s var(--ease-glide); }button:active{ transform: scale(0.895); transition: transform .14s var(--ease-press), opacity .14s var(--ease-press), box-shadow .14s var(--ease-press), border-color .14s var(--ease-press), background-color .14s var(--ease-press); }.eyebrow{ font-size: 23.01px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--teal); font-weight: 800;
     text-shadow: 0 0 14px var(--teal-glow);
     padding-top: max(env(safe-area-inset-top), 28px); margin-bottom: 6.9px; display: flex; align-items: center; gap: 13.8px; padding-bottom: 9.2px;
-    min-height: calc(max(env(safe-area-inset-top), 28px) + 9.2px + 47.8px); }.eyebrow-name-col{ display: inline-flex; flex-direction: row; align-items: center; gap: 8px; min-width: 0; }.eyebrow-name-col .rename-link-btn{ margin: 0 !important; width: 42px !important; height: 42px !important; border-radius: 13px !important; flex-shrink: 0; position: relative; top: 3px; }.eyebrow-name-col .rename-link-btn svg{ width: 24px !important; height: 24px !important; }.back-btn{ background: none; border: none; color: var(--teal); cursor: pointer; padding: 6.9px 16px 6.9px 0;
+    min-height: calc(max(env(safe-area-inset-top), 28px) + 9.2px + 47.8px); }.eyebrow-name-col{ display: inline-flex; flex-direction: row; align-items: center; gap: 8px; min-width: 0; }.eyebrow-name-col .rename-link-btn{ margin: 0 !important; width: 28px !important; height: 28px !important; border-radius: 9px !important; flex-shrink: 0; }.eyebrow-name-col .rename-link-btn svg{ width: 16px !important; height: 16px !important; }.back-btn{ background: none; border: none; color: var(--teal); cursor: pointer; padding: 6.9px 16px 6.9px 0;
     display: inline-flex; align-items: center; justify-content: center;
     filter: drop-shadow(0 0 8px var(--teal-glow));
     transition: transform .48s var(--ease-bounce), opacity .38s var(--ease-glide); }.back-btn svg{ width: 34px; height: 34px; }.back-btn:active, .back-btn.is-pressed{ transform: scale(0.79); opacity: 0.7; transition: transform .14s var(--ease-press), opacity .14s var(--ease-press); }.gear-btn{ background: var(--btn-bg); border: none; color: var(--teal); font-size: 15.88px; border-radius: 14px; width: 42px; height: 42px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: none; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), color .38s var(--ease-glide); }.gear-btn:active, .gear-btn.is-pressed{ border-color: var(--border); color: var(--teal); transform: scale(0.82) rotate(-27deg); transition: transform .14s var(--ease-press), border-color .14s var(--ease-press), color .14s var(--ease-press); }.home-topbar{ display: flex; justify-content: space-between; align-items: center;
@@ -492,7 +492,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.3.6';
+const APP_VERSION = '1.3.7';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -2845,6 +2845,28 @@ function render() {
   const app = document.getElementById('app');
   const isScreenChange = screen !== lastRenderedScreen;
   if (!isScreenChange && (userIsTouching || Date.now() - lastScrollTime < 400)) { pendingBackgroundRender = true; return; }
+  // A genuine screen change can happen while a text input on the OLD screen
+  // still has focus (e.g. tapping a bottom-nav tab straight out of Edit
+  // Exercises' rename field) — the keyboard was open, which pinned #hotbar
+  // to an inline style.bottom position above it (see
+  // updateHotbarKeyboardVisibility). That pin only gets cleared by the
+  // NEXT visualViewport 'resize' event as the keyboard finishes closing,
+  // which fires asynchronously — a beat after this render() has already
+  // painted the new screen. In that gap the pill sits at its stale
+  // keyboard-pinned offset on a screen that never had a keyboard open,
+  // then snaps down once the async event finally lands: exactly the
+  // down-up jump (sometimes landing right on top of the bottom nav) users
+  // were seeing. Blurring here and clearing the pin synchronously, before
+  // the new screen even renders, means there's nothing stale left to snap
+  // away from.
+  if (isScreenChange) {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') document.activeElement.blur();
+    const hotbarEl = document.getElementById('hotbar');
+    const hbWidgetsEl = document.getElementById('hbWidgets');
+    if (hotbarEl) hotbarEl.style.bottom = '';
+    if (hbWidgetsEl) hbWidgetsEl.style.bottom = '';
+    _hbKeyboardOpen = false;
+  }
   // Wiping and rebuilding #app (below) briefly makes the document much
   // shorter, and the browser clamps window.scrollY down to fit during that
   // instant. On a genuine navigation we want top-of-page anyway, but on a
@@ -4060,8 +4082,7 @@ function renderExPickList(root, day) {
       // in the list — matching tap order — instead of last. If this name
       // already has a saved catalog entry (personal or global), pick up its
       // remembered unilateral default instead of always starting at false.
-      const known = fullPool.find(item => nameKey(item.name) === nameKey(row.dataset.name));
-      setupTemp.push({ name: row.dataset.name, unilateral: !!(known && known.unilateral) });
+      setupTemp.push({ name: row.dataset.name, unilateral: smartExerciseDefaults(row.dataset.name).unilateral });
       // Adding an exercise is "done" with that search — clear it back to
       // the full list instead of leaving the stale query (and the now-added
       // exercise, or its now-empty-looking category group) sitting there.
@@ -4099,8 +4120,9 @@ function renderExPickList(root, day) {
   if (addRow) addRow.onclick = () => {
     const val = setupSearchQuery.trim();
     if (!val) return;
-    setupTemp.push({ name: val, unilateral: false });
-    captureNewExerciseIfUnknown(val, false, cats[0]);
+    const smart = smartExerciseDefaults(val);
+    setupTemp.push({ name: val, unilateral: smart.unilateral });
+    captureNewExerciseIfUnknown(val, smart.unilateral, cats[0], smart.bodyweightExercise);
     setupSearchQuery = '';
     const searchInputEl = root.querySelector('#exPickSearch');
     if (searchInputEl) searchInputEl.value = '';
@@ -5302,7 +5324,7 @@ function renderFreeExerciseList(root) {
     el.onclick = (e) => {
       if (e.target.closest('[data-act="rename"]')) return;
       activeExerciseName = name;
-      activeExerciseUnilateral = false;
+      activeExerciseUnilateral = smartExerciseDefaults(name).unilateral;
       recordFreeExerciseUsage(name);
       goTo('set-log');
     };
@@ -5369,9 +5391,10 @@ function renderFreeExerciseList(root) {
     if (!typed) return;
     const known = getExerciseSuggestions(typed).find(item => nameKey(item.name) === nameKey(typed));
     const finalName = known ? known.name : typed;
-    if (!known) captureNewExerciseIfUnknown(finalName);
+    const smart = smartExerciseDefaults(finalName);
+    if (!known) captureNewExerciseIfUnknown(finalName, smart.unilateral, null, smart.bodyweightExercise);
     activeExerciseName = finalName;
-    activeExerciseUnilateral = false;
+    activeExerciseUnilateral = smart.unilateral;
     recordFreeExerciseUsage(finalName);
     goTo('set-log');
   };
@@ -5482,7 +5505,6 @@ function renderExerciseList(root) {
         <input type="text" id="exListSearchInput" placeholder="Search or add an exercise" autocomplete="off">
         <div class="ex-ac-dropdown" id="exListSearchDropdown" style="display:none;"></div>
       </div>
-      <button class="uni-toggle" id="exListUniToggle" title="One side at a time, tracked as separate R/L reps">L | R</button>
     </div>
     <div class="select-list" id="exList"></div>
     <button class="btn-primary" id="finishBtn" style="margin-top:26px;">Finish Tracking</button>
@@ -5566,17 +5588,8 @@ function renderExerciseList(root) {
         <button class="rename-link-btn" data-act="rename" title="Rename">${ICON_RENAME_SVG}<span>Rename</span></button>
       </div>
       <div class="li-right">
-        <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
         <button class="icon-btn danger no-pop" data-act="del" title="Delete">${ICON_TRASH_SVG}</button>
       </div>`;
-    item.querySelector('[data-act="uni"]').onclick = (e) => {
-      const i = indexOfItem(item);
-      list[i].unilateral = !list[i].unilateral;
-      persistEditList();
-      e.currentTarget.classList.toggle('on', list[i].unilateral);
-      syncDraftUnilateral(list[i], day);
-      syncExerciseCatalogSetting(list[i].name, { unilateral: list[i].unilateral });
-    };
     item.querySelector('[data-act="rename"]').onclick = (e) => {
       const renameBtnEl = e.currentTarget;
       const nameDiv = item.querySelector('.li-name');
@@ -5738,8 +5751,6 @@ function renderExerciseList(root) {
 
   const searchInput = root.querySelector('#exListSearchInput');
   const searchDropdown = root.querySelector('#exListSearchDropdown');
-  const uniToggle = root.querySelector('#exListUniToggle');
-  uniToggle.onclick = () => uniToggle.classList.toggle('on');
 
   // Tapping an existing exercise (or an autocomplete match) adds it
   // immediately; a query that matches nothing known surfaces a "+ Add as
@@ -5753,11 +5764,12 @@ function renderExerciseList(root) {
       showToast(`${val} is already in this day's list`);
       return;
     }
-    const entry = { name: val, unilateral: uniToggle.classList.contains('on') || catalogUnilateralDefault(val) };
+    const { unilateral, bodyweightExercise } = smartExerciseDefaults(val);
+    const entry = { name: val, unilateral };
     list.push(entry);
     persistEditList();
-    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(day)[0]);
-    syncExerciseCatalogSetting(val, { unilateral: entry.unilateral });
+    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(day)[0], bodyweightExercise);
+    syncExerciseCatalogSetting(val, { unilateral: entry.unilateral, bodyweightExercise });
     if (!editMode) {
       const item = buildViewRow(entry);
       item.classList.add('item-entering');
@@ -5768,7 +5780,6 @@ function renderExerciseList(root) {
     }
     searchInput.value = '';
     searchDropdown.style.display = 'none';
-    uniToggle.classList.remove('on');
     searchInput.focus();
   }
 
@@ -6041,6 +6052,27 @@ function catalogUnilateralDefault(name) {
   const known = EXERCISE_LIBRARY_FLAT.find(item => nameKey(item.name) === key);
   return known ? !!known.unilateral : false;
 }
+/* Best-available unilateral/bodyweight default for an exercise being added
+   somewhere new (a day's list, Free Tracking, program setup) — checked in
+   the same priority order already used when a brand-new exercise instance
+   is opened in renderSetLog: 1) this device's own most-recently-logged
+   history for the name (the strongest signal of how it's actually been
+   trained — e.g. a movement that's globally bilateral but that THIS user
+   has always logged one side at a time), 2) an explicit choice already
+   saved to the personal/global exercise catalog, 3) (bodyweight only) the
+   name-pattern heuristic. Centralizing this means an exercise never
+   silently reverts to bilateral/non-BW just because the add-row's toggle
+   happened to be off at the moment it was added. */
+function smartExerciseDefaults(name) {
+  const priorData = findMostRecentExerciseSets(name);
+  const key = nameKey(name);
+  const catalogEntry = customExercises.find(item => item.name_key === key);
+  const catalogBW = catalogEntry && typeof catalogEntry.bodyweight_exercise === 'boolean' ? catalogEntry.bodyweight_exercise : null;
+  const unilateral = priorData ? priorData.unilateral : catalogUnilateralDefault(name);
+  const bodyweightExercise = priorData ? priorData.bodyweightExercise
+    : (catalogBW !== null ? catalogBW : looksLikeBodyweightExercise(name));
+  return { unilateral, bodyweightExercise };
+}
 
 /* Renaming an exercise in the Edit Exercises list only updated
    exercisesByDay — the matching entry inside the active session's `draft`
@@ -6124,19 +6156,25 @@ async function renameExerciseEverywhere(oldName, newName, unilateral, bodyweight
    toggling between them never calls goTo()/render() (that would be a full
    screen rebuild, losing scroll position and animating like a page change).
    View mode (default): a plain list plus the search bar for quickly adding
-   exercises. Edit mode (pencil button, top right): reveals the drag handle,
-   rename border, L|R / BW toggles and delete button per row, and swaps the
-   pencil for Save/Cancel. A snapshot of the list is taken the moment Edit is
-   pressed; Cancel restores it verbatim, Save keeps whatever's current and
-   then folds any queued "Overwrite" renames (see pendingRenames) into
-   history. Everyday mutations (search-add, delete, plain rename, L|R/BW
-   toggle, reorder) still write straight through to exercisesByDay as they
-   always have — the snapshot only exists to make Cancel meaningful. */
+   exercises — those writes go straight through to exercisesByDay immediately,
+   same as always, since there's no Save/Cancel concept outside edit mode.
+   Edit mode (pencil button, top right): reveals the drag handle, rename
+   border, L|R toggle and delete button per row, and swaps the pencil for
+   Save/Cancel. Every mutation made while in edit mode — toggle, delete,
+   reorder, rename — happens against `workingList`, an independent clone
+   taken the moment Edit is pressed; the real `list` (== exercisesByDay[day])
+   is never touched until Save actually commits it. That means Cancel is a
+   pure no-op on real data (nothing to revert), and — just as important —
+   backing out any OTHER way (the eyebrow back button, hardware back,
+   tapping a different bottom-nav tab mid-edit) discards exactly the same
+   way, with no special-casing needed for each exit path: whatever wasn't
+   explicitly Saved was never written anywhere to begin with. */
 function renderExerciseEdit(root) {
   const list = exercisesByDay[editingDay] || [];
   let exEditMode = false;
-  let editSnapshot = null;
+  let workingList = null;
   let pendingRenames = [];
+  let pendingSimpleRenames = [];
   let reorderAttached = false;
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${editingDay}</div>
@@ -6152,6 +6190,7 @@ function renderExerciseEdit(root) {
           <input type="text" id="newExInput" placeholder="Search or type a new exercise" autocomplete="off">
           <div class="ex-ac-dropdown" id="newExDropdown" style="display:none;"></div>
         </div>
+        <button class="uni-toggle" id="newBwToggle" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
         <button class="uni-toggle" id="newUniToggle" title="One side at a time, tracked as separate R/L reps">L | R</button>
       </div>
     </div>
@@ -6167,7 +6206,7 @@ function renderExerciseEdit(root) {
     item.className = 'list-item compact';
     if (!exEditMode) {
       item.classList.add('static');
-      item.innerHTML = `<div class="li-name">${entry.name}${entry.unilateral ? '<span class="uni-tag">L|R</span>' : ''}</div>`;
+      item.innerHTML = `<div class="li-name">${entry.name}${catalogIsBodyweight(entry.name) ? '<span class="uni-tag">BW</span>' : ''}${entry.unilateral ? '<span class="uni-tag">L|R</span>' : ''}</div>`;
       return item;
     }
     // Same reasoning as buildEditRow() in renderExerciseList: .static kills
@@ -6184,23 +6223,26 @@ function renderExerciseEdit(root) {
         <button class="rename-link-btn" data-act="rename" title="Rename">${ICON_RENAME_SVG}<span>Rename</span></button>
       </div>
       <div class="li-right">
+        <button class="uni-toggle no-pop ${entry.bodyweightExercise ? 'on' : ''}" data-act="bw" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
         <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
         <button class="icon-btn danger no-pop" data-act="del" title="Delete">${ICON_TRASH_SVG}</button>
       </div>`;
     item.querySelector('[data-act="uni"]').onclick = (e) => {
       const i = indexOfItem(item);
-      list[i].unilateral = !list[i].unilateral;
-      persistEditList();
-      e.currentTarget.classList.toggle('on', list[i].unilateral);
-      syncDraftUnilateral(list[i]);
-      syncExerciseCatalogSetting(list[i].name, { unilateral: list[i].unilateral });
+      workingList[i].unilateral = !workingList[i].unilateral;
+      e.currentTarget.classList.toggle('on', workingList[i].unilateral);
+    };
+    item.querySelector('[data-act="bw"]').onclick = (e) => {
+      const i = indexOfItem(item);
+      workingList[i].bodyweightExercise = !workingList[i].bodyweightExercise;
+      e.currentTarget.classList.toggle('on', workingList[i].bodyweightExercise);
     };
     item.querySelector('[data-act="rename"]').onclick = (e) => {
       const renameBtnEl = e.currentTarget;
       const nameDiv = item.querySelector('.li-name');
       renameBtnEl.style.display = 'none';
       const i = indexOfItem(item);
-      const current = list[i].name;
+      const current = workingList[i].name;
       nameDiv.innerHTML = `<input type="text" class="rename-input" value="${current.replace(/"/g,'&quot;')}" style="width:100%; background:var(--panel-2); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius: 9px; font-size: 14.12px; font-weight:700; font-family:inherit;">`;
       const inp = nameDiv.querySelector('input');
       inp.focus();
@@ -6226,21 +6268,26 @@ function renderExerciseEdit(root) {
       }
       // A genuine rename (name actually changed) asks how to carry the
       // history: Overwrite renames it everywhere, including every past
-      // finished log, so PRs/graphs stay one continuous exercise (queued
-      // here, actually applied in commitEdits on Save — see
-      // renameExerciseEverywhere's comment for why). "Save as new" is the
-      // old plain-rename behavior — only today's list/draft change, past
-      // logs stay under the old name untouched.
+      // finished log, so PRs/graphs stay one continuous exercise. "Save as
+      // new" is the old plain-rename behavior — only today's list/draft
+      // change, past logs stay under the old name untouched. Either choice
+      // is only QUEUED here (pendingRenames / pendingSimpleRenames) — none
+      // of it touches real data until commitEdits() runs on Save, same as
+      // every other edit-mode mutation on this screen. Renaming the SAME
+      // row more than once before saving replaces the queued entry rather
+      // than stacking a second one, so only the net oldest-name -> final-
+      // name change ever gets applied; renaming back to the exact original
+      // name clears the queue entry entirely (nothing to apply).
       const commit = async () => {
         if (committed || commitInFlight) return;
         const idx = indexOfItem(item);
         const v = inp.value.trim();
-        if (v && list.some((other, j) => j !== idx && sameExName(other.name, v))) {
+        if (v && workingList.some((other, j) => j !== idx && sameExName(other.name, v))) {
           showToast(`${v} is already in this day's list`);
           inp.focus();
           return;
         }
-        const oldName = list[idx].name;
+        const oldName = workingList[idx].name;
         if (!v || v === oldName) {
           committed = true;
           if (vvCleanup) vvCleanup();
@@ -6261,16 +6308,18 @@ function renderExerciseEdit(root) {
         if (choice === null) { nameDiv.innerHTML = `${oldName}`; renameBtnEl.style.display = ''; return; }
         committed = true;
         if (vvCleanup) vvCleanup();
-        list[idx].name = v;
-        persistEditList();
+        workingList[idx].name = v;
         nameDiv.innerHTML = `${v}`;
         renameBtnEl.style.display = '';
-        syncDraftRename(oldName, v);
-        if (choice === 'overwrite') {
-          pendingRenames.push({ oldName, newName: v, unilateral: list[idx].unilateral, bodyweightExercise: catalogIsBodyweight(oldName) });
-        } else {
-          captureNewExerciseIfUnknown(v, list[idx].unilateral, categoriesForDay(editingDay)[0]);
-          syncExerciseCatalogSetting(v, { unilateral: list[idx].unilateral });
+        const origName = workingList[idx]._origName;
+        pendingRenames = pendingRenames.filter(r => r.oldName !== origName);
+        pendingSimpleRenames = pendingSimpleRenames.filter(r => r.oldName !== origName);
+        if (v !== origName) {
+          if (choice === 'overwrite') {
+            pendingRenames.push({ oldName: origName, newName: v, unilateral: workingList[idx].unilateral, bodyweightExercise: workingList[idx].bodyweightExercise });
+          } else {
+            pendingSimpleRenames.push({ oldName: origName, newName: v, unilateral: workingList[idx].unilateral, bodyweightExercise: workingList[idx].bodyweightExercise });
+          }
         }
       };
       inp.onblur = commit;
@@ -6281,11 +6330,10 @@ function renderExerciseEdit(root) {
     };
     item.querySelector('[data-act="del"]').onclick = async () => {
       const i = indexOfItem(item);
-      const ok = await appConfirmDelete(`Remove ${list[i].name} from ${editingDay}'s exercise list? Its logged history is kept — add it back anytime to pick up where you left off.`);
+      const ok = await appConfirmDelete(`Remove ${workingList[i].name} from ${editingDay}'s exercise list? Its logged history is kept — add it back anytime to pick up where you left off.`);
       if (!ok) return;
       const idx = indexOfItem(item);
-      list.splice(idx,1);
-      persistEditList();
+      workingList.splice(idx,1);
       item.classList.add('item-removing');
       item.addEventListener('animationend', () => item.remove(), { once: true });
     };
@@ -6294,9 +6342,10 @@ function renderExerciseEdit(root) {
 
   function renderRows() {
     editList.innerHTML = '';
-    list.forEach(entry => editList.appendChild(buildItem(entry)));
+    const source = exEditMode ? workingList : list;
+    source.forEach(entry => editList.appendChild(buildItem(entry)));
     if (exEditMode && !reorderAttached) {
-      makeReorderable(editList, list, () => persistEditList());
+      makeReorderable(editList, workingList, () => {});
       reorderAttached = true;
     }
   }
@@ -6326,28 +6375,66 @@ function renderExerciseEdit(root) {
   }
 
   function enterEditMode() {
-    editSnapshot = list.map(e => ({ ...e }));
+    workingList = list.map(e => ({ name: e.name, unilateral: e.unilateral, bodyweightExercise: catalogIsBodyweight(e.name), _origName: e.name }));
     pendingRenames = [];
+    pendingSimpleRenames = [];
     exEditMode = true;
+    reorderAttached = false;
     refreshChrome();
   }
   function cancelEdits() {
-    list.length = 0;
-    (editSnapshot || []).forEach(e => list.push({ ...e }));
-    persistEditList();
-    editSnapshot = null;
+    // Real data was never touched while in edit mode — nothing to revert.
+    workingList = null;
     pendingRenames = [];
+    pendingSimpleRenames = [];
     exEditMode = false;
+    reorderAttached = false;
     refreshChrome();
   }
   async function commitEdits() {
-    const toApply = pendingRenames;
-    editSnapshot = null;
+    const finalList = workingList;
+    const renamesOverwrite = pendingRenames;
+    const renamesSimple = pendingSimpleRenames;
+    const priorList = list.map(e => ({ ...e }));
+    workingList = null;
     pendingRenames = [];
+    pendingSimpleRenames = [];
     exEditMode = false;
+    reorderAttached = false;
+    list.length = 0;
+    finalList.forEach(e => list.push({ name: e.name, unilateral: e.unilateral }));
+    persistEditList();
     refreshChrome();
-    if (toApply.length) {
-      for (const r of toApply) await renameExerciseEverywhere(r.oldName, r.newName, r.unilateral, r.bodyweightExercise);
+    // Deferred catalog/draft syncs for rows that changed their L|R or BW
+    // setting but weren't renamed this session (renamed rows get their own
+    // sync below, alongside the rename itself). This is what makes toggling
+    // L|R/BW right after adding a brand-new exercise (add it, then Save)
+    // actually reach Supabase, not just this device's local list.
+    finalList.forEach(entry => {
+      if (entry.name !== entry._origName) return;
+      const prior = priorList.find(p => sameExName(p.name, entry._origName));
+      const priorBW = catalogIsBodyweight(entry._origName);
+      const uniChanged = !!(prior && prior.unilateral !== entry.unilateral);
+      const bwChanged = priorBW !== entry.bodyweightExercise;
+      if (uniChanged || bwChanged) {
+        const patch = {};
+        if (uniChanged) patch.unilateral = entry.unilateral;
+        if (bwChanged) patch.bodyweightExercise = entry.bodyweightExercise;
+        syncExerciseCatalogSetting(entry.name, patch);
+        if (uniChanged) syncDraftUnilateral(entry);
+        if (bwChanged) syncDraftBodyweight(entry, entry.bodyweightExercise);
+      }
+    });
+    for (const r of renamesSimple) {
+      syncDraftRename(r.oldName, r.newName);
+      captureNewExerciseIfUnknown(r.newName, r.unilateral, categoriesForDay(editingDay)[0], r.bodyweightExercise);
+      syncExerciseCatalogSetting(r.newName, { unilateral: r.unilateral, bodyweightExercise: r.bodyweightExercise });
+    }
+    if (renamesOverwrite.length) {
+      for (const r of renamesOverwrite) {
+        syncDraftRename(r.oldName, r.newName);
+        await renameExerciseEverywhere(r.oldName, r.newName, r.unilateral, r.bodyweightExercise);
+      }
       showToast('History updated');
     }
   }
@@ -6357,6 +6444,8 @@ function renderExerciseEdit(root) {
 
   const newUniToggle = root.querySelector('#newUniToggle');
   newUniToggle.onclick = () => newUniToggle.classList.toggle('on');
+  const newBwToggle = root.querySelector('#newBwToggle');
+  newBwToggle.onclick = () => newBwToggle.classList.toggle('on');
   const newExInput = root.querySelector('#newExInput');
   const newExDropdown = root.querySelector('#newExDropdown');
   const searchToggleBtn = root.querySelector('#exSearchToggleBtn');
@@ -6378,13 +6467,15 @@ function renderExerciseEdit(root) {
       showToast(`${val} is already in this day's list`);
       return;
     }
-    const entry = { name: val, unilateral: newUniToggle.classList.contains('on') || catalogUnilateralDefault(val) };
+    const smart = smartExerciseDefaults(val);
+    const bodyweightExercise = newBwToggle.classList.contains('on') || smart.bodyweightExercise;
+    const entry = { name: val, unilateral: newUniToggle.classList.contains('on') || smart.unilateral };
     list.push(entry);
     persistEditList();
-    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(editingDay)[0]);
-    syncExerciseCatalogSetting(val, { unilateral: entry.unilateral });
+    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(editingDay)[0], bodyweightExercise);
+    syncExerciseCatalogSetting(val, { unilateral: entry.unilateral, bodyweightExercise });
     if (exEditMode) {
-      const item = buildItem(entry);
+      const item = buildItem({ ...entry, bodyweightExercise });
       item.classList.add('item-entering');
       editList.appendChild(item);
       item.addEventListener('animationend', () => item.classList.remove('item-entering'), { once: true });
@@ -6394,6 +6485,7 @@ function renderExerciseEdit(root) {
     newExInput.value = '';
     newExDropdown.style.display = 'none';
     newUniToggle.classList.remove('on');
+    newBwToggle.classList.remove('on');
     newExInput.focus();
   }
 
@@ -6853,8 +6945,6 @@ function renderSetLog(root) {
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>${ex.name}</div>
     <div class="section-header-row" style="justify-content:flex-end;">
       <div style="display:flex; align-items:center; gap:8px;">
-        <button class="uni-toggle no-pop${isBodyweightExercise(ex) ? ' on' : ''}" id="exBwBtn" title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight is folded into every strength calculation and trend arrow for this exercise">BW</button>
-        <button class="uni-toggle no-pop${ex.unilateral ? ' on' : ''}" id="exUniBtn" title="One side at a time, tracked as separate R/L reps — applies to this session and future ones, past logs stay as recorded">L | R</button>
         <button class="unit-toggle-btn" id="exUnitBtn" title="Switch units for this exercise only">${ICON_SWAP_SVG}${exerciseUnit(ex.name)}</button>
         <button class="icon-square-btn danger${selecting ? ' text-mode' : ''}" id="clearExBtn" title="${selecting ? 'Cancel' : 'Select sets to delete'}">${selecting ? 'Cancel' : ICON_TRASH_SVG}</button>
       </div>
@@ -6894,40 +6984,10 @@ function renderSetLog(root) {
     const changed = await convertExerciseUnit(ex.name);
     if (changed) { persistDraft(); renderSetLog(root); }
   };
-  // Unilateral toggle right on the tracking screen — mirrors the one in
-  // Edit Exercises (syncDraftUnilateral) but runs the other direction:
-  // this screen owns the draft exercise, so it converts ex.sets itself,
-  // then pushes the new flag into exercisesByDay so the day's definition
-  // (and therefore future sessions) picks it up too. Already-completed
-  // logs are separate records and are never touched by this.
-  root.querySelector('#exUniBtn').onclick = () => {
-    const wasUnilateral = !!ex.unilateral;
-    const nowUnilateral = !wasUnilateral;
-    if (nowUnilateral) {
-      ex.sets.forEach(s => { s.repsR = s.reps ?? ''; s.repsL = s.reps ?? ''; delete s.reps; });
-    } else {
-      ex.sets.forEach(s => { s.reps = mergedBilateralReps(s); delete s.repsR; delete s.repsL; });
-    }
-    ex.unilateral = nowUnilateral;
-    if (activeExerciseName === ex.name) activeExerciseUnilateral = nowUnilateral;
-    const dayList = exercisesByDay[draft.day] || [];
-    const entry = dayList.find(e => sameExName(e.name, ex.name));
-    if (entry) { entry.unilateral = nowUnilateral; saveJSON('exercisesByDay', exercisesByDay); }
-    syncExerciseCatalogSetting(ex.name, { unilateral: nowUnilateral });
-    persistDraft();
-    renderSetLog(root);
-  };
-  // Bodyweight toggle — just a flag flip, no set reshaping needed (unlike
-  // L|R). Applies to this session and carries forward to future ones via
-  // findMostRecentExerciseSets, and is now also saved to the exercise
-  // catalog so it's the default the next time this exercise is picked up
-  // fresh (new device, or before any history exists for it locally).
-  root.querySelector('#exBwBtn').onclick = () => {
-    ex.bodyweightExercise = !isBodyweightExercise(ex);
-    syncExerciseCatalogSetting(ex.name, { bodyweightExercise: ex.bodyweightExercise });
-    persistDraft();
-    renderSetLog(root);
-  };
+  // BW and L|R are no longer editable from this screen — they're set once
+  // in Edit Exercises (per-day exercise list) and apply from there. This
+  // screen just reads whatever ex.unilateral / isBodyweightExercise(ex)
+  // already resolved to above.
   if (selecting) {
     root.querySelector('#deleteSelectedBtn').onclick = async () => {
       if (setLogSelected.size === 0) { showToast('No sets selected'); return; }
@@ -8670,20 +8730,15 @@ function renderEditLog(root) {
           <div class="hex-name" style="cursor:default;">${ex.name}</div>
         </div>
         <div style="display:flex; gap:8px; flex-shrink:0;">
-          <button class="uni-toggle no-pop${isBodyweightExercise(ex) ? ' on' : ''}" data-ex-bw title="Bodyweight exercise — Weight field is only ADDED weight; your logged bodyweight for this workout is folded into every strength calculation and trend arrow for this exercise">BW</button>
-          <button class="uni-toggle no-pop${ex.unilateral ? ' on' : ''}" data-ex-uni title="One side at a time, tracked as separate R/L reps — applies to this log and future sessions, other past logs stay as recorded">L | R</button>
           <button class="icon-edit-btn danger${selecting ? ' text-mode' : ''}" data-del-ex title="${selecting ? 'Cancel' : 'Select sets to delete'}">${selecting ? 'Cancel' : ICON_TRASH_SVG}</button>
         </div>
       </div>
       <div class="col-labels ${ex.unilateral ? 'uni' : ''}"><div>SET</div><div></div><div>Weight</div>${ex.unilateral ? '<div>Reps R</div><div>Reps L</div>' : '<div>Reps</div>'}<div>RIR</div><div>RPE</div><div></div></div>
       <div class="setsEditContainer"></div>
     `;
-    block.querySelector('[data-ex-bw]').onclick = () => {
-      ex.bodyweightExercise = !isBodyweightExercise(ex);
-      syncExerciseCatalogSetting(ex.name, { bodyweightExercise: ex.bodyweightExercise });
-      persistEditDraft();
-      renderEditLog(root);
-    };
+    // BW and L|R are no longer editable from a past log — they're set once
+    // in Edit Exercises and this block just reflects whatever they resolve
+    // to (ex.unilateral / isBodyweightExercise(ex)).
     const setsWrap = block.querySelector('.setsEditContainer');
     let editWarmupCount = 0, editWorkingCount = 0;
     ex.sets.forEach((s, sIdx) => {
@@ -8767,27 +8822,6 @@ function renderEditLog(root) {
       renderEditLog(root);
     };
     block.appendChild(addSetBtn);
-    // Unilateral toggle for this exercise within this historic log — mirrors
-    // the same control on the live tracking screen (renderSetLog). Converts
-    // this log's own sets in place (reps <-> repsR/repsL), then pushes the
-    // new flag into exercisesByDay so the day's definition — and therefore
-    // future sessions — picks it up too. Only this log entry is touched;
-    // every other already-saved log keeps whatever shape it was recorded in.
-    block.querySelector('[data-ex-uni]').onclick = () => {
-      const nowUnilateral = !ex.unilateral;
-      if (nowUnilateral) {
-        ex.sets.forEach(s => { s.repsR = s.reps ?? ''; s.repsL = s.reps ?? ''; delete s.reps; });
-      } else {
-        ex.sets.forEach(s => { s.reps = mergedBilateralReps(s); delete s.repsR; delete s.repsL; });
-      }
-      ex.unilateral = nowUnilateral;
-      const dayList = exercisesByDay[w.day] || [];
-      const entry = dayList.find(e => sameExName(e.name, ex.name));
-      if (entry) { entry.unilateral = nowUnilateral; saveJSON('exercisesByDay', exercisesByDay); }
-      syncExerciseCatalogSetting(ex.name, { unilateral: nowUnilateral });
-      persistEditDraft();
-      renderEditLog(root);
-    };
     // The trash button just toggles select mode: tap once to enter it (camera
     // icons on each row swap for a selectable circle), tap again — now
     // showing "Cancel" — to back out without deleting anything. Actual
@@ -8869,19 +8903,18 @@ function renderEditLog(root) {
       showToast(`${val} is already in this workout`);
       return;
     }
-    // Pick up a remembered unilateral default (personal catalog first,
-    // then anything already logged/configured locally) instead of always
-    // starting at false, same as every other "add exercise" entry point.
-    const catalogEntry = customExercises.find(item => item.name_key === nameKey(val)) ||
-      collectKnownExercisesFull().find(item => sameExName(item.name, val));
-    const uni = !!(catalogEntry && catalogEntry.unilateral);
+    // Pick up a remembered unilateral/bodyweight default — this device's
+    // own logged history first, then the personal/global catalog — instead
+    // of always starting at false, same as every other "add exercise"
+    // entry point.
+    const { unilateral: uni, bodyweightExercise: bw } = smartExerciseDefaults(val);
     w.exercises.push({
-      name: val, unilateral: uni,
+      name: val, unilateral: uni, bodyweightExercise: bw,
       sets: [ uni
         ? { weight: '', repsR: '', repsL: '', rir: '', rpe: '', rest: restDuration, media: [] }
         : { weight: '', reps: '', rir: '', rpe: '', rest: restDuration, media: [] } ]
     });
-    captureNewExerciseIfUnknown(val, uni, categoriesForDay(w.day)[0]);
+    captureNewExerciseIfUnknown(val, uni, categoriesForDay(w.day)[0], bw);
     persistEditDraft();
     renderEditLog(root);
     // renderEditLog() rebuilds this whole screen from scratch, so the old
