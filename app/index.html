@@ -61,7 +61,7 @@
     min-height: calc(max(env(safe-area-inset-top), 28px) + 9.2px + 47.8px); }.home-greeting{ font-size: 22.94px; font-weight: 800; color: var(--text); letter-spacing: -0.01em; line-height: 1.2; margin: 23px 0 3.5px; }.home-greeting b{ color: var(--teal); font-weight: 800; }.date-readout{ color: var(--text-dim); font-size: 14.57px; margin-bottom: 27.6px; }/* Windows-8-Start-screen-style tile block: a pinned, full-width "Start
      Tracking" bar on top (its own row), then the three stat tiles as an
      even 3-across row underneath — no scrolling, nothing gets cut off. */
-  .home-cards-row{ display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 92px; grid-auto-flow: dense; gap: 10px; margin: 0 0 27.6px; align-items: stretch; }.home-cards-row:has(.home-card-cta){ grid-template-rows: 54px; }.home-card{ touch-action: pan-y; grid-column: span 1; grid-row: span 1; min-width: 0; min-height: 92px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; padding: 9.6px 15px 22.4px; display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box; text-align: left; box-shadow: none; position: relative; overflow: hidden; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide); }/* Single-value cards (sessions, weekPerf) still look best vertically
+  .home-cards-row{ display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 92px; grid-auto-flow: dense; gap: 10px; margin: 0 0 27.6px; align-items: stretch; }.home-cards-row:has(.home-card-cta){ grid-template-rows: 54px; }.home-card{ touch-action: pan-y; grid-column: span 1; grid-row: span 1; min-width: 0; min-height: 92px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; padding: 9.6px 15px 22.4px; display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box; text-align: left; box-shadow: none; position: relative; overflow: hidden; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide); -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }/* Single-value cards (sessions, weekPerf) still look best vertically
      centered, but the list card (bestPerf) must anchor to the top —
      otherwise, if its content is ever taller than the card (e.g. resized
      small), centering clips the heading off the top instead of just the
@@ -150,7 +150,7 @@
   }.select-btn:active{ transform: scale(0.925); box-shadow: 0 3px 14px -6px var(--teal-glow); transition: transform .14s var(--ease-press), box-shadow .14s var(--ease-press); }.select-btn .sb-name{ display: flex; align-items: center; gap: 11.5px; line-height: 1.15; }.select-btn .sb-arrow{ font-size: 15.34px; font-weight: 800; line-height: 1.15; flex-shrink: 0; align-self: center; }.select-btn .li-check{ color: var(--teal-ink); font-size: 14.12px; }.select-btn.ex-pick{ background: var(--panel); color: var(--teal); border: 1.75px solid var(--border); box-shadow: none; padding: 13.8px 16px; margin-bottom: 9.2px; font-size: 13.23px; }.select-btn.ex-pick:active{ box-shadow: none; }.select-btn.ex-pick .li-check{ color: var(--teal); }.select-btn .li-progress-dot{ display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; animation: pulseDot 1.1s ease-in-out infinite; }@keyframes pulseDot{ 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }.list-item{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 18.4px; padding: 17.25px 16px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 14px; margin-bottom: 17.25px; cursor: pointer; box-shadow: none; line-height: 1.15; transition: transform .48s var(--ease-bounce), border-color .38s var(--ease-glide), box-shadow .42s var(--ease-glide), background-color .38s var(--ease-glide); }#exerciseDayList .list-item{ margin-bottom: 10.35px; }.list-item:not(.static):not(.dragging):active{ transform: scale(0.955); transition: transform .14s var(--ease-press); }.list-item.static{ border-color: var(--border); box-shadow: none; cursor: default; }.list-item .li-name{ font-size: 14.12px; font-weight: 700; display: flex; align-items: center; gap: 11.5px; flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; line-height: 1.438; align-self: center; }.list-item:not(.static) .li-name{ color: var(--teal); }.list-item .li-check{ color: var(--teal); font-size: 14.12px; }.list-item .li-meta{ font-size: 11.02px; color: var(--text-dim); margin-top: 3.45px; }.list-item .li-pr{ font-size: 11.02px; color: var(--teal); font-weight: 700; margin-top: 3.45px; }.list-item .li-right{ display: flex; gap: 11.5px; align-items: center; color: var(--text-dim); flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }.list-item .li-right > *{ align-self: center; line-height: 1.15; }.drag-handle{ background: none; border: none; color: var(--text-dim); cursor: grab; padding: 6.9px 10px 6.9px 0; margin-right: 2px; display: flex; align-items: center; justify-content: center; touch-action: none; flex-shrink: 0; transition: color .38s var(--ease-glide), transform .48s var(--ease-bounce); }.drag-handle:active{ cursor: grabbing; color: var(--teal); transform: scale(1.225); transition: color .14s var(--ease-press), transform .14s var(--ease-press); }.list-item.dragging{ border-color: var(--border); box-shadow: 0 10px 26px -6px rgba(0,0,0,0.55); cursor: grabbing; }.list-item.item-entering{ animation: itemSlideUp 0.42s var(--ease-glide); }@keyframes itemSlideUp{ from { opacity: 0; transform: translateY(28px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }.list-item.item-removing{ animation: itemSlideOut 0.32s var(--ease-glide) forwards; pointer-events: none; }@keyframes itemSlideOut{ from { opacity: 1; transform: scale(1); max-height: 200px; margin-bottom: 17.25px; } to { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; } }.list-item.compact{ padding: 10.35px 14px; margin-bottom: 8.05px; }.list-item.compact .li-name{ font-size: 13.23px; color: var(--teal); }.list-item.compact .drag-handle{ height: 22px; padding: 0 8px 0 0; }.list-item.compact .drag-handle svg{ width: 17px; height: 17px; }.list-item.compact .uni-toggle{ height: 22px; padding: 0 10px; font-size: 11.48px; }.list-item.compact .icon-btn.danger{ height: 22px; padding: 0 8px; }.list-item.compact .icon-btn.danger svg{ width: 18px; height: 18px; }.list-item.compact .li-right{ gap: 8px; }.row-inline{ display: flex; gap: 9.2px; align-items: stretch; margin-bottom: 20.7px; }.icon-btn{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 13.23px; cursor: pointer; flex-shrink: 0; }.icon-btn svg{ width: 18px; height: 18px; }.icon-btn[data-act="rename"]{ color: var(--teal); padding: 10.46px 14.8px; position: relative; top: 0.5px; }.icon-btn[data-act="rename"] svg{ width: 20.4px; height: 20.4px; }.icon-btn.danger{ color: var(--danger); border-color: var(--border); box-shadow: none; padding: 11.5px 16px; }.icon-btn.danger svg{ width: 22px; height: 22px; }.row-inline #newExBtn, .row-inline #newLogExBtn{ padding: 9.2px 22px; }.uni-toggle{ display: flex; align-items: center; justify-content: center; background: var(--btn-bg); border: none; color: var(--text-dim); border-radius: 11px; padding: 9.2px 13px; font-size: 12.34px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: border-color .38s var(--ease-glide), color .38s var(--ease-glide), background-color .38s var(--ease-glide); }.uni-toggle.on{ border-color: var(--border); color: var(--teal); background: var(--teal-a14); }.uni-tag{ font-size: 10.92px; color: var(--teal-dim); border: 1px solid var(--border); border-radius: 8px; padding: 2.3px 6px; margin-left: 8px; }.ex-pick-search-wrap{ position: sticky; top: 0; z-index: 5; background: var(--bg); padding-bottom: 11.5px; margin-bottom: 4.6px; }.ex-pick-search-wrap input{ font-size: 13.67px; }.ex-pick-group-label{ font-size: 12.34px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--teal); margin: 13.8px 0 6.9px; }.ex-pick-group-label:first-child{ margin-top: 4.6px; }.ex-pick-row{ touch-action: manipulation; display: flex; justify-content: space-between; align-items: center; gap: 11.5px;
     padding: 11.5px 13px; background: var(--panel); border: 1.75px solid var(--border); border-radius: 13px;
     margin-bottom: 6.9px; cursor: pointer; color: var(--text); font-size: 13.23px; font-weight: 600;
-    transition: transform .3s var(--ease-bounce), border-color .3s var(--ease-glide), color .3s var(--ease-glide), background-color .3s var(--ease-glide); }.ex-pick-row:active{ transform: scale(0.97); }.ex-pick-row.selected{ color: var(--teal); border-color: var(--border); background: var(--teal-a16); font-weight: 700; }.ex-pick-row .ex-pick-name{ display: flex; align-items: center; gap: 9.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.ex-pick-row .ex-pick-check{ flex-shrink: 0; color: var(--teal); }.ex-pick-row .uni-toggle{ padding: 6.9px 10px; font-size: 10.92px; }.ex-pick-row-right{ display: flex; align-items: center; gap: 6.9px; flex-shrink: 0; }.ex-pick-drag{ display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+    transition: transform .3s var(--ease-bounce), border-color .3s var(--ease-glide), color .3s var(--ease-glide), background-color .3s var(--ease-glide); }.ex-pick-row:active{ transform: scale(0.97); }.ex-pick-row.selected{ color: var(--teal); border-color: var(--border); background: var(--teal-a16); font-weight: 700; }.ex-pick-row .ex-pick-name{ display: flex; align-items: center; gap: 9.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.ex-pick-row .ex-pick-check{ flex-shrink: 0; color: var(--teal); }.ex-pick-row .uni-toggle{ padding: 6.9px 10px; font-size: 10.92px; }.ex-pick-row-right{ display: flex; align-items: center; gap: 6.9px; flex-shrink: 0; }.select-btn.ex-pick .ex-pick-row-right .icon-btn{ height: 18px; padding: 0 7px; border-radius: 7px; }.select-btn.ex-pick .ex-pick-row-right .icon-btn svg{ width: 13px; height: 13px; }.ex-pick-drag{ display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
     color: var(--teal); cursor: grab; touch-action: none; flex-shrink: 0; }.ex-pick-drag svg{ width: 20px; height: 20px; }.ex-pick-row.ex-dragging{ opacity: 0.55; }.ex-pick-add-row{ color: var(--teal-dim); font-style: italic; }.ex-pick-empty{ color: var(--text-dim); font-size: 12.34px; padding: 11.5px 2px 4.6px; }.set-card{ background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 13.8px; }.set-row{ display: grid; grid-template-columns: 32px 48px minmax(0,1fr) minmax(0,1fr) minmax(0,0.85fr) minmax(0,0.85fr) 34px; gap: 5.75px; align-items: center; margin-bottom: 9.2px; }.set-row.uni{ grid-template-columns: 30px 40px minmax(0,0.88fr) minmax(0,0.7fr) minmax(0,0.7fr) minmax(0,0.62fr) minmax(0,0.62fr) 30px; }.set-row .set-num{ font-size: 11.02px; color: var(--text-dim); font-weight: 700; text-align: center; }/* Warmup toggle — its own grid column between the set number and weight.
      Off state is a quiet outline; on state fills amber (--amber is already
      the app's "informational, not accent-teal" color) so a warmup set reads
@@ -492,7 +492,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
    Bump APP_VERSION below to match, zip this same index.html, upload both
    to a new GitHub Release, and update this JSON file's version + url to
    point at it — that's the entire release process from then on. */
-const APP_VERSION = '1.3.7';
+const APP_VERSION = '1.3.8';
 const UPDATE_MANIFEST_URL = 'https://sbltracker.pages.dev/app/version.json';
 let updateAvailableVersion = null;
 let updateBundleUrl = null;
@@ -3946,46 +3946,6 @@ function renderSetupExercises(root) {
     else { draft = await loadJSON('draft', null); resetRotationTemp(); goToReplace('setup-rotation'); }
   };
 }
-/* Drag-to-reorder for the "Selected" group during exercise setup. Grabbing
-   the hamburger handle and dragging up/down swaps the row's DOM position
-   live as the finger crosses a neighboring row's midpoint — plain instant
-   swaps, no floating/animation, so no re-render is needed mid-drag (which
-   would drop pointer capture). setupTemp's order is resynced from the
-   final DOM order once per drag, on release. */
-function attachExPickDrag(listEl) {
-  listEl.querySelectorAll('[data-act="drag"]').forEach(handle => {
-    handle.onpointerdown = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const row = handle.closest('.ex-pick-row');
-      row.classList.add('ex-dragging');
-      handle.setPointerCapture(e.pointerId);
-      const onMove = (ev) => {
-        const y = ev.clientY;
-        const siblings = Array.from(listEl.querySelectorAll('.ex-pick-row.selected')).filter(r => r !== row);
-        for (const sib of siblings) {
-          const r = sib.getBoundingClientRect();
-          const mid = r.top + r.height / 2;
-          const sibIsAfterRow = !!(row.compareDocumentPosition(sib) & Node.DOCUMENT_POSITION_FOLLOWING);
-          if (sibIsAfterRow && y > mid) listEl.insertBefore(row, sib.nextSibling);
-          else if (!sibIsAfterRow && y < mid) listEl.insertBefore(row, sib);
-        }
-      };
-      const onUp = (ev) => {
-        row.classList.remove('ex-dragging');
-        try { handle.releasePointerCapture(ev.pointerId); } catch (e) {}
-        handle.removeEventListener('pointermove', onMove);
-        handle.removeEventListener('pointerup', onUp);
-        handle.removeEventListener('pointercancel', onUp);
-        const newOrder = Array.from(listEl.querySelectorAll('.ex-pick-row.selected')).map(r => r.dataset.name);
-        setupTemp.sort((a, b) => newOrder.indexOf(a.name) - newOrder.indexOf(b.name));
-      };
-      handle.addEventListener('pointermove', onMove);
-      handle.addEventListener('pointerup', onUp);
-      handle.addEventListener('pointercancel', onUp);
-    };
-  });
-}
 function renderExPickList(root, day) {
   const listEl = root.querySelector('#exPickList');
   const q = setupSearchQuery.trim().toLowerCase();
@@ -4040,18 +4000,19 @@ function renderExPickList(root, day) {
     html += `<div class="ex-pick-row ex-pick-add-row" data-act="add-custom">+ Add "${setupSearchQuery.trim()}" as a new exercise</div>`;
   }
   if (setupTemp.length > 0) {
-    html += `<div class="ex-pick-group-label">Selected</div>`;
+    html += `<div class="ex-pick-group-label">Selected</div><div class="ex-pick-selected-list" id="exPickSelectedList">`;
     setupTemp.forEach(entry => {
       html += `<div class="ex-pick-row selected" data-act="deselect" data-name="${entry.name.replace(/"/g,'&quot;')}">
         <span class="ex-pick-name"><span class="ex-pick-check">✓</span>${entry.name}</span>
         <div class="ex-pick-row-right">
           <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" data-name="${entry.name.replace(/"/g,'&quot;')}" title="One side at a time, tracked as separate R/L reps">L | R</button>
-          <span class="ex-pick-drag" data-act="drag" data-name="${entry.name.replace(/"/g,'&quot;')}" title="Drag to reorder">
+          <span class="ex-pick-drag drag-handle" data-act="drag" title="Drag to reorder">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
           </span>
         </div>
       </div>`;
     });
+    html += `</div>`;
   }
   // Flat, alphabetized list — no muscle-group headers. Category is still
   // used above to decide the *pool* of exercises relevant to this day
@@ -4104,7 +4065,8 @@ function renderExPickList(root, day) {
       renderExPickList(root, day);
     };
   });
-  attachExPickDrag(listEl);
+  const selectedListEl = listEl.querySelector('#exPickSelectedList');
+  if (selectedListEl) makeReorderable(selectedListEl, setupTemp, () => {}, '.ex-pick-row');
   listEl.querySelectorAll('[data-act="uni"]').forEach(btn => {
     btn.onclick = (e) => {
       e.stopPropagation();
@@ -4566,7 +4528,7 @@ function initHomeCardsResize(container) {
    move-threshold would fight a normal scroll swipe — a deliberate long
    press arms the drag first, exactly like before. */
 function initHomeCardsReorder(container) {
-  const LONG_PRESS_MS = 320, CANCEL_PX = 10;
+  const LONG_PRESS_MS = 160, CANCEL_PX = 10;
   // Start Tracking is pinned — only the three stat tiles below it drag-reorder.
   const draggableSel = '.home-card:not(.home-card-cta)';
   container.querySelectorAll(draggableSel).forEach(card => {
@@ -4718,9 +4680,9 @@ function renderPerfTrendChart(el, trend, currentPct) {
     el.innerHTML = head + `<div class="chart-empty">Not enough sessions yet to chart a trend — this fills in as you log more workouts.</div>`;
     return;
   }
-  const W = 300, H = 84, PADX = 16, PADY = 12;
+  const W = 300, H = 84, PADX = 16, PADX_RIGHT = 54, PADY = 12;
   const maxAbs = Math.max(8, ...trend.map(p => Math.abs(p.pct)));
-  const xFor = (i) => trend.length === 1 ? W / 2 : PADX + (i * (W - PADX * 2) / (trend.length - 1));
+  const xFor = (i) => trend.length === 1 ? (PADX + (W - PADX_RIGHT)) / 2 : PADX + (i * (W - PADX_RIGHT - PADX) / (trend.length - 1));
   const yFor = (v) => H / 2 - (v / maxAbs) * (H / 2 - PADY);
   const linePts = trend.map((p, i) => `${xFor(i).toFixed(1)},${yFor(p.pct).toFixed(1)}`).join(' ');
   const dots = trend.map((p, i) => {
@@ -4734,33 +4696,20 @@ function renderPerfTrendChart(el, trend, currentPct) {
   const dotR = 4.5;
   const lastX = xFor(trend.length - 1);
   const lastY = yFor(last.pct);
-  const labelAbove = lastY > PADY + 20;
-  const preferLeft = lastX > PADX + 40;
-  const textAnchor = preferLeft ? 'end' : 'start';
-  const textX = preferLeft ? lastX - 9 : lastX + 9;
-  const labelY = labelAbove ? lastY - 9 : lastY + 15;
-  // Pointer line runs diagonally from just below/beside the label text to
-  // the edge of today's dot (shortened by its radius so it doesn't dip
-  // under the fill), with a small arrowhead triangle at the dot end.
-  const px1 = textX + (preferLeft ? 3 : -3);
-  const py1 = labelY + (labelAbove ? 3 : -8);
-  const dx = lastX - px1, dy = lastY - py1;
-  const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-  const shorten = dotR + 3;
-  const px2 = lastX - (dx / dist) * shorten;
-  const py2 = lastY - (dy / dist) * shorten;
-  const arrowAngle = Math.atan2(dy, dx);
-  const arrowSize = 3.6;
-  const a1 = arrowAngle + Math.PI - 0.45, a2 = arrowAngle + Math.PI + 0.45;
-  const arrowPts = `${px2.toFixed(1)},${py2.toFixed(1)} ${(px2 + arrowSize * Math.cos(a1)).toFixed(1)},${(py2 + arrowSize * Math.sin(a1)).toFixed(1)} ${(px2 + arrowSize * Math.cos(a2)).toFixed(1)},${(py2 + arrowSize * Math.sin(a2)).toFixed(1)}`;
+  const lastColor = last.pct >= 0 ? 'var(--teal)' : 'var(--danger)';
+  // Label always sits to the right of the final dot, clear of both the
+  // dot and the line/dashed-midline running through the chart — the
+  // reserved PADX_RIGHT gutter keeps it from clipping the SVG edge.
+  // Vertically clamped so it never runs off the top/bottom of the chart.
+  const labelX = lastX + dotR + 8;
+  let labelY = lastY + 4.5;
+  labelY = Math.max(PADY + 4, Math.min(H - 3, labelY));
   el.innerHTML = head + `
     <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block;">
       <line x1="0" y1="${H / 2}" x2="${W}" y2="${H / 2}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" />
       <polyline points="${linePts}" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.85" />
       ${dots}
-      <line x1="${px1.toFixed(1)}" y1="${py1.toFixed(1)}" x2="${px2.toFixed(1)}" y2="${py2.toFixed(1)}" stroke="var(--teal)" stroke-width="1.2" stroke-linecap="round" opacity="0.8" />
-      <polygon points="${arrowPts}" fill="var(--teal)" opacity="0.9" />
-      <text x="${textX.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="${textAnchor}" font-size="10" font-weight="800" fill="var(--teal)">${lastTxt}</text>
+      <text x="${labelX.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="start" font-size="15" font-weight="800" fill="${lastColor}">${lastTxt}</text>
       <text x="2" y="${PADY}" text-anchor="start" font-size="9" fill="var(--text-dim)">+${maxTxt}</text>
       <text x="2" y="${H - 2}" text-anchor="start" font-size="9" fill="var(--text-dim)">-${maxTxt}</text>
     </svg>
@@ -5272,9 +5221,14 @@ async function startTrackingFree(fromHome) {
 function recordFreeExerciseUsage(name) {
   const key = nameKey(name);
   if (!key) return;
-  freeRecentExercises = freeRecentExercises.filter(n => nameKey(n) !== key);
-  freeRecentExercises.unshift(name);
-  if (freeRecentExercises.length > 20) freeRecentExercises = freeRecentExercises.slice(0, 20);
+  // Only a genuinely new exercise gets pinned to the front as a speed-dial.
+  // An already-listed one is left exactly where it is — previously this
+  // re-sorted to the front on every single track, which silently undid any
+  // manual drag reorder the moment you tracked that exercise again.
+  if (!freeRecentExercises.some(n => nameKey(n) === key)) {
+    freeRecentExercises.unshift(name);
+    if (freeRecentExercises.length > 20) freeRecentExercises.length = 20;
+  }
   saveJSON('freeRecentExercises', freeRecentExercises);
   pushCloudAppState && pushCloudAppState('freeRecentExercises', freeRecentExercises);
 }
@@ -5292,12 +5246,17 @@ function renderFreeExerciseList(root) {
   draft.media = ensureMediaShape(draft.media);
   if (draft.bodyweight === undefined) draft.bodyweight = '';
   let query = '';
+  let editMode = false;
+  let workingRecent = null;
 
   root.innerHTML = `
     <div class="eyebrow"><button class="back-btn" id="backBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>Free Tracking</div>
     <div class="section-header-row">
       <h1 class="big">Exercises</h1>
-      <button class="unit-toggle-btn" id="freeUnitBtn" title="Switch units">${ICON_SWAP_SVG}${settings.units}</button>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="unit-toggle-btn" id="freeUnitBtn" title="Switch units">${ICON_SWAP_SVG}${settings.units}</button>
+        <div style="display:flex; align-items:center; gap:8px;" id="freeHeaderBtns"></div>
+      </div>
     </div>
     <div class="row-inline" id="freeSearchRow">
       <div class="ex-ac-wrap" style="flex:1;">
@@ -5310,7 +5269,77 @@ function renderFreeExerciseList(root) {
   const listEl = root.querySelector('#freeExList');
   const searchInput = root.querySelector('#freeSearchInput');
 
-  function buildRow(name, renamable) {
+  // Only "Recent Exercises" gets edit affordances — it's the one list here
+  // that's actually a curated, per-item thing (rename the exercise, drop it,
+  // drag it into whatever order you want). "All Exercises" is just the
+  // shared catalog browse list; there's nothing here to edit or delete, so
+  // it stays plain rows same as always. Recent's manual order is preserved
+  // once dragged — recordFreeExerciseUsage only pushes a genuinely NEW
+  // exercise to the front, it no longer re-bumps an already-listed one on
+  // every track, so a manual drag doesn't get silently undone.
+  function enterEditMode() {
+    workingRecent = freeRecentExercises.map(n => ({ name: n, unilateral: catalogUnilateralDefault(n), _origName: n }));
+    editMode = true;
+    renderHeaderBtns();
+    draw();
+  }
+  function cancelEdits() {
+    // Real data was never touched while in edit mode — nothing to revert.
+    workingRecent = null;
+    editMode = false;
+    renderHeaderBtns();
+    draw();
+  }
+  function commitEdits() {
+    const finalRecent = workingRecent;
+    workingRecent = null;
+    editMode = false;
+    renderHeaderBtns();
+    // Deferred catalog/draft syncs — rename and L|R changes only reach the
+    // catalog/active session now, on Save, same as the live exercise list.
+    finalRecent.forEach(entry => {
+      if (entry.name === entry._origName) {
+        if (entry.unilateral !== catalogUnilateralDefault(entry._origName)) {
+          syncExerciseCatalogSetting(entry.name, { unilateral: entry.unilateral });
+          syncDraftUnilateral({ name: entry.name, unilateral: entry.unilateral }, draft.day);
+        }
+        return;
+      }
+      const trimmed = entry.name;
+      const key = nameKey(entry._origName);
+      const ce = customExercises.find(item => item.name_key === key);
+      if (ce) { ce.name = trimmed; ce.name_key = nameKey(trimmed); saveJSON('customExercises', customExercises); pushCustomExercise(ce); }
+      else captureNewExerciseIfUnknown(trimmed);
+      syncExerciseCatalogSetting(trimmed, { unilateral: entry.unilateral });
+      const draftEx = draft.exercises.find(ex => sameExName(ex.name, entry._origName));
+      if (draftEx) { draftEx.name = trimmed; persistDraft(); }
+    });
+    freeRecentExercises.length = 0;
+    freeRecentExercises.push(...finalRecent.map(e => e.name));
+    saveJSON('freeRecentExercises', freeRecentExercises);
+    draw();
+  }
+  function renderHeaderBtns() {
+    const wrap = root.querySelector('#freeHeaderBtns');
+    if (!wrap) return;
+    if (editMode) {
+      // Same Cancel(X)/Save(check) pair as the live exercise list's edit
+      // mode — shown regardless of how many items are left, so deleting
+      // down to zero mid-edit never strands you with no way out.
+      wrap.innerHTML = `
+        <button class="icon-edit-btn" id="freeEditCancelBtn" title="Cancel">${ICON_X_SVG}</button>
+        <button class="icon-edit-btn" id="freeEditSaveBtn" title="Save">${ICON_CHECK_SVG}</button>`;
+      wrap.querySelector('#freeEditCancelBtn').onclick = cancelEdits;
+      wrap.querySelector('#freeEditSaveBtn').onclick = commitEdits;
+    } else if (freeRecentExercises.length) {
+      wrap.innerHTML = `<button class="icon-edit-btn" id="freeEditBtn" title="Edit Recent Exercises" style="position:relative; top:2px;">${ICON_EDIT_SVG}</button>`;
+      wrap.querySelector('#freeEditBtn').onclick = enterEditMode;
+    } else {
+      wrap.innerHTML = '';
+    }
+  }
+
+  function buildRow(name, isRecent) {
     const trackEntry = draft.exercises.find(e => sameExName(e.name, name));
     const hasData = trackEntry && exerciseHasLoggedData(trackEntry);
     const isDone = hasData && trackEntry.done;
@@ -5318,77 +5347,79 @@ function renderFreeExerciseList(root) {
     const marker = isDone
       ? '<span class="li-check">✓</span>'
       : (inProgress ? '<span class="li-progress-dot" title="Currently tracking"></span>' : '');
+    const isUnilateral = hasData ? !!trackEntry.unilateral : catalogUnilateralDefault(name);
     const el = document.createElement('div');
     el.className = 'select-btn ex-pick';
-    el.innerHTML = `<span class="sb-name">${marker}${name}</span>${renamable ? `<button class="rename-link-btn" data-act="rename" title="Rename" style="margin:0 6px;">${ICON_RENAME_SVG}</button>` : ''}<span class="sb-arrow">›</span>`;
-    el.onclick = (e) => {
-      if (e.target.closest('[data-act="rename"]')) return;
+    el.innerHTML = `<span class="sb-name">${marker}${name}${isUnilateral ? '<span class="uni-tag">UNI</span>' : ''}</span><span class="sb-arrow">›</span>`;
+    el.onclick = () => {
       activeExerciseName = name;
       activeExerciseUnilateral = smartExerciseDefaults(name).unilateral;
       recordFreeExerciseUsage(name);
       goTo('set-log');
     };
-    const renameBtn = el.querySelector('[data-act="rename"]');
-    if (renameBtn) renameBtn.onclick = async (e) => {
-      e.stopPropagation();
-      const newName = await showAppPrompt('Rename this exercise:', 'e.g. Incline Bench Press', 'Rename', name);
-      if (!newName || newName.trim() === '' || newName === name) return;
-      const trimmed = newName.trim();
-      // Renaming here is global for the catalog entry — mirrors the
-      // rename flow in Edit Exercises (syncExerciseCatalogSetting handles
-      // creating one if this name somehow has none yet).
-      const key = nameKey(name);
-      const entry = customExercises.find(item => item.name_key === key);
-      if (entry) { entry.name = trimmed; entry.name_key = nameKey(trimmed); saveJSON('customExercises', customExercises); pushCustomExercise(entry); }
-      else captureNewExerciseIfUnknown(trimmed);
-      freeRecentExercises = freeRecentExercises.map(n => nameKey(n) === key ? trimmed : n);
-      saveJSON('freeRecentExercises', freeRecentExercises);
-      const draftEx = draft.exercises.find(ex => sameExName(ex.name, name));
-      if (draftEx) { draftEx.name = trimmed; persistDraft(); }
-      draw();
-    };
     return el;
   }
 
-  function draw() {
-    const q = query.trim().toLowerCase();
-    const suggestions = getExerciseSuggestions(query);
-    const recentNames = freeRecentExercises.filter(n => !q || n.toLowerCase().includes(q));
-    const recentKeys = new Set(recentNames.map(n => nameKey(n)));
-    const rest = suggestions.filter(item => !recentKeys.has(nameKey(item.name)));
-    listEl.innerHTML = '';
-    if (recentNames.length) {
-      const label = document.createElement('div');
-      label.className = 'section-label';
-      label.textContent = 'Recent Exercises';
-      listEl.appendChild(label);
-      const wrap = document.createElement('div');
-      wrap.className = 'select-list';
-      recentNames.forEach(name => wrap.appendChild(buildRow(name, true)));
-      listEl.appendChild(wrap);
-    }
-    if (rest.length) {
-      const label = document.createElement('div');
-      label.className = 'section-label';
-      label.style.marginTop = recentNames.length ? '18px' : '0';
-      label.textContent = 'All Exercises';
-      listEl.appendChild(label);
-      const wrap = document.createElement('div');
-      wrap.className = 'select-list';
-      rest.forEach(item => wrap.appendChild(buildRow(item.name, false)));
-      listEl.appendChild(wrap);
-    }
-    if (!recentNames.length && !rest.length) {
-      listEl.innerHTML = `<div class="ex-ac-empty">No matching exercise — keep typing and hit Enter to add it</div>`;
-    }
-  }
-  draw();
+  // Edit-mode row: operates entirely on `entry` (a workingRecent element),
+  // never on freeRecentExercises/the catalog/draft directly — every
+  // rename/L|R flip here is purely local until commitEdits() applies the
+  // final state on Save. Cancel just discards workingRecent, so nothing
+  // needs to be undone. Same markup/CSS as the live exercise list's edit
+  // rows (renderExerciseList's buildEditRow) — same pill size, same
+  // drag-handle/uni-toggle/delete icon sizing. Drag-handle only shows while
+  // the list isn't search-filtered — a filtered view's DOM order doesn't
+  // line up 1:1 with workingRecent's real indices, so reordering there
+  // would scramble the wrong items.
+  function buildEditRow(entry) {
+    const trackEntry = draft.exercises.find(e => sameExName(e.name, entry._origName));
+    const hasData = trackEntry && exerciseHasLoggedData(trackEntry);
+    const isDone = hasData && trackEntry.done;
+    const inProgress = hasData && !trackEntry.done;
+    const marker = isDone
+      ? '<span class="li-check">✓</span>'
+      : (inProgress ? '<span class="li-progress-dot" title="Currently tracking"></span>' : '');
+    const showDrag = !query.trim();
+    const item = document.createElement('div');
+    item.className = 'list-item compact static';
+    item.innerHTML = `
+      ${showDrag ? `<button class="drag-handle" title="Drag to reorder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>` : ''}
+      <div class="li-name-col">
+        <div class="li-name">${marker}${entry.name}</div>
+        <button class="rename-link-btn" data-act="rename" title="Rename">${ICON_RENAME_SVG}<span>Rename</span></button>
+      </div>
+      <div class="li-right">
+        <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
+        <button class="icon-btn danger no-pop" data-act="del" title="Remove from Recent">${ICON_TRASH_SVG}</button>
+      </div>`;
 
-  searchInput.oninput = (e) => { query = e.target.value; draw(); };
-  searchInput.onkeydown = (e) => {
-    if (e.key !== 'Enter') return;
-    const typed = query.trim();
-    if (!typed) return;
+    item.querySelector('[data-act="uni"]').onclick = (e) => {
+      entry.unilateral = !entry.unilateral;
+      e.currentTarget.classList.toggle('on', entry.unilateral);
+    };
+    item.querySelector('[data-act="rename"]').onclick = async (e) => {
+      e.stopPropagation();
+      const newName = await showAppPrompt('Rename this exercise:', 'e.g. Incline Bench Press', 'Rename', entry.name);
+      if (!newName || newName.trim() === '' || newName === entry.name) return;
+      const trimmed = newName.trim();
+      if (workingRecent.some(other => other !== entry && sameExName(other.name, trimmed))) {
+        showToast(`${trimmed} is already in Recent Exercises`);
+        return;
+      }
+      entry.name = trimmed;
+      draw();
+    };
+    item.querySelector('[data-act="del"]').onclick = async (e) => {
+      e.stopPropagation();
+      const ok = await appConfirmDelete(`Remove ${entry.name} from Recent Exercises? It'll still show up under All Exercises.`);
+      if (!ok) return;
+      const idx = workingRecent.indexOf(entry);
+      if (idx !== -1) workingRecent.splice(idx, 1);
+      draw();
+    };
+    return item;
+  }
+
+  function commitExercise(typed) {
     const known = getExerciseSuggestions(typed).find(item => nameKey(item.name) === nameKey(typed));
     const finalName = known ? known.name : typed;
     const smart = smartExerciseDefaults(finalName);
@@ -5397,6 +5428,77 @@ function renderFreeExerciseList(root) {
     activeExerciseUnilateral = smart.unilateral;
     recordFreeExerciseUsage(finalName);
     goTo('set-log');
+  }
+
+  function draw() {
+    const q = query.trim().toLowerCase();
+    const trimmedQ = query.trim();
+    const suggestions = getExerciseSuggestions(query);
+    // While editing, Recent's contents/order/names come from workingRecent
+    // (nothing committed yet); otherwise from the real freeRecentExercises.
+    const recentSource = editMode ? workingRecent.map(e => e.name) : freeRecentExercises;
+    const recentNames = recentSource.filter(n => !q || n.toLowerCase().includes(q));
+    const recentKeys = new Set(recentNames.map(n => nameKey(n)));
+    const rest = suggestions.filter(item => !recentKeys.has(nameKey(item.name)));
+    // Same "+ Add as a new exercise" row used on every other add-exercise
+    // screen (setup, Edit Exercises, etc.) — shown whenever what's typed
+    // doesn't exactly match a known exercise, not just when there are zero
+    // partial matches, so it always sits available above the results.
+    const showAddCustom = !!trimmedQ && !recentNames.some(n => nameKey(n) === nameKey(trimmedQ))
+      && !suggestions.some(item => nameKey(item.name) === nameKey(trimmedQ));
+    listEl.innerHTML = '';
+    if (showAddCustom) {
+      const addRow = document.createElement('div');
+      addRow.className = 'ex-pick-row ex-pick-add-row';
+      addRow.textContent = `+ Add "${trimmedQ}" as a new exercise`;
+      addRow.onclick = () => commitExercise(trimmedQ);
+      listEl.appendChild(addRow);
+    }
+    if (recentNames.length) {
+      const label = document.createElement('div');
+      label.className = 'section-label';
+      label.style.marginTop = showAddCustom ? '13.8px' : '0';
+      label.textContent = 'Recent Exercises';
+      listEl.appendChild(label);
+      const wrap = document.createElement('div');
+      wrap.className = 'select-list';
+      if (editMode) {
+        const workingFiltered = workingRecent.filter(e => !q || e.name.toLowerCase().includes(q));
+        workingFiltered.forEach(entry => wrap.appendChild(buildEditRow(entry)));
+        // Only draggable when unfiltered — see buildEditRow's comment on
+        // why a filtered view's DOM order can't safely drive workingRecent.
+        if (!q && workingFiltered.length > 1) {
+          makeReorderable(wrap, workingRecent, () => {});
+        }
+      } else {
+        recentNames.forEach(name => wrap.appendChild(buildRow(name, true)));
+      }
+      listEl.appendChild(wrap);
+    }
+    if (rest.length) {
+      const label = document.createElement('div');
+      label.className = 'section-label';
+      label.style.marginTop = (recentNames.length || showAddCustom) ? '18px' : '0';
+      label.textContent = 'All Exercises';
+      listEl.appendChild(label);
+      const wrap = document.createElement('div');
+      wrap.className = 'select-list';
+      rest.forEach(item => wrap.appendChild(buildRow(item.name, false)));
+      listEl.appendChild(wrap);
+    }
+    if (!recentNames.length && !rest.length && !showAddCustom) {
+      listEl.innerHTML = `<div class="ex-ac-empty">No matching exercise</div>`;
+    }
+  }
+  draw();
+  renderHeaderBtns();
+
+  searchInput.oninput = (e) => { query = e.target.value; draw(); };
+  searchInput.onkeydown = (e) => {
+    if (e.key !== 'Enter') return;
+    const typed = query.trim();
+    if (!typed) return;
+    commitExercise(typed);
   };
 
   root.querySelector('#backBtn').onclick = () => goBack();
@@ -5482,8 +5584,9 @@ function renderExerciseList(root) {
   draft.media = ensureMediaShape(draft.media);
   if (draft.bodyweight === undefined) draft.bodyweight = '';
   let editMode = false;
-  let editSnapshot = null;
+  let workingList = null;
   let pendingRenames = [];
+  let pendingSimpleRenames = [];
   let reorderAttached = false;
 
   root.innerHTML = `
@@ -5588,14 +5691,20 @@ function renderExerciseList(root) {
         <button class="rename-link-btn" data-act="rename" title="Rename">${ICON_RENAME_SVG}<span>Rename</span></button>
       </div>
       <div class="li-right">
+        <button class="uni-toggle no-pop ${entry.unilateral ? 'on' : ''}" data-act="uni" title="One side at a time, tracked as separate R/L reps">L | R</button>
         <button class="icon-btn danger no-pop" data-act="del" title="Delete">${ICON_TRASH_SVG}</button>
       </div>`;
+    item.querySelector('[data-act="uni"]').onclick = (e) => {
+      const i = indexOfItem(item);
+      workingList[i].unilateral = !workingList[i].unilateral;
+      e.currentTarget.classList.toggle('on', workingList[i].unilateral);
+    };
     item.querySelector('[data-act="rename"]').onclick = (e) => {
       const renameBtnEl = e.currentTarget;
       const nameDiv = item.querySelector('.li-name');
       renameBtnEl.style.display = 'none';
       const i = indexOfItem(item);
-      const current = list[i].name;
+      const current = workingList[i].name;
       nameDiv.innerHTML = `<input type="text" class="rename-input" value="${current.replace(/"/g,'&quot;')}" style="width:100%; background:var(--panel-2); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius: 9px; font-size: 14.12px; font-weight:700; font-family:inherit;">`;
       const inp = nameDiv.querySelector('input');
       inp.focus();
@@ -5612,16 +5721,22 @@ function renderExerciseList(root) {
         vv.addEventListener('resize', onVVResize);
         vvCleanup = () => vv.removeEventListener('resize', onVVResize);
       }
+      // Choice is only QUEUED here (pendingRenames / pendingSimpleRenames) —
+      // none of it touches exercisesByDay/the catalog/draft until
+      // commitEdits() runs on Save, same as every other edit-mode mutation
+      // on this screen (mirrors renderExerciseEdit's Settings > Program
+      // version). Renaming the same row more than once before saving
+      // replaces the queued entry rather than stacking a second one.
       const commit = async () => {
         if (committed || commitInFlight) return;
         const idx = indexOfItem(item);
         const v = inp.value.trim();
-        if (v && list.some((other, j) => j !== idx && sameExName(other.name, v))) {
+        if (v && workingList.some((other, j) => j !== idx && sameExName(other.name, v))) {
           showToast(`${v} is already in this day's list`);
           inp.focus();
           return;
         }
-        const oldName = list[idx].name;
+        const oldName = workingList[idx].name;
         if (!v || v === oldName) {
           committed = true;
           if (vvCleanup) vvCleanup();
@@ -5642,16 +5757,18 @@ function renderExerciseList(root) {
         if (choice === null) { nameDiv.innerHTML = `${oldName}`; renameBtnEl.style.display = ''; return; }
         committed = true;
         if (vvCleanup) vvCleanup();
-        list[idx].name = v;
-        persistEditList();
+        workingList[idx].name = v;
         nameDiv.innerHTML = `${v}`;
         renameBtnEl.style.display = '';
-        syncDraftRename(oldName, v);
-        if (choice === 'overwrite') {
-          pendingRenames.push({ oldName, newName: v, unilateral: list[idx].unilateral, bodyweightExercise: catalogIsBodyweight(oldName) });
-        } else {
-          captureNewExerciseIfUnknown(v, list[idx].unilateral, categoriesForDay(day)[0]);
-          syncExerciseCatalogSetting(v, { unilateral: list[idx].unilateral });
+        const origName = workingList[idx]._origName;
+        pendingRenames = pendingRenames.filter(r => r.oldName !== origName);
+        pendingSimpleRenames = pendingSimpleRenames.filter(r => r.oldName !== origName);
+        if (v !== origName) {
+          if (choice === 'overwrite') {
+            pendingRenames.push({ oldName: origName, newName: v, unilateral: workingList[idx].unilateral, bodyweightExercise: catalogIsBodyweight(origName) });
+          } else {
+            pendingSimpleRenames.push({ oldName: origName, newName: v, unilateral: workingList[idx].unilateral, bodyweightExercise: catalogIsBodyweight(origName) });
+          }
         }
       };
       inp.onblur = commit;
@@ -5662,11 +5779,10 @@ function renderExerciseList(root) {
     };
     item.querySelector('[data-act="del"]').onclick = async () => {
       const i = indexOfItem(item);
-      const ok = await appConfirmDelete(`Remove ${list[i].name} from ${day}'s exercise list? Its logged history is kept — add it back anytime to pick up where you left off.`);
+      const ok = await appConfirmDelete(`Remove ${workingList[i].name} from ${day}'s exercise list? Its logged history is kept — add it back anytime to pick up where you left off.`);
       if (!ok) return;
       const idx = indexOfItem(item);
-      list.splice(idx,1);
-      persistEditList();
+      workingList.splice(idx,1);
       item.classList.add('item-removing');
       item.addEventListener('animationend', () => item.remove(), { once: true });
     };
@@ -5676,9 +5792,9 @@ function renderExerciseList(root) {
   function refreshRows() {
     exList.innerHTML = '';
     if (editMode) {
-      list.forEach(entry => exList.appendChild(buildEditRow(entry)));
+      workingList.forEach(entry => exList.appendChild(buildEditRow(entry)));
       if (!reorderAttached) {
-        makeReorderable(exList, list, () => persistEditList());
+        makeReorderable(exList, workingList, () => {});
         reorderAttached = true;
       }
     } else {
@@ -5721,28 +5837,57 @@ function renderExerciseList(root) {
   }
 
   function enterEditMode() {
-    editSnapshot = list.map(e => ({ ...e }));
+    workingList = list.map(e => ({ name: e.name, unilateral: e.unilateral, _origName: e.name }));
     pendingRenames = [];
+    pendingSimpleRenames = [];
     editMode = true;
+    reorderAttached = false;
     refreshChrome();
   }
   function cancelEdits() {
-    list.length = 0;
-    (editSnapshot || []).forEach(e => list.push({ ...e }));
-    persistEditList();
-    editSnapshot = null;
+    // Real data was never touched while in edit mode — nothing to revert.
+    workingList = null;
     pendingRenames = [];
+    pendingSimpleRenames = [];
     editMode = false;
+    reorderAttached = false;
     refreshChrome();
   }
   async function commitEdits() {
-    const toApply = pendingRenames;
-    editSnapshot = null;
+    const finalList = workingList;
+    const renamesOverwrite = pendingRenames;
+    const renamesSimple = pendingSimpleRenames;
+    const priorList = list.map(e => ({ ...e }));
+    workingList = null;
     pendingRenames = [];
+    pendingSimpleRenames = [];
     editMode = false;
+    reorderAttached = false;
+    list.length = 0;
+    finalList.forEach(e => list.push({ name: e.name, unilateral: e.unilateral }));
+    persistEditList();
     refreshChrome();
-    if (toApply.length) {
-      for (const r of toApply) await renameExerciseEverywhere(r.oldName, r.newName, r.unilateral, r.bodyweightExercise);
+    // Deferred catalog/draft syncs for rows that changed their L|R setting
+    // but weren't renamed this session (renamed rows get their own sync
+    // below, alongside the rename itself).
+    finalList.forEach(entry => {
+      if (entry.name !== entry._origName) return;
+      const prior = priorList.find(p => sameExName(p.name, entry._origName));
+      if (prior && prior.unilateral !== entry.unilateral) {
+        syncExerciseCatalogSetting(entry.name, { unilateral: entry.unilateral });
+        syncDraftUnilateral(entry, day);
+      }
+    });
+    for (const r of renamesSimple) {
+      syncDraftRename(r.oldName, r.newName, day);
+      captureNewExerciseIfUnknown(r.newName, r.unilateral, categoriesForDay(day)[0]);
+      syncExerciseCatalogSetting(r.newName, { unilateral: r.unilateral });
+    }
+    if (renamesOverwrite.length) {
+      for (const r of renamesOverwrite) {
+        syncDraftRename(r.oldName, r.newName, day);
+        await renameExerciseEverywhere(r.oldName, r.newName, r.unilateral, r.bodyweightExercise, day);
+      }
       showToast('History updated');
     }
   }
@@ -5760,23 +5905,30 @@ function renderExerciseList(root) {
   function addExercise(val) {
     val = (val || '').trim();
     if (!val) return;
-    if (list.some(other => sameExName(other.name, val))) {
+    const targetList = editMode ? workingList : list;
+    if (targetList.some(other => sameExName(other.name, val))) {
       showToast(`${val} is already in this day's list`);
       return;
     }
     const { unilateral, bodyweightExercise } = smartExerciseDefaults(val);
-    const entry = { name: val, unilateral };
-    list.push(entry);
-    persistEditList();
-    captureNewExerciseIfUnknown(val, entry.unilateral, categoriesForDay(day)[0], bodyweightExercise);
-    syncExerciseCatalogSetting(val, { unilateral: entry.unilateral, bodyweightExercise });
-    if (!editMode) {
+    // New-exercise catalog registration happens immediately either way —
+    // it just makes the name choosable elsewhere and isn't itself part of
+    // what Cancel needs to undo. What IS deferred is whether the exercise
+    // ends up on THIS list: in edit mode it only goes into workingList, so
+    // Cancel discards it along with every other in-progress edit.
+    captureNewExerciseIfUnknown(val, unilateral, categoriesForDay(day)[0], bodyweightExercise);
+    if (editMode) {
+      workingList.push({ name: val, unilateral, _origName: val });
+      refreshRows();
+    } else {
+      const entry = { name: val, unilateral };
+      list.push(entry);
+      persistEditList();
+      syncExerciseCatalogSetting(val, { unilateral, bodyweightExercise });
       const item = buildViewRow(entry);
       item.classList.add('item-entering');
       exList.appendChild(item);
       item.addEventListener('animationend', () => item.classList.remove('item-entering'), { once: true });
-    } else {
-      refreshRows();
     }
     searchInput.value = '';
     searchDropdown.style.display = 'none';
@@ -5785,9 +5937,10 @@ function renderExerciseList(root) {
 
   function renderSearchDropdown() {
     const q = searchInput.value.trim();
-    const suggestions = getExerciseSuggestions(q).filter(m => !list.some(other => sameExName(other.name, m.name)));
+    const activeList = editMode ? workingList : list;
+    const suggestions = getExerciseSuggestions(q).filter(m => !activeList.some(other => sameExName(other.name, m.name)));
     const exactKnown = q && getExerciseSuggestions(q).some(m => nameKey(m.name) === nameKey(q));
-    const alreadyOnList = q && list.some(other => sameExName(other.name, q));
+    const alreadyOnList = q && activeList.some(other => sameExName(other.name, q));
     let html = '';
     if (q && !exactKnown && !alreadyOnList) {
       html += `<div class="ex-ac-item ex-pick-add-row" data-add="1">+ Add "${q.replace(/"/g,'&quot;')}" as a new exercise</div>`;
@@ -6080,8 +6233,18 @@ function smartExerciseDefaults(name) {
    screen would then create a brand-new empty entry under the new name the
    next time it was tapped, orphaning every set already logged today under
    the old name. Mirrors syncDraftUnilateral(). */
-function syncDraftRename(oldName, newName) {
-  if (!draft || draft.day !== editingDay || oldName === newName) return;
+function syncDraftRename(oldName, newName, forDay) {
+  // Same forDay fix as syncDraftUnilateral above, for the same reason: this
+  // is called both from renderExerciseEdit (Settings, passes nothing ->
+  // defaults to editingDay) and from the live renderExerciseList (passes
+  // the actual session day), which has no reason to touch editingDay. Not
+  // taking forDay here meant a rename from the live in-session Exercise
+  // List almost never matched draft.day against the (usually null/stale)
+  // editingDay, so the draft entry silently kept its old name — orphaning
+  // every set already logged today under it, same failure mode described
+  // above for the unilateral toggle.
+  const dayToMatch = forDay !== undefined ? forDay : editingDay;
+  if (!draft || draft.day !== dayToMatch || oldName === newName) return;
   const ex = draft.exercises.find(e => sameExName(e.name, oldName));
   if (!ex) return;
   ex.name = newName;
@@ -6125,7 +6288,13 @@ async function renameCustomExerciseInCloud(oldNameKey, newEntry) {
    Deliberately only ever called from Save in renderExerciseEdit (queued in
    pendingRenames while editing) so a Cancel never leaves history half
    renamed. */
-async function renameExerciseEverywhere(oldName, newName, unilateral, bodyweightExercise) {
+async function renameExerciseEverywhere(oldName, newName, unilateral, bodyweightExercise, forDay) {
+  // Same forDay fix as syncDraftUnilateral/syncDraftRename above: the live
+  // renderExerciseList's "Overwrite" rename path also calls this function,
+  // and without forDay the brand-new-exercise branch below fell back to
+  // the global editingDay (null/stale outside Settings > Program), tagging
+  // the newly-captured catalog row with the wrong category.
+  const dayToMatch = forDay !== undefined ? forDay : editingDay;
   const oldKey = nameKey(oldName);
   const changedLogs = historyEntries.filter(entry =>
     (entry.exercises || []).some(ex => sameExName(ex.name, oldName))
@@ -6147,7 +6316,7 @@ async function renameExerciseEverywhere(oldName, newName, unilateral, bodyweight
     saveJSON('customExercises', customExercises);
     renameCustomExerciseInCloud(oldNameKey, catEntry);
   } else {
-    captureNewExerciseIfUnknown(newName, !!unilateral, categoriesForDay(editingDay)[0], bodyweightExercise);
+    captureNewExerciseIfUnknown(newName, !!unilateral, categoriesForDay(dayToMatch)[0], bodyweightExercise);
   }
   if (changedLogs.length) await recomputeBestLiftsFromHistory();
 }
